@@ -11,7 +11,7 @@ public class UI extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Ui.fxml"));
 
         Pane mainPane = loader.load();
-
+//
         mainScene = new Scene(mainPane, 900, 500);
 
         primaryStage.setTitle("Transitor");
