@@ -1,9 +1,8 @@
-package com.example.Backend;
+package Transitor.Backend;
 
 
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -42,7 +41,7 @@ public class DataToHashMap {
     }
 
 
-    private double[] getCoordinates(String key){
+    double[] getCoordinates(String key){
 
         double[] coord = null;
 

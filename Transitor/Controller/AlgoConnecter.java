@@ -1,12 +1,12 @@
-package com.example.Controllers;
+package Transitor.Controller;
 
-import com.example.Backend.Algorithms;
+import Transitor.Backend.Algorithms;
 
 public interface AlgoConnecter {
     
     Algorithms algo = new Algorithms();
 
-    default double getDistance(double[] startCords, double[] endCords){
+    default double getDistance(String startCords, String endCords){
 
 
         return algo.getDistance(startCords, endCords);

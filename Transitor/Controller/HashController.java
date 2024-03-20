@@ -1,6 +1,6 @@
-package com.example.Controllers;
+package Transitor.Controller;
 
-import com.example.Backend.DataToHashMap;
+import Transitor.Backend.DataToHashMap;
 
 public interface HashController {
 

@@ -1,20 +1,18 @@
-package com.example.Backend;
-
-
+package Transitor.Backend;
 
 public class Algorithms {
     private final double WALKING_SPEED = 0.075; //kpm
     private final double CYCLING_SPEED = 0.4; //kpm
     private final int EARTH_RADIUS = 6371;
 
-    public static RouteInfo getRouteInfo(String startPostalCode, String endPostalCode){
-        //double[] startCords = getCords(startPostalCode); DataStructure request
-        //double[] endCords = getCords(endPostalCode); DataStructure request
-        double[] startCords = null; double[] endCords = null; // for demo
+    public RouteInfo getRouteInfo(String startPostalCode, String endPostalCode){
+        DataToHashMap dataReader = new DataToHashMap();
+        double[] startCords = dataReader.getCoordinates(startPostalCode);
+        double[] endCords = dataReader.getCoordinates(endPostalCode);
 
         RouteInfo routeInfo = new RouteInfo();
         
-        routeInfo.setDistance(calculateDistance(startCords, endCords));
+        routeInfo.setDistance(calculateDistanceHaversine(startCords, endCords));
         routeInfo.setWalkingTime(calculateTime(startCords, endCords, WALKING_SPEED));
         routeInfo.setCyclingTime(calculateTime(startCords, endCords, CYCLING_SPEED));
         routeInfo.setCost(0);
@@ -22,6 +20,7 @@ public class Algorithms {
         return routeInfo;
     }
 
+    //in km 
     private double calculateDistanceHaversine(double[] startCords, double[] endCords){
         double dLat = deg2rad(startCords[0] - endCords[0]);
         double dLon = deg2rad(startCords[1] - endCords[1]);
@@ -41,26 +40,26 @@ public class Algorithms {
         return (int)Math.round(result);
     }
 
-    public static double getDistance(String startPostalCode, String endPostalCode){
-        //double[] startCords = getCords(startPostalCode); DataStructure request
-        //double[] endCords = getCords(endPostalCode); DataStructure request
-        double[] startCords = null; double[] endCords = null; // for demo
+    public double getDistance(String startPostalCode, String endPostalCode){
+        DataToHashMap dataReader = new DataToHashMap();
+        double[] startCords = dataReader.getCoordinates(startPostalCode);
+        double[] endCords = dataReader.getCoordinates(endPostalCode);
 
         return calculateDistanceHaversine(startCords, endCords);
     }
 
     public double getWalkingTime(String startPostalCode, String endPostalCode){
-        //double[] startCords = getCords(startPostalCode); DataStructure request
-        //int[] endCords = getCords(endPostalCode); DataStructure request
-        double[] startCords = null; double[] endCords = null; // for demo
+        DataToHashMap dataReader = new DataToHashMap();
+        double[] startCords = dataReader.getCoordinates(startPostalCode);
+        double[] endCords = dataReader.getCoordinates(endPostalCode);
 
         return calculateTime(startCords, endCords, WALKING_SPEED);
     }
 
     public double getCyclingTime(String startPostalCode, String endPostalCode){
-        //double[] startCords = getCords(startPostalCode); DataStructure request
-        //double[] endCords = getCords(endPostalCode); DataStructure request
-        double[] startCords = null; double[] endCords = null; // for demo
+        DataToHashMap dataReader = new DataToHashMap();
+        double[] startCords = dataReader.getCoordinates(startPostalCode);
+        double[] endCords = dataReader.getCoordinates(endPostalCode);
 
         return calculateTime(startCords, endCords, CYCLING_SPEED);
     }
@@ -70,7 +69,7 @@ public class Algorithms {
     }
 
 
-    private static class RouteInfo{
+    private class RouteInfo{
         private double distance;
         private double walkingTime;
         private double cyclingTime;
