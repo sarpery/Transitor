@@ -4,8 +4,6 @@ public class Algorithms {
     private final double WALKING_SPEED = 0.075; //kpm
     private final double CYCLING_SPEED = 0.4; //kpm
     private final int EARTH_RADIUS = 6371;
-    private final double LAT_TO_KM_RATIO = 110.574;
-    private final double LON_TO_KM_RATIO = 111.32*Math.cos(deg2rad(50.8483));//50.8483 - Maastricht latitude
 
     public RouteInfo getRouteInfo(String startPostalCode, String endPostalCode){
         //double[] startCords = getCords(startPostalCode); DataStructure request
@@ -14,7 +12,7 @@ public class Algorithms {
 
         RouteInfo routeInfo = new RouteInfo();
         
-        routeInfo.setDistance(calculateDistancePythagorian(startCords, endCords));
+        routeInfo.setDistance(calculateDistanceHaversine(startCords, endCords));
         routeInfo.setWalkingTime(calculateTime(startCords, endCords, WALKING_SPEED));
         routeInfo.setCyclingTime(calculateTime(startCords, endCords, CYCLING_SPEED));
         routeInfo.setCost(0);
@@ -22,23 +20,12 @@ public class Algorithms {
         return routeInfo;
     }
 
-    //in kilometers
-    private double calculateDistancePythagorian(double[] startCords, double[] endCords){
-        double dLat = (startCords[0] - endCords[0])*LAT_TO_KM_RATIO;
-        double dLon = (startCords[1] - endCords[1])*LON_TO_KM_RATIO;
-
-        Double result = Math.sqrt(Math.pow(dLat, 2) - Math.pow(dLon, 2));
-        double roundedResult = Math.round(result*100)/100;
-
-        return roundedResult;
-    }
-
     private double calculateDistanceHaversine(double[] startCords, double[] endCords){
         double dLat = deg2rad(startCords[0] - endCords[0]);
         double dLon = deg2rad(startCords[1] - endCords[1]);
         double h = Math.pow(Math.sin(dLat/2), 2) + Math.cos(deg2rad(startCords[0]))*Math.cos(deg2rad(endCords[0]))*Math.pow(Math.sin(dLon/2), 2);
 
-        double distance = 2*EARTH_RADIUS*Math.asin(Math.sqrt(h));
+        double distance = 2*EARTH_RADIUS*Math.atan2(Math.sqrt(h), Math.sqrt(h - 1));
         return distance;
     }
 
@@ -48,7 +35,7 @@ public class Algorithms {
 
     //in minutes
     private int calculateTime(double startCords[], double[] endCords, double transportSpeed){
-        double result = calculateDistancePythagorian(startCords, endCords)/transportSpeed;
+        double result = calculateDistanceHaversine(startCords, endCords)/transportSpeed;
         return (int)Math.round(result);
     }
 
@@ -57,7 +44,7 @@ public class Algorithms {
         //double[] endCords = getCords(endPostalCode); DataStructure request
         double[] startCords = null; double[] endCords = null; // for demo
 
-        return calculateDistancePythagorian(startCords, endCords);
+        return calculateDistanceHaversine(startCords, endCords);
     }
 
     public double getWalkingTime(String startPostalCode, String endPostalCode){
