@@ -26,7 +26,7 @@ public class Algorithms {
         double dLon = deg2rad(startCords[1] - endCords[1]);
         double h = Math.pow(Math.sin(dLat/2), 2) + Math.cos(deg2rad(startCords[0]))*Math.cos(deg2rad(endCords[0]))*Math.pow(Math.sin(dLon/2), 2);
 
-        double distance = 2*EARTH_RADIUS*Math.atan2(Math.sqrt(h), Math.sqrt(h - 1));
+        double distance = 2*EARTH_RADIUS*Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
         return distance;
     }
 
