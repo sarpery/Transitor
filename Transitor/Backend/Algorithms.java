@@ -1,26 +1,17 @@
-package Transitor.Backend;
+package com.example.Backend;
+
+
 
 public class Algorithms {
     private static final double WALKING_SPEED = 0.075; //kpm
     private static final double CYCLING_SPEED = 0.4; //kpm
 
-    public static RouteInfo getRouteInfo(String startPostalCode, String endPostalCode){
-        //double[] startCords = getCords(startPostalCode); DataStructure request
-        //double[] endCords = getCords(endPostalCode); DataStructure request
-        double[] startCords = null; double[] endCords = null; // for demo
-
-        RouteInfo routeInfo = new RouteInfo();
+    public Algorithms(){
         
-        routeInfo.setDistance(calculateDistance(startCords, endCords));
-        routeInfo.setWalkingTime(calculateTime(startCords, endCords, WALKING_SPEED));
-        routeInfo.setCyclingTime(calculateTime(startCords, endCords, CYCLING_SPEED));
-        routeInfo.setCost(0);
-
-        return routeInfo;
     }
 
     //in kilometers
-    private static double calculateDistance(double[] startCords, double[] endCords){
+    public  double calculateDistance(double[] startCords, double[] endCords){
         double horizontal = startCords[0] - endCords[0];
         double vertical = startCords[1] - endCords[1];
 
@@ -31,12 +22,12 @@ public class Algorithms {
     }
 
     //in minutes
-    private static int calculateTime(double startCords[], double[] endCords, double transportSpeed){
+    public  int calculateTime(double startCords[], double[] endCords, double transportSpeed){
         double result = calculateDistance(startCords, endCords)/transportSpeed;
         return (int)Math.round(result);
     }
 
-    public static double getDistance(String startPostalCode, String endPostalCode){
+    public  double getDistance(String startPostalCode, String endPostalCode){
         //double[] startCords = getCords(startPostalCode); DataStructure request
         //double[] endCords = getCords(endPostalCode); DataStructure request
         double[] startCords = null; double[] endCords = null; // for demo
@@ -44,7 +35,7 @@ public class Algorithms {
         return calculateDistance(startCords, endCords);
     }
 
-    public static double getWalkingTime(String startPostalCode, String endPostalCode){
+    public  double getWalkingTime(String startPostalCode, String endPostalCode){
         //double[] startCords = getCords(startPostalCode); DataStructure request
         //int[] endCords = getCords(endPostalCode); DataStructure request
         double[] startCords = null; double[] endCords = null; // for demo
@@ -52,7 +43,7 @@ public class Algorithms {
         return calculateTime(startCords, endCords, WALKING_SPEED);
     }
 
-    public static double getCyclingTime(String startPostalCode, String endPostalCode){
+    public  double getCyclingTime(String startPostalCode, String endPostalCode){
         //double[] startCords = getCords(startPostalCode); DataStructure request
         //double[] endCords = getCords(endPostalCode); DataStructure request
         double[] startCords = null; double[] endCords = null; // for demo
@@ -60,25 +51,10 @@ public class Algorithms {
         return calculateTime(startCords, endCords, CYCLING_SPEED);
     }
 
-    public static double getCost(){
+    public  double getCost(){
         return 0;
     }
 
 
-    private static class RouteInfo{
-        private double distance;
-        private double walkingTime;
-        private double cyclingTime;
-        private double cost;
-
-        public void setDistance(double distance){ this.distance = distance; }
-        public void setWalkingTime(double walkingTime){ this.walkingTime = walkingTime; }
-        public void setCyclingTime(double cyclingTime){ this.cyclingTime = cyclingTime; }
-        public void setCost(double cost){ this.cost = cost; }
-
-        public double getDistance(){ return distance; }
-        public double getWalkingTime(){ return walkingTime; }
-        public double getCyclingTime(){ return cyclingTime; }
-        public double getCost(){ return cost; }
-    }
+   
 }

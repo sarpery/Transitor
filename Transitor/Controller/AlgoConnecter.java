@@ -1,0 +1,31 @@
+package com.example.Controllers;
+
+import com.example.Backend.Algorithms;
+
+public interface AlgoConnecter {
+    
+    Algorithms algo = new Algorithms();
+
+    default double getDistance(double[] startCords, double[] endCords){
+
+
+        return algo.getDistance(startCords, endCords);
+    }
+
+
+    default double walkingTime(String startCords, String endCords){
+
+
+        return algo.getWalkingTime(startCords, startCords);
+    }
+
+
+    default double CyclingTime(String startPostalCode, String endPostalCode){
+
+
+        return algo.getCyclingTime(startPostalCode, endPostalCode);
+    }
+
+    
+
+}
