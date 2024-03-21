@@ -7,6 +7,7 @@ public class Algorithms {
 
     public RouteInfo getRouteInfo(String startPostalCode, String endPostalCode){
         DataToHashMap dataReader = new DataToHashMap();
+        dataReader.hashMapConverter();
         double[] startCords = dataReader.getCoordinates(startPostalCode);
         double[] endCords = dataReader.getCoordinates(endPostalCode);
 
@@ -42,6 +43,7 @@ public class Algorithms {
 
     public double getDistance(String startPostalCode, String endPostalCode){
         DataToHashMap dataReader = new DataToHashMap();
+        dataReader.hashMapConverter();
         double[] startCords = dataReader.getCoordinates(startPostalCode);
         double[] endCords = dataReader.getCoordinates(endPostalCode);
 
@@ -50,6 +52,7 @@ public class Algorithms {
 
     public double getWalkingTime(String startPostalCode, String endPostalCode){
         DataToHashMap dataReader = new DataToHashMap();
+        dataReader.hashMapConverter();
         double[] startCords = dataReader.getCoordinates(startPostalCode);
         double[] endCords = dataReader.getCoordinates(endPostalCode);
 
@@ -58,6 +61,7 @@ public class Algorithms {
 
     public double getCyclingTime(String startPostalCode, String endPostalCode){
         DataToHashMap dataReader = new DataToHashMap();
+        dataReader.hashMapConverter();
         double[] startCords = dataReader.getCoordinates(startPostalCode);
         double[] endCords = dataReader.getCoordinates(endPostalCode);
 
