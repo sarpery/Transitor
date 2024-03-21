@@ -1,6 +1,7 @@
 package Transitor.Frontend;
 
 import Transitor.Backend.Algorithms;
+import Transitor.Controller.AlgoConnecter;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
@@ -19,12 +20,13 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
+import javafx.scene.control.Tooltip;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class UIController implements Initializable {
+public class UIController implements Initializable, AlgoConnecter {
 
     Robot robot = new Robot();
     private double initX, initY;
@@ -71,7 +73,7 @@ public class UIController implements Initializable {
     private Button findPath;
 
     @FXML
-    private Slider slider;
+    private Button locationTooltip;
 
     @FXML
     private TextField startZip;
@@ -119,15 +121,14 @@ public class UIController implements Initializable {
                 endText = endZip.getText();
                 System.out.println(startText);
                 System.out.println(endText);
-                Algorithms algorithms = new Algorithms();
 
-                double distance1 = algorithms.getDistance(startText, endText);
+                double distance1 = getDistance(startText, endText);
                 double roundedNumber = Math.round(distance1 * 1000.0) / 1000.0;
                 distance.setText("Distance: " + String.valueOf(roundedNumber) + " km");
-                System.out.println(algorithms.getDistance(startText, endText));
+                System.out.println(getDistance(startText, endText));
 
-                int walkingTime = (int) algorithms.getWalkingTime(startText, endText);
-                int bikingTime = (int) algorithms.getCyclingTime(startText, endText);
+                int walkingTime = (int) walkingTime(startText, endText);
+                int bikingTime = (int) cyclingTime(startText, endText);
 
                 if(walktog.isSelected()) {
                     time.setText("Time: " + String.valueOf(walkingTime) + " min");
@@ -143,6 +144,16 @@ public class UIController implements Initializable {
         };
 
         findPath.setOnAction(eventHandler);
+
+        setupToolTip();
+
+    }
+    public void setupToolTip(){
+        locationTooltip.setTooltip(
+                new Tooltip(
+                        "Popular locations:\n" +
+                                "- DACS: 6229EN\n" +
+                                "- Vrijthof: 6211LE\n\n" + "GROUP 10\n"));
     }
 
     @FXML
@@ -162,6 +173,29 @@ public class UIController implements Initializable {
         double res = (50.91600036621094 - y)*4000;
         double resultY = res + 10.855741500854492;
         return resultY;
+    }
+
+    public void drawPointStart(double a, double b){
+        circle1.setLayoutX(zipToPosX(a));
+        circle1.setLayoutY(zipToPosY(b));
+        circle1.setOpacity(1);
+    }
+
+    public void drawPointEnd(double a, double b){
+        circle2.setLayoutX(zipToPosX(a));
+        circle2.setLayoutY(zipToPosY(b));
+        circle2.setOpacity(1);
+    }
+
+    public void drawLine(){
+        distanceLine.setLayoutX(0);
+        distanceLine.setLayoutY(0);
+        distanceLine.setStartX(circle1.getLayoutX());
+        distanceLine.setStartY(circle1.getLayoutY());
+        distanceLine.setEndX(circle2.getLayoutX());
+        distanceLine.setEndY(circle2.getLayoutY());
+
+        distanceLine.setOpacity(1);
     }
 
     private void setSceneEvents(final Scene scene) {

@@ -20,7 +20,7 @@ public interface AlgoConnecter {
     }
 
 
-    default double CyclingTime(String startPostalCode, String endPostalCode){
+    default double cyclingTime(String startPostalCode, String endPostalCode){
 
 
         return algo.getCyclingTime(startPostalCode, endPostalCode);

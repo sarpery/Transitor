@@ -1,26 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.Line?>
-<?import javafx.scene.shape.Polygon?>
-<?import javafx.scene.shape.Polyline?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="528.0" prefWidth="901.0" style="-fx-background-color: #00A2DB;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Transitor.Frontend.UIController">
+<AnchorPane prefHeight="528.0" prefWidth="901.0" style="-fx-background-color: #00A2DB;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Transitor.Frontend.UIController">
     <children>
         <Pane id="visualizerPane" fx:id="mapPane" layoutX="239.0" onMouseMoved="#zoomIn" prefHeight="502.0" prefWidth="662.0">
             <children>
@@ -32,8 +18,8 @@
                 <Polyline fill="#80ff0000" layoutX="365.0" layoutY="173.0" points="-134.39999389648438, -37.600006103515625, -120.00003051757812, -13.600006103515625, -95.20001220703125, -13.600006103515625, -68.79998779296875, 1.62457275390625, -55.199951171875, 27.20001220703125" strokeWidth="2.0" />
                 <Polyline fill="#80ff0000" layoutX="303.0" layoutY="223.0" points="-44.399993896484375, 19.600006103515625, -4.39996337890625, -18.79998779296875, 36.4000244140625, -30.79998779296875, 44.4000244140625, 13.20001220703125, 50.800048828125, 19.600006103515625, 44.4000244140625, 33.20001220703125, 36.4000244140625, 39.600006103515625, 36.4000244140625, 55.600006103515625, 23.60003662109375, 71.60000610351562, 16.4000244140625, 55.600006103515625, -15.5999755859375, 55.600006103515625, -34.79998779296875, 39.600006103515625, -44.399993896484375, 19.600006103515625" smooth="false" strokeWidth="2.0" />
                 <Polyline fill="#80ff0000" layoutX="412.0" layoutY="277.0" points="107.4000244140625, -33.600006103515625, 50.60003662109375, -22.399993896484375, 39.4000244140625, -22.399993896484375, 31.4000244140625, -33.600006103515625, 19.4000244140625, -56.79998779296875, 3.4000244140625, -56.79998779296875, 3.4000244140625, -40.0, 3.4000244140625, -33.600006103515625, -6.199951171875, -22.399993896484375, -51.0, -22.399993896484375, -33.39996337890625, -2.399993896484375, -39.79998779296875, 12.0, -68.5999755859375, -16.79998779296875" smooth="false" strokeWidth="2.0" />
-                <Circle fx:id="circle1" fill="#22b738" layoutX="541.0" layoutY="220.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                <Circle fx:id="circle2" fill="RED" layoutX="397.0" layoutY="366.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fx:id="circle1" fill="#22b738" layoutX="541.0" layoutY="220.0" opacity="0.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                <Circle fx:id="circle2" fill="RED" layoutX="397.0" layoutY="366.0" opacity="0.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                 <Line fx:id="distanceLine" endX="138.0" endY="-211.99998474121094" layoutX="42.0" layoutY="241.0" opacity="0.0" startX="-9.199951171875" startY="-64.20001220703125" stroke="#d44bb9" strokeWidth="2.0" />
             </children>
         </Pane>
@@ -57,22 +43,6 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Label id="speedLabel" fx:id="speed" layoutX="24.0" layoutY="423.0" text="Speed" textFill="#f2f2f2">
-                    <font>
-                        <Font name="Arial Bold" size="16.0" />
-                    </font>
-                </Label>
-                <Slider id="speedSlider" fx:id="slider" blockIncrement="1" layoutX="28.0" layoutY="451.0" max="1" min="0" prefHeight="37.0" prefWidth="175.0" showTickLabels="true" showTickMarks="true" value="0" />
-                <Label layoutX="25.0" layoutY="470.0" text="1km/h" textFill="#f2f2f2">
-                    <font>
-                        <Font name="Arial Bold" size="16.0" />
-                    </font>
-                </Label>
-                <Label layoutX="140.0" layoutY="470.0" text="30 km/h" textFill="#f2f2f2">
-                    <font>
-                        <Font name="Arial Bold" size="16.0" />
-                    </font>
-                </Label>
                 <Label id="titleLabel" layoutX="44.0" layoutY="38.0" prefHeight="37.0" prefWidth="150.0" text="Transitor" textAlignment="CENTER" textFill="WHITE">
                     <font>
                         <Font name="Arial" size="36.0" />
@@ -97,6 +67,14 @@
                         <Font name="Arial Bold" size="14.0" />
                     </font>
                 </ToggleButton>
+            <Button id="locationTooltip" fx:id="locationTooltip" layoutX="20.0" layoutY="491.0" mnemonicParsing="false" style="-fx-background-color: #AE0B12;" text="Popular Locations" textFill="WHITE" underline="true">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+               <tooltip>
+                  <Tooltip id="locationTooltip1" fx:id="locationTooltip1" />
+               </tooltip>
+            </Button>
             </children>
         </Pane>
     </children>

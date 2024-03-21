@@ -18,7 +18,7 @@ public class DataToHashMap {
     public void hashMapConverter(){
 
         
-        try (BufferedReader reader = new BufferedReader(new FileReader("Transitor\\Data\\MassZipLatLon.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("Transitor/Data/MassZipLatLon.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -54,7 +54,7 @@ public class DataToHashMap {
         
     }
 
-    private double getLat(String key){
+    public double getLat(String key){
 
         double[] coord = getCoordinates(key);
         double lat = coord[0];
@@ -63,7 +63,7 @@ public class DataToHashMap {
 
     }
 
-    private double getLon(String key){
+    public double getLon(String key){
 
         double[] coord = getCoordinates(key);
         double lon = coord[1];

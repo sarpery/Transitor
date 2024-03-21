@@ -14,9 +14,13 @@ public interface HashController {
 
     }
 
-    
+    default  double getLat(String code){
 
-    
+        return map.getLat(code);
+    }
 
+    default  double getLon(String code){
 
+        return map.getLon(code);
+    }
 }
