@@ -5,21 +5,23 @@ public class Algorithms {
     private final double CYCLING_SPEED = 0.4; //kpm
     private final int EARTH_RADIUS = 6371;
 
-    public RouteInfo getRouteInfo(String startPostalCode, String endPostalCode){
-        DataToHashMap dataReader = new DataToHashMap();
-        dataReader.hashMapConverter();
-        double[] startCords = dataReader.getCoordinates(startPostalCode);
-        double[] endCords = dataReader.getCoordinates(endPostalCode);
+    DataToHashMap dataReader = new DataToHashMap();
 
-        RouteInfo routeInfo = new RouteInfo();
-        
-        routeInfo.setDistance(calculateDistanceHaversine(startCords, endCords));
-        routeInfo.setWalkingTime(calculateTime(startCords, endCords, WALKING_SPEED));
-        routeInfo.setCyclingTime(calculateTime(startCords, endCords, CYCLING_SPEED));
-        routeInfo.setCost(0);
-
-        return routeInfo;
-    }
+//    public RouteInfo getRouteInfo(String startPostalCode, String endPostalCode){
+//        DataToHashMap dataReader = new DataToHashMap();
+//        dataReader.hashMapConverter();
+//        double[] startCords = dataReader.getCoordinates(startPostalCode);
+//        double[] endCords = dataReader.getCoordinates(endPostalCode);
+//
+//        RouteInfo routeInfo = new RouteInfo();
+//
+//        routeInfo.setDistance(calculateDistanceHaversine(startCords, endCords));
+//        routeInfo.setWalkingTime(calculateTime(startCords, endCords, WALKING_SPEED));
+//        routeInfo.setCyclingTime(calculateTime(startCords, endCords, CYCLING_SPEED));
+//        routeInfo.setCost(0);
+//
+//        return routeInfo;
+//    }
 
     //in km 
     private double calculateDistanceHaversine(double[] startCords, double[] endCords){
@@ -42,7 +44,7 @@ public class Algorithms {
     }
 
     public double getDistance(String startPostalCode, String endPostalCode){
-        DataToHashMap dataReader = new DataToHashMap();
+
         dataReader.hashMapConverter();
         double[] startCords = dataReader.getCoordinates(startPostalCode);
         double[] endCords = dataReader.getCoordinates(endPostalCode);
@@ -51,7 +53,7 @@ public class Algorithms {
     }
 
     public double getWalkingTime(String startPostalCode, String endPostalCode){
-        DataToHashMap dataReader = new DataToHashMap();
+
         dataReader.hashMapConverter();
         double[] startCords = dataReader.getCoordinates(startPostalCode);
         double[] endCords = dataReader.getCoordinates(endPostalCode);
@@ -60,7 +62,7 @@ public class Algorithms {
     }
 
     public double getCyclingTime(String startPostalCode, String endPostalCode){
-        DataToHashMap dataReader = new DataToHashMap();
+
         dataReader.hashMapConverter();
         double[] startCords = dataReader.getCoordinates(startPostalCode);
         double[] endCords = dataReader.getCoordinates(endPostalCode);
@@ -73,20 +75,20 @@ public class Algorithms {
     }
 
 
-    private class RouteInfo{
-        private double distance;
-        private double walkingTime;
-        private double cyclingTime;
-        private double cost;
-
-        public void setDistance(double distance){ this.distance = distance; }
-        public void setWalkingTime(double walkingTime){ this.walkingTime = walkingTime; }
-        public void setCyclingTime(double cyclingTime){ this.cyclingTime = cyclingTime; }
-        public void setCost(double cost){ this.cost = cost; }
-
-        public double getDistance(){ return distance; }
-        public double getWalkingTime(){ return walkingTime; }
-        public double getCyclingTime(){ return cyclingTime; }
-        public double getCost(){ return cost; }
-    }
+//    private class RouteInfo{
+//        private double distance;
+//        private double walkingTime;
+//        private double cyclingTime;
+//        private double cost;
+//
+//        public void setDistance(double distance){ this.distance = distance; }
+//        public void setWalkingTime(double walkingTime){ this.walkingTime = walkingTime; }
+//        public void setCyclingTime(double cyclingTime){ this.cyclingTime = cyclingTime; }
+//        public void setCost(double cost){ this.cost = cost; }
+//
+//        public double getDistance(){ return distance; }
+//        public double getWalkingTime(){ return walkingTime; }
+//        public double getCyclingTime(){ return cyclingTime; }
+//        public double getCost(){ return cost; }
+//    }
 }

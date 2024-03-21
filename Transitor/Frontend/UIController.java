@@ -71,12 +71,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private Label distance;
 
     @FXML
-    private ToggleButton walktog;
-
-    @FXML
-    private ToggleButton biketog;
-
-    @FXML
     private Button findPath;
 
     @FXML
@@ -94,14 +88,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     public String startText;
     public String endText;
 
-    ToggleGroup group2;
-
 
     public void walkBikeCalcs(String startText, String endText){
-
-        group2 = new ToggleGroup();
-        biketog.setToggleGroup(group2);
-        walktog.setToggleGroup(group2);
 
             System.out.println(startText);
             System.out.println(endText);
@@ -114,8 +102,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
             int walkingTime = (int) walkingTime(startText, endText);
             int bikingTime = (int) cyclingTime(startText, endText);
 
-            bikeTime.setText("Time: " + String.valueOf(bikingTime) + " min");
-            walkTime.setText("Time: " + String.valueOf(walkingTime) + " min");
+            bikeTime.setText("Biking time: " + String.valueOf(bikingTime) + " min");
+            walkTime.setText("Walking time: " + String.valueOf(walkingTime) + " min");
 
 
             System.out.println("Walking time: " + walkingTime);
@@ -212,8 +200,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     @FXML
     private void pathDrawBut(String startText, String endText) {
-        //startText = startZip.getText();
-        //endText = endZip.getText();
         walkBikeCalcs(startText, endText);
 
         double ax = getLat(startZip.getText());
@@ -241,10 +227,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         hashTheData();
-
-//        drawPointStart(zipX, zipY);
-//        drawPointEnd(zipXX, zipYY);
-//        drawLine();
-        //pathDrawBut();
     }
+
 }

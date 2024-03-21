@@ -41,6 +41,7 @@ public class DataToHashMap {
     }
 
 
+
     double[] getCoordinates(String key){
 
         double[] coord = null;
@@ -50,9 +51,18 @@ public class DataToHashMap {
             coord = coordinatesData.get(key);
             
         }
+        else {
+            try{
+                coord = RequestAPI.request(key);
+                coordinatesData.put(key,coord);
+            }catch (Exception e){
+                System.out.println("Request error");
+            }
+        }
         return coord;
         
     }
+
 
     public double getLat(String key){
 
