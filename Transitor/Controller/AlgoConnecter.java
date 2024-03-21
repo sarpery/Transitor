@@ -13,8 +13,8 @@ public interface AlgoConnecter {
     }
 
 
-    default double walkingTime(String startCords, String endCords){
 
+    default double walkingTime(String startCords, String endCords){
 
         return algo.getWalkingTime(startCords, startCords);
     }

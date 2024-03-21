@@ -1,7 +1,9 @@
 package Transitor.Frontend;
 
 import Transitor.Backend.Algorithms;
+import Transitor.Backend.DataToHashMap;
 import Transitor.Controller.AlgoConnecter;
+import Transitor.Controller.HashController;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
@@ -9,11 +11,13 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point3D;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.robot.Robot;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -21,19 +25,19 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.scene.control.Tooltip;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class UIController implements Initializable, AlgoConnecter {
+public class UIController implements Initializable, AlgoConnecter, HashController {
 
-    Robot robot = new Robot();
     private double initX, initY;
     private double aAX = 0;
     private double aAY = 0;
-    private final DoubleProperty angleX = new SimpleDoubleProperty(0);
-    private final DoubleProperty angleY = new SimpleDoubleProperty(0);
 
     private double zipX = 5.710646925;
     private double zipY = 50.83646594;
@@ -58,7 +62,10 @@ public class UIController implements Initializable, AlgoConnecter {
     private Label speed;
 
     @FXML
-    private Label time;
+    private Label bikeTime;
+
+    @FXML
+    private Label walkTime;
 
     @FXML
     private Label distance;
@@ -84,70 +91,37 @@ public class UIController implements Initializable, AlgoConnecter {
     @FXML
     public Pane mapPane;
 
-    private String startText;
-    private String endText;
+    public String startText;
+    public String endText;
 
     ToggleGroup group2;
 
-    public void findPathSetup(){
+
+    public void walkBikeCalcs(String startText, String endText){
 
         group2 = new ToggleGroup();
         biketog.setToggleGroup(group2);
         walktog.setToggleGroup(group2);
 
-        EventHandler<ActionEvent> eventHandler1 = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                if (walktog.isSelected()) {
-                    walktog.setStyle("-fx-background-color: #E84E10");
-                    biketog.setStyle("-fx-background-color: #E88A10");
-                } else if (biketog.isSelected()){
-                    biketog.setStyle("-fx-background-color: #E84E10");
-                    walktog.setStyle("-fx-background-color: #E88A10");
-                }
-                else{
-                    biketog.setStyle("-fx-background-color: #E84E10");
-                    walktog.setStyle("-fx-background-color: #E84E10");
-                }
-            }
-        };
+            System.out.println(startText);
+            System.out.println(endText);
 
-        biketog.setOnAction(eventHandler1);
-        walktog.setOnAction(eventHandler1);
+            double distance1 = getDistance(startText, endText);
+            double roundedNumber = Math.round(distance1 * 1000.0) / 1000.0;
+            distance.setText("Distance: " + String.valueOf(roundedNumber) + " km");
+            System.out.println(getDistance(startText, endText));
 
-        EventHandler<ActionEvent> eventHandler = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                startText = startZip.getText();
-                endText = endZip.getText();
-                System.out.println(startText);
-                System.out.println(endText);
+            int walkingTime = (int) walkingTime(startText, endText);
+            int bikingTime = (int) cyclingTime(startText, endText);
 
-                double distance1 = getDistance(startText, endText);
-                double roundedNumber = Math.round(distance1 * 1000.0) / 1000.0;
-                distance.setText("Distance: " + String.valueOf(roundedNumber) + " km");
-                System.out.println(getDistance(startText, endText));
+            bikeTime.setText("Time: " + String.valueOf(bikingTime) + " min");
+            walkTime.setText("Time: " + String.valueOf(walkingTime) + " min");
 
-                int walkingTime = (int) walkingTime(startText, endText);
-                int bikingTime = (int) cyclingTime(startText, endText);
 
-                if(walktog.isSelected()) {
-                    time.setText("Time: " + String.valueOf(walkingTime) + " min");
-                }
-                else if(biketog.isSelected()){
-                    time.setText("Time: " + String.valueOf(bikingTime) + " min");
-                }
-
-                System.out.println("Walking time: " + walkingTime);
-                System.out.println("Biking time: " + bikingTime);
-
-            }
-        };
-
-        findPath.setOnAction(eventHandler);
-
-        setupToolTip();
-
+            System.out.println("Walking time: " + walkingTime);
+            System.out.println("Biking time: " + bikingTime);
     }
+
     public void setupToolTip(){
         locationTooltip.setTooltip(
                 new Tooltip(
@@ -236,31 +210,41 @@ public class UIController implements Initializable, AlgoConnecter {
 
     }
 
+    @FXML
+    private void pathDrawBut(String startText, String endText) {
+        //startText = startZip.getText();
+        //endText = endZip.getText();
+        walkBikeCalcs(startText, endText);
+
+        double ax = getLat(startZip.getText());
+
+        double ay = getLon(startZip.getText());
+        double bx = getLat(endZip.getText());
+        double by = getLon(endZip.getText());
+        System.out.println(ax);
+        System.out.println(ay);
+
+           drawPointStart(ay,ax);
+           drawPointEnd(by,bx);
+           drawLine();
+    }
+
+    public void startPath(){
+        startText = startZip.getText();
+        endText = endZip.getText();
+
+        pathDrawBut(startText,endText);
+        walkBikeCalcs(startText, endText);
+        setupToolTip();
+
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        initX = mapPane.getLayoutX();
-        initY = mapPane.getLayoutY();
+        hashTheData();
 
-        System.out.println(map.getBoundsInLocal());
-        System.out.println(map.getBoundsInParent());
-        System.out.println(circle1.getLayoutX());
-        System.out.println(circle1.getLayoutY());
-        circle1.setLayoutX(zipToPosX(zipX));
-        circle1.setLayoutY(zipToPosY(zipY));
-
-        circle2.setLayoutX(zipToPosX(zipXX));
-        circle2.setLayoutY(zipToPosY(zipYY));
-
-        distanceLine.setLayoutX(0);
-        distanceLine.setLayoutY(0);
-
-        distanceLine.setStartX(circle1.getLayoutX());
-        distanceLine.setStartY(circle1.getLayoutY());
-        distanceLine.setEndX(circle2.getLayoutX());
-        distanceLine.setEndY(circle2.getLayoutY());
-
-        distanceLine.setOpacity(1);
-
-        findPathSetup();
+//        drawPointStart(zipX, zipY);
+//        drawPointEnd(zipXX, zipYY);
+//        drawLine();
+        //pathDrawBut();
     }
 }
