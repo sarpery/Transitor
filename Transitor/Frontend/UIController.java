@@ -74,7 +74,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private Button findPath;
 
     @FXML
-    private Button locationTooltip;
+    private Button locationToolTip;
 
     @FXML
     private TextField startZip;
@@ -90,7 +90,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
 
     public void walkBikeCalcs(String startText, String endText){
-
             System.out.println(startText);
             System.out.println(endText);
 
@@ -108,10 +107,11 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
             System.out.println("Walking time: " + walkingTime);
             System.out.println("Biking time: " + bikingTime);
+
     }
 
     public void setupToolTip(){
-        locationTooltip.setTooltip(
+        locationToolTip.setTooltip(
                 new Tooltip(
                         "Popular locations:\n" +
                                 "- DACS: 6229EN\n" +
@@ -219,13 +219,14 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         startText = startZip.getText();
         endText = endZip.getText();
 
+
         pathDrawBut(startText,endText);
         walkBikeCalcs(startText, endText);
-        setupToolTip();
 
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        setupToolTip();
         hashTheData();
     }
 

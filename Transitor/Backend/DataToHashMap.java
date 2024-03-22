@@ -1,6 +1,11 @@
 package Transitor.Backend;
 
-
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -42,28 +47,6 @@ public class DataToHashMap {
 
 
 
-    double[] getCoordinates(String key){
-
-        double[] coord = null;
-
-        if (mapContains(key)) {
-
-            coord = coordinatesData.get(key);
-            
-        }
-        else {
-            try{
-                coord = RequestAPI.request(key);
-                coordinatesData.put(key,coord);
-            }catch (Exception e){
-                System.out.println("Request error");
-            }
-        }
-        return coord;
-        
-    }
-
-
     public double getLat(String key){
 
         double[] coord = getCoordinates(key);
@@ -99,5 +82,38 @@ public class DataToHashMap {
 
 
 
-    
+    double[] getCoordinates(String key){
+
+        double[] coord = null;
+
+        if (mapContains(key)) {
+
+            coord = coordinatesData.get(key);
+
+        }
+        else {
+            try{
+                coord = RequestAPI.request(key);
+                coordinatesData.put(key,coord);
+            }catch (Exception e){
+                System.out.println("Request error");
+                Stage popupStage = new Stage();
+                popupStage.initModality(Modality.APPLICATION_MODAL);
+                popupStage.setTitle("Error");
+
+                Label label = new Label("Incorrect Input");
+
+                VBox popupLayout = new VBox(10);
+                popupLayout.getChildren().addAll(label);
+                popupLayout.setAlignment(Pos.CENTER);
+
+                Scene popupScene = new Scene(popupLayout, 200, 100);
+                popupStage.setScene(popupScene);
+                popupStage.showAndWait();
+
+            }
+        }
+        return coord;
+
+    }
 }

@@ -7,22 +7,6 @@ public class Algorithms {
 
     DataToHashMap dataReader = new DataToHashMap();
 
-//    public RouteInfo getRouteInfo(String startPostalCode, String endPostalCode){
-//        DataToHashMap dataReader = new DataToHashMap();
-//        dataReader.hashMapConverter();
-//        double[] startCords = dataReader.getCoordinates(startPostalCode);
-//        double[] endCords = dataReader.getCoordinates(endPostalCode);
-//
-//        RouteInfo routeInfo = new RouteInfo();
-//
-//        routeInfo.setDistance(calculateDistanceHaversine(startCords, endCords));
-//        routeInfo.setWalkingTime(calculateTime(startCords, endCords, WALKING_SPEED));
-//        routeInfo.setCyclingTime(calculateTime(startCords, endCords, CYCLING_SPEED));
-//        routeInfo.setCost(0);
-//
-//        return routeInfo;
-//    }
-
     //in km 
     private double calculateDistanceHaversine(double[] startCords, double[] endCords){
         double dLat = deg2rad(startCords[0] - endCords[0]);
@@ -74,21 +58,4 @@ public class Algorithms {
         return 0;
     }
 
-
-//    private class RouteInfo{
-//        private double distance;
-//        private double walkingTime;
-//        private double cyclingTime;
-//        private double cost;
-//
-//        public void setDistance(double distance){ this.distance = distance; }
-//        public void setWalkingTime(double walkingTime){ this.walkingTime = walkingTime; }
-//        public void setCyclingTime(double cyclingTime){ this.cyclingTime = cyclingTime; }
-//        public void setCost(double cost){ this.cost = cost; }
-//
-//        public double getDistance(){ return distance; }
-//        public double getWalkingTime(){ return walkingTime; }
-//        public double getCyclingTime(){ return cyclingTime; }
-//        public double getCost(){ return cost; }
-//    }
 }

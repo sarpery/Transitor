@@ -57,7 +57,7 @@
                         <Font name="Arial" size="12.0" />
                     </font>
                 </TextField>
-            <Button id="locationTooltip" fx:id="locationTooltip" layoutX="20.0" layoutY="491.0" mnemonicParsing="false" style="-fx-background-color: #AE0B12;" text="Popular Locations" textFill="WHITE" underline="true">
+            <Button id="locationTooltip" fx:id="locationToolTip" layoutX="20.0" layoutY="491.0" mnemonicParsing="false" style="-fx-background-color: #AE0B12;" text="Popular Locations" textFill="WHITE" underline="true">
                <font>
                   <Font name="Arial Bold" size="18.0" />
                </font>
