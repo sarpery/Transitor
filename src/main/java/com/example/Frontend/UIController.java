@@ -75,25 +75,24 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     public String endText;
 
 
-    public void walkBikeCalcs(String startText, String endText){
-            System.out.println(startText);
-            System.out.println(endText);
+    public void walkBikeCalcs(String startText, String endText) throws Exception {
+        System.out.println(startText);
+        System.out.println(endText);
 
-            double distance1 = getDistance(startText, endText);
-            double roundedNumber = Math.round(distance1 * 1000.0) / 1000.0;
-            distance.setText("Distance: " + String.valueOf(roundedNumber) + " km");
-            System.out.println(getDistance(startText, endText));
+        double distance1 = getDistance(startText, endText);
+        double roundedNumber = Math.round(distance1 * 1000.0) / 1000.0;
+        distance.setText("Distance: " + String.valueOf(roundedNumber) + " km");
+        System.out.println(getDistance(startText, endText));
 
-            int walkingTime = (int) walkingTime(startText, endText);
-            int bikingTime = (int) cyclingTime(startText, endText);
+        int walkingTime = (int) walkingTime(startText, endText);
+        int bikingTime = (int) cyclingTime(startText, endText);
 
-            bikeTime.setText("Biking time: " + String.valueOf(bikingTime) + " min");
-            walkTime.setText("Walking time: " + String.valueOf(walkingTime) + " min");
+        bikeTime.setText("Biking time: " + String.valueOf(bikingTime) + " min");
+        walkTime.setText("Walking time: " + String.valueOf(walkingTime) + " min");
 
 
-            System.out.println("Walking time: " + walkingTime);
-            System.out.println("Biking time: " + bikingTime);
-
+        System.out.println("Walking time: " + walkingTime);
+        System.out.println("Biking time: " + bikingTime);
     }
 
     public void setupToolTip(){
@@ -185,7 +184,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     }
 
     @FXML
-    private void pathDrawBut(String startText, String endText) {
+    private void pathDrawBut(String startText, String endText) throws Exception {
         walkBikeCalcs(startText, endText);
 
         double ax = getLat(startZip.getText());
@@ -193,22 +192,27 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         double ay = getLon(startZip.getText());
         double bx = getLat(endZip.getText());
         double by = getLon(endZip.getText());
+
         System.out.println(ax);
         System.out.println(ay);
 
-           drawPointStart(ay,ax);
-           drawPointEnd(by,bx);
-           drawLine();
+        drawPointStart(ay,ax);
+        drawPointEnd(by,bx);
+        drawLine();
     }
 
     public void startPath(){
         startText = startZip.getText();
         endText = endZip.getText();
 
-
-        pathDrawBut(startText,endText);
-        walkBikeCalcs(startText, endText);
-
+        try {
+            pathDrawBut(startText,endText);
+            walkBikeCalcs(startText, endText);
+        }
+        catch (Exception e) {
+            ErrorPopup popup = new ErrorPopup(e.getMessage());
+            popup.display();
+        }
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

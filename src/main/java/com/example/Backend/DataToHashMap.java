@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+import com.example.Frontend.ErrorPopup;
+
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -21,8 +23,6 @@ public class DataToHashMap {
     }
     
     public void hashMapConverter(){
-
-        
         try (BufferedReader reader = new BufferedReader(new FileReader("src\\main\\java\\com\\example\\Data\\MassZipLatLon.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -33,41 +33,30 @@ public class DataToHashMap {
                 double[] coordinates = {lat, lon};
 
                 coordinatesData.put(postalCode, coordinates);
-                
-                
             }
             
-        
         }catch(IOException e){
             e.printStackTrace();
            
         }
-
     }
 
-
-
-    public double getLat(String key){
-
+    public double getLat(String key) throws Exception{
         double[] coord = getCoordinates(key);
         double lat = coord[0];
 
         return lat;
-
     }
 
-    public double getLon(String key){
-
+    public double getLon(String key) throws Exception{
         double[] coord = getCoordinates(key);
         double lon = coord[1];
 
         return lon;
-
     }
 
 
     private boolean mapContains(String key) {
-       
         if (coordinatesData.containsKey(key)) {
             return true;
         }
@@ -75,43 +64,17 @@ public class DataToHashMap {
             System.out.println("Not Found");
             return false;
         }
-
-
-
     }
 
-
-
-    double[] getCoordinates(String key){
-
+    double[] getCoordinates(String key) throws Exception{
         double[] coord = null;
 
         if (mapContains(key)) {
-
             coord = coordinatesData.get(key);
-
         }
         else {
-            try{
-                coord = RequestAPI.request(key);
-                coordinatesData.put(key,coord);
-            }catch (Exception e){
-                System.out.println("Request error");
-                Stage popupStage = new Stage();
-                popupStage.initModality(Modality.APPLICATION_MODAL);
-                popupStage.setTitle("Error");
-
-                Label label = new Label("Incorrect Input");
-
-                VBox popupLayout = new VBox(10);
-                popupLayout.getChildren().addAll(label);
-                popupLayout.setAlignment(Pos.CENTER);
-
-                Scene popupScene = new Scene(popupLayout, 200, 100);
-                popupStage.setScene(popupScene);
-                popupStage.showAndWait();
-
-            }
+            coord = RequestAPI.request(key);
+            coordinatesData.put(key,coord);
         }
         return coord;
 

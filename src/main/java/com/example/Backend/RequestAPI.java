@@ -8,11 +8,13 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
+import com.example.Frontend.ErrorPopup;
+
 public class RequestAPI {
 
     static String loc = "https://computerscience.dacs.unimaas.nl/get_coordinates";
 
-    public static double[] request(String postcode) throws IOException, InterruptedException {
+    public static double[] request(String postcode) throws IOException, InterruptedException, Exception {
         // Input JSON for API
         String input = "{\"postcode\": \"" + postcode + "\"}";
 
@@ -23,11 +25,13 @@ public class RequestAPI {
                 .build();
 
         HttpClient client = HttpClient.newHttpClient();
-
-        HttpResponse<String> response = client.send(req, BodyHandlers.ofString());
-
-
-
+        HttpResponse<String> response;
+        try {
+            response = client.send(req, BodyHandlers.ofString());
+        }
+        catch(Exception e) {
+            throw new Exception("No response from the API (" + e.toString() + ")");
+        }
 
         // Parsing latitude and longitude from the JSON response
         double latitude = 0.0;
@@ -38,16 +42,7 @@ public class RequestAPI {
 
         // specifying an error latitude = 1 then 404 not found, latitude = 2 then 500 Internal Server Error, latitude= 3 then 429 Too Many Requests
         if (parts[0].contains("error")) {
-
-            if (parts[1].contains("Postcode not found")){
-                return new double[]{1.0,0.0};
-            }
-            else if(parts[1].contains("Failed to fetch coordinates")){
-                return new double[]{2.0,0.0};
-            }
-            else if (parts[1].contains( "Rate limit exceeded. Try again later.")){
-                return new double[]{3.0,0.0};
-            }
+            throw new Exception(parts[1]);
         }
 
         // after we check for errors we split the string and extract the longitude and latitude
@@ -65,12 +60,10 @@ public class RequestAPI {
             longitude = Double.parseDouble(partj.substring(1,partj.length()-1));
         }
 
-
-
         return new double[]{latitude, longitude};
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, Exception {
         String code = "6226NB";
         double[] coordinates = request(code);
         double latitude = coordinates[0];

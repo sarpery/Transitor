@@ -27,7 +27,7 @@ public class Algorithms {
         return (int)Math.round(result);
     }
 
-    public double getDistance(String startPostalCode, String endPostalCode){
+    public double getDistance(String startPostalCode, String endPostalCode) throws Exception {
 
         dataReader.hashMapConverter();
         double[] startCords = dataReader.getCoordinates(startPostalCode);
@@ -36,7 +36,7 @@ public class Algorithms {
         return calculateDistanceHaversine(startCords, endCords);
     }
 
-    public double getWalkingTime(String startPostalCode, String endPostalCode){
+    public double getWalkingTime(String startPostalCode, String endPostalCode) throws Exception {
 
         dataReader.hashMapConverter();
         double[] startCords = dataReader.getCoordinates(startPostalCode);
@@ -45,7 +45,7 @@ public class Algorithms {
         return calculateTime(startCords, endCords, WALKING_SPEED);
     }
 
-    public double getCyclingTime(String startPostalCode, String endPostalCode){
+    public double getCyclingTime(String startPostalCode, String endPostalCode) throws Exception {
 
         dataReader.hashMapConverter();
         double[] startCords = dataReader.getCoordinates(startPostalCode);
