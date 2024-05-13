@@ -1,11 +1,13 @@
-package com.example.Backend;
+package com.example.Backend.Algorithms;
 
-public class Algorithms {
+import com.example.Backend.DataToHashMap;
+
+public class Algorithms<T> {
     private final double WALKING_SPEED = 0.075; //kpm
     private final double CYCLING_SPEED = 0.4; //kpm
     private final int EARTH_RADIUS = 6371;
 
-    DataToHashMap dataReader = new DataToHashMap();
+    DataToHashMap<T> dataReader = new DataToHashMap<T>();
 
     //in km 
     private double calculateDistanceHaversine(double[] startCords, double[] endCords){
@@ -27,16 +29,16 @@ public class Algorithms {
         return (int)Math.round(result);
     }
 
-    public double getDistance(String startPostalCode, String endPostalCode) throws Exception {
+    public double getDistance(T from, T to){
 
         dataReader.hashMapConverter();
-        double[] startCords = dataReader.getCoordinates(startPostalCode);
-        double[] endCords = dataReader.getCoordinates(endPostalCode);
+        double[] startCords = dataReader.getCoordinates(from);
+        double[] endCords = dataReader.getCoordinates(to);
 
         return calculateDistanceHaversine(startCords, endCords);
     }
 
-    public double getWalkingTime(String startPostalCode, String endPostalCode) throws Exception {
+    public double getWalkingTime(T startPostalCode, T endPostalCode){
 
         dataReader.hashMapConverter();
         double[] startCords = dataReader.getCoordinates(startPostalCode);
@@ -45,7 +47,7 @@ public class Algorithms {
         return calculateTime(startCords, endCords, WALKING_SPEED);
     }
 
-    public double getCyclingTime(String startPostalCode, String endPostalCode) throws Exception {
+    public double getCyclingTime(T startPostalCode, T endPostalCode){
 
         dataReader.hashMapConverter();
         double[] startCords = dataReader.getCoordinates(startPostalCode);

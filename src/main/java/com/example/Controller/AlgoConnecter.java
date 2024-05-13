@@ -1,10 +1,11 @@
 package com.example.Controller;
 
-import com.example.Backend.Algorithms;
+import com.example.Backend.Algorithms.Algorithms;
 
 public interface AlgoConnecter {
     
-    Algorithms algo = new Algorithms();
+    
+    Algorithms<String> algo = new Algorithms<String>();
 
     default double getDistance(String startCords, String endCords) throws Exception{
         return algo.getDistance(startCords, endCords);

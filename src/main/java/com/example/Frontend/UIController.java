@@ -1,10 +1,15 @@
 package com.example.Frontend;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import com.example.Controller.AlgoConnecter;
+import com.example.Controller.SearchConnector;
+import com.example.Controller.GraphController;
 import com.example.Controller.HashController;
+import com.gluonhq.maps.MapPoint;
+import com.gluonhq.maps.MapView;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,14 +19,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 
 
-public class UIController implements Initializable, AlgoConnecter, HashController {
-
-    private double initX, initY;
+public class UIController implements Initializable, AlgoConnecter, HashController, GraphController, SearchConnector {
+ private double initX, initY;
     private double aAX = 0;
     private double aAY = 0;
 
@@ -31,6 +37,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private double zipXX = 5.721714464;
     private double zipYY = 50.82346493;
 
+    @FXML
+    private MapView mapView;
 
     @FXML
     private Circle circle1;
@@ -71,8 +79,23 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     @FXML
     public Pane mapPane;
 
+    @FXML
+    MapPoint point = new MapPoint(50.849365,5.694548);
+
+    public CustomMapLayer cL = new CustomMapLayer();
+
+
+    @FXML
+    public MapPoint pointStart;
+    public MapPoint pointEnd;
+
+
+
+
     public String startText;
     public String endText;
+
+
 
 
     public void walkBikeCalcs(String startText, String endText) throws Exception {
@@ -103,102 +126,47 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
                                 "- Vrijthof: 6211LE\n\n" + "GROUP 10\n"));
     }
 
-    @FXML
-    private void zoomIn() { // delete later
-        setSceneEvents(mapPane.getScene());
-    }
 
-
-
-    private double zipToPosX(double x){
-        double res = (x - 5.635000228881836)*3400;
-        double resultX = res + 93.30105590820312;
-        return resultX;
-    }
-
-    private double zipToPosY(double y){
-        double res = (50.91600036621094 - y)*4000;
-        double resultY = res + 10.855741500854492;
-        return resultY;
-    }
-
-    public void drawPointStart(double a, double b){
-        circle1.setLayoutX(zipToPosX(a));
-        circle1.setLayoutY(zipToPosY(b));
-        circle1.setOpacity(1);
-    }
-
-    public void drawPointEnd(double a, double b){
-        circle2.setLayoutX(zipToPosX(a));
-        circle2.setLayoutY(zipToPosY(b));
-        circle2.setOpacity(1);
-    }
-
-    public void drawLine(){
-        distanceLine.setLayoutX(0);
-        distanceLine.setLayoutY(0);
-        distanceLine.setStartX(circle1.getLayoutX());
-        distanceLine.setStartY(circle1.getLayoutY());
-        distanceLine.setEndX(circle2.getLayoutX());
-        distanceLine.setEndY(circle2.getLayoutY());
-
-        distanceLine.setOpacity(1);
-    }
-
-    private void setSceneEvents(final Scene scene) {
-
-        scene.setOnScroll(event -> {
-            double zoomFactor = 1.05;
-            double deltaY = event.getDeltaY();
-            if (deltaY < 0) {
-                zoomFactor = 2.0 - zoomFactor;
-            }
-            System.out.println(zoomFactor);
-            mapPane.setScaleX(mapPane.getScaleX() * zoomFactor);
-            mapPane.setScaleY(mapPane.getScaleY() * zoomFactor);
-            event.consume();
-        });
-        scene.setOnMousePressed(event -> {
-            aAX = event.getSceneX();
-            aAY = event.getSceneY();
-            initX = mapPane.getLayoutX();
-            initY = mapPane.getLayoutY();
-        });
-
-        scene.setOnMouseDragged(event -> {
-            mapPane.setTranslateX((event.getSceneX() - aAX));
-            mapPane.setTranslateY(event.getSceneY() - aAY);
-        });
-
-        scene.setOnMouseReleased(event -> {
-            mapPane.setLayoutX(initX + mapPane.getTranslateX());
-            mapPane.setLayoutY(initY + mapPane.getTranslateY());
-
-            mapPane.setTranslateX(0);
-            mapPane.setTranslateY(0);
-            System.out.println(map.getBoundsInLocal());
-            System.out.println(map.getBoundsInParent());
-
-        });
-
-    }
+    public static double ax;
+    public static double ay;
+    public static double bx;
+    public static double by;
 
     @FXML
-    private void pathDrawBut(String startText, String endText) throws Exception {
+    private void pathDrawBut(List<String> ls) throws Exception {
+        String start;
+        String end;
+
+        for (int i = 0; i < ls.size() - 1; i++) {
+            start = ls.get(i);
+            end = ls.get(i+1);
+            
+            mapView.removeLayer(cL);
+
         walkBikeCalcs(startText, endText);
 
-        double ax = getLat(startZip.getText());
+         ax = getLat(start);
+         ay = getLon(start);
 
-        double ay = getLon(startZip.getText());
-        double bx = getLat(endZip.getText());
-        double by = getLon(endZip.getText());
+         bx = getLat(end);
+         by = getLon(end);
+
+         pointStart = new MapPoint(ax, ay);
+         pointEnd = new MapPoint(bx, by);
+
+
+        cL = new CustomMapLayer();
+        mapView.addLayer(cL);
+
+        mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
+
 
         System.out.println(ax);
         System.out.println(ay);
 
-        drawPointStart(ay,ax);
-        drawPointEnd(by,bx);
-        drawLine();
+        }
+        
+
     }
 
     public void startPath(){
@@ -206,7 +174,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         endText = endZip.getText();
 
         try {
-            pathDrawBut(startText,endText);
+            System.out.println(searchDijkstra(getGraph(), startText, endText));
+            pathDrawBut(searchDijkstra(getGraph(), startText, endText));
             walkBikeCalcs(startText, endText);
         }
         catch (Exception e) {
@@ -214,10 +183,30 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
             popup.display();
         }
     }
+
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupToolTip();
         hashTheData();
+        graphTheData();
+        mapView = createMapView();
+        mapPane.getChildren().add(mapView);
+        VBox.setVgrow(mapView, Priority.ALWAYS);
+        System.out.println(mapView.getZoom());
+
+
     }
+
+
+    private MapView createMapView() {
+        MapView newMapView = new MapView();
+        newMapView.setPrefSize(450,500);
+        newMapView.flyTo(0,point,0.1);
+        newMapView.setZoom(12);
+        return newMapView;
+    }
+
 
 }

@@ -4,7 +4,7 @@ import com.example.Backend.DataToHashMap;
 
 public interface HashController {
 
-    DataToHashMap map = new DataToHashMap();
+    DataToHashMap<String> map = new DataToHashMap<String>();
     
 
     default void hashTheData(){
