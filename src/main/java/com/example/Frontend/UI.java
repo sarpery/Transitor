@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 public class UI extends Application {
     public void start(Stage primaryStage) throws IOException {
-        scene = new Scene(loadFXML("Ui"), 640, 480);
+        scene = new Scene(loadFXML("Ui"), 901, 528);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

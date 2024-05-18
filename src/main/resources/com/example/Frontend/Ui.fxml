@@ -9,14 +9,11 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
-<?import javafx.scene.shape.Polygon?>
-<?import javafx.scene.shape.Polyline?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="528.0" prefWidth="901.0" style="-fx-background-color: #00A2DB;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Frontend.UIController">
     <children>
-        <Pane id="visualizerPane" fx:id="mapPane" layoutX="236.0" prefHeight="537.0" prefWidth="682.0">
+        <Pane id="visualizerPane" fx:id="mapPane" layoutX="236.0" prefHeight="537.0" prefWidth="667.0">
             <children>
                 <Circle fx:id="circle1" fill="#22b738" layoutX="541.0" layoutY="220.0" opacity="0.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                 <Circle fx:id="circle2" fill="RED" layoutX="397.0" layoutY="366.0" opacity="0.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
@@ -26,14 +23,6 @@
         </Pane>
         <Pane id="menuPane" layoutY="-1.0" prefHeight="538.0" prefWidth="234.0" style="-fx-background-color: #001C3D;">
             <children>
-                <Button id="startButton" fx:id="findPath" layoutX="60.0" layoutY="233.0" mnemonicParsing="false" onAction="#startPath" prefWidth="120.0" style="-fx-background-color: #00A2DB;" text="Find Path" textFill="#FFFFFF">
-                    <font>
-                        <Font name="Arial Bold" size="20.0" />
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="HAND" />
-                    </cursor>
-                </Button>
                 <Label id="titleLabel" layoutX="44.0" layoutY="38.0" prefHeight="37.0" prefWidth="150.0" text="Transitor" textAlignment="CENTER" textFill="WHITE">
                     <font>
                         <Font name="Arial" size="36.0" />
@@ -57,21 +46,40 @@
                   <Tooltip id="locationTooltip1" fx:id="locationTooltip1" />
                </tooltip>
             </Button>
-              <Label id="distanceMeasure" fx:id="distance" layoutX="60.0" layoutY="326.0" text="Distance: 0" textFill="#ffffff">
+              <Label id="distanceMeasure" fx:id="distance" layoutX="74.0" layoutY="371.0" text="Distance: 0" textFill="#ffffff">
                   <font>
                       <Font name="Arial Bold" size="16.0" />
                   </font>
               </Label>
-            <Label id="walkTimeMeasure" fx:id="walkTime" layoutX="50.0" layoutY="360.0" text="Walking Time: 0" textFill="#ffffff">
+            <Label id="timeMeasure" fx:id="timeLabel" layoutX="65.0" layoutY="401.0" text="Travel Time: 0" textFill="#ffffff">
                <font>
                   <Font name="Arial Bold" size="16.0" />
                </font>
             </Label>
-              <Label id="bikeTimeMeasure" fx:id="bikeTime" layoutX="48.0" layoutY="395.0" text="Biking Time: 0" textFill="#ffffff">
-                  <font>
-                      <Font name="Arial Bold" size="16.0" />
-                  </font>
-              </Label>
+            <Button id="walkButton" fx:id="walkButton" layoutX="36.0" layoutY="235.0" mnemonicParsing="false" onAction="#setupWalkButton" prefHeight="36.0" prefWidth="39.0" style="-fx-background-color: #E84E10#E84E10;" text="Walk" textFill="#FFFFFF" wrapText="true">
+               <font>
+                  <Font name="Arial Bold" size="20.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button id="transportButton" fx:id="transportButton" layoutX="159.0" layoutY="235.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="39.0" style="-fx-background-color: #E84E10#E84E10;" text="Transport" textFill="#FFFFFF" wrapText="true">
+               <font>
+                  <Font name="Arial Bold" size="20.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button id="bikeButton" fx:id="bikeButton" layoutX="97.0" layoutY="235.0" mnemonicParsing="false" onAction="#setupBikeButton" prefHeight="36.0" prefWidth="39.0" style="-fx-background-color: #E84E10#E84E10;" text="Bike" textFill="#FFFFFF" wrapText="true">
+               <font>
+                  <Font name="Arial Bold" size="20.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
             </children>
         </Pane>
     </children>

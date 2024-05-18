@@ -14,7 +14,7 @@ public class DataToGraph<T> {
 
         
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("src\\main\\java\\com\\example\\Data\\FilteredDistances.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/java/com/example/Data/FilteredDistances.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                  // Split the data string into main postal code and pairs of other postal codes with distances

@@ -56,13 +56,19 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private Label speed;
 
     @FXML
-    private Label bikeTime;
-
-    @FXML
-    private Label walkTime;
+    private Label timeLabel;
 
     @FXML
     private Label distance;
+
+    @FXML
+    private Button walkButton;
+
+    @FXML
+    private Button bikeButton;
+
+    @FXML
+    private Button transportButton;
 
     @FXML
     private Button findPath;
@@ -98,24 +104,25 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
 
 
-    public void walkBikeCalcs(String startText, String endText) throws Exception {
+    public void walkBikeCalcs(String startText, String endText, String input) throws Exception {
         System.out.println(startText);
         System.out.println(endText);
+        int time = 0;
 
         double distance1 = getDistance(startText, endText);
         double roundedNumber = Math.round(distance1 * 1000.0) / 1000.0;
         distance.setText("Distance: " + String.valueOf(roundedNumber) + " km");
         System.out.println(getDistance(startText, endText));
 
-        int walkingTime = (int) walkingTime(startText, endText);
-        int bikingTime = (int) cyclingTime(startText, endText);
-
-        bikeTime.setText("Biking time: " + String.valueOf(bikingTime) + " min");
-        walkTime.setText("Walking time: " + String.valueOf(walkingTime) + " min");
-
-
-        System.out.println("Walking time: " + walkingTime);
-        System.out.println("Biking time: " + bikingTime);
+        if(input.equals("walk")) {
+            time = (int) walkingTime(startText, endText);
+            timeLabel.setText("Walking time: " + String.valueOf(time) + " min");
+            System.out.println("Walking time: " + time);
+        }else if(input.equals("bike")) {
+            time = (int) cyclingTime(startText, endText);
+            timeLabel.setText("Biking time: " + String.valueOf(time) + " min");
+            System.out.println("Biking time: " + time);
+        }
     }
 
     public void setupToolTip(){
@@ -126,6 +133,19 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
                                 "- Vrijthof: 6211LE\n\n" + "GROUP 10\n"));
     }
 
+    @FXML
+    private void setupWalkButton() {
+        walkButton.setOnAction(e -> {
+            startPath("walk");
+        });
+    }
+
+    @FXML
+    private void setupBikeButton() {
+        bikeButton.setOnAction(e -> {
+            startPath("bike");
+        });
+    }
 
     public static double ax;
     public static double ay;
@@ -142,8 +162,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
             end = ls.get(i+1);
             
             mapView.removeLayer(cL);
-
-        walkBikeCalcs(startText, endText);
 
          ax = getLat(start);
          ay = getLon(start);
@@ -165,18 +183,23 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         System.out.println(ay);
 
         }
-        
-
     }
 
-    public void startPath(){
+    public void startPath(String input){
         startText = startZip.getText();
         endText = endZip.getText();
 
         try {
             System.out.println(searchDijkstra(getGraph(), startText, endText));
             pathDrawBut(searchDijkstra(getGraph(), startText, endText));
-            walkBikeCalcs(startText, endText);
+
+            if(input.equals("walk")) {
+                walkBikeCalcs(startText, endText, "walk");
+            }else if(input.equals("bike")) {
+                walkBikeCalcs(startText, endText, "bike");
+            } else if(input.equals("transport")) {
+                //add transport logic
+            }
         }
         catch (Exception e) {
             ErrorPopup popup = new ErrorPopup(e.getMessage());
@@ -202,7 +225,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     private MapView createMapView() {
         MapView newMapView = new MapView();
-        newMapView.setPrefSize(450,500);
+        newMapView.setPrefSize(667,528);
         newMapView.flyTo(0,point,0.1);
         newMapView.setZoom(12);
         return newMapView;

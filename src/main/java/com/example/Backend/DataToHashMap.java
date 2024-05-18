@@ -16,7 +16,7 @@ public class DataToHashMap<T> {
     public void hashMapConverter(){
 
         
-        try (BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\31613\\Desktop\\uni\\Sem-2\\Transitor\\project-1-2\\src\\main\\java\\com\\example\\Data\\MassZipLatLon.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/java/com/example/Data/MassZipLatLon.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
