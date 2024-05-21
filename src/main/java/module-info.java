@@ -3,6 +3,7 @@ module com.example {
     requires javafx.fxml;
     requires javafx.graphics;
     requires java.net.http;
+    requires java.sql;
     requires com.gluonhq.maps;
 
     opens com.example.Frontend to javafx.fxml;
