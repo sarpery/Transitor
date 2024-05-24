@@ -87,7 +87,7 @@ public class RequestDatabase {
 
                 Algorithms<String> alg = new Algorithms<>();
                 Date time_1 = trips.getDate("departure_time");
-                Date time_2 = trips.getDate("arribal_time");
+                Date time_2 = trips.getDate("arrival_time");
                 long travelTime = alg.getWalkingTime(startLonLan, startPoint) + alg.getWalkingTime(endLonLan, endPoint) + ((time_1.getTime()/1000) - (time_2.getTime()/1000));
 
                 if(travelTime < bestTime)

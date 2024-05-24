@@ -2,9 +2,9 @@
 
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Circle?>
@@ -18,7 +18,7 @@
                 <Circle fx:id="circle1" fill="#22b738" layoutX="541.0" layoutY="220.0" opacity="0.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                 <Circle fx:id="circle2" fill="RED" layoutX="397.0" layoutY="366.0" opacity="0.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                 <Line fx:id="distanceLine" endX="138.0" endY="-211.99998474121094" layoutX="42.0" layoutY="241.0" opacity="0.0" startX="-9.199951171875" startY="-64.20001220703125" stroke="#d44bb9" strokeWidth="2.0" />
-            <Label layoutX="532.0" layoutY="447.0" />
+                <Label layoutX="532.0" layoutY="447.0" />
             </children>
         </Pane>
         <Pane id="menuPane" layoutY="-1.0" prefHeight="538.0" prefWidth="234.0" style="-fx-background-color: #001C3D;">
@@ -38,48 +38,41 @@
                         <Font name="Arial" size="12.0" />
                     </font>
                 </TextField>
-            <Button id="locationTooltip" fx:id="locationToolTip" layoutX="20.0" layoutY="491.0" mnemonicParsing="false" style="-fx-background-color: #AE0B12;" text="Popular Locations" textFill="WHITE" underline="true">
-               <font>
-                  <Font name="Arial Bold" size="18.0" />
-               </font>
-               <tooltip>
-                  <Tooltip id="locationTooltip1" fx:id="locationTooltip1" />
-               </tooltip>
-            </Button>
-              <Label id="distanceMeasure" fx:id="distance" layoutX="74.0" layoutY="371.0" text="Distance: 0" textFill="#ffffff">
-                  <font>
-                      <Font name="Arial Bold" size="16.0" />
-                  </font>
-              </Label>
-            <Label id="timeMeasure" fx:id="timeLabel" layoutX="65.0" layoutY="401.0" text="Travel Time: 0" textFill="#ffffff">
-               <font>
-                  <Font name="Arial Bold" size="16.0" />
-               </font>
-            </Label>
-            <Button id="walkButton" fx:id="walkButton" layoutX="36.0" layoutY="235.0" mnemonicParsing="false" onAction="#setupWalkButton" prefHeight="36.0" prefWidth="39.0" style="-fx-background-color: #E84E10#E84E10;" text="Walk" textFill="#FFFFFF" wrapText="true">
-               <font>
-                  <Font name="Arial Bold" size="20.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button id="transportButton" fx:id="transportButton" layoutX="159.0" layoutY="235.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="39.0" style="-fx-background-color: #E84E10#E84E10;" text="Transport" textFill="#FFFFFF" wrapText="true">
-               <font>
-                  <Font name="Arial Bold" size="20.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button id="bikeButton" fx:id="bikeButton" layoutX="97.0" layoutY="235.0" mnemonicParsing="false" onAction="#setupBikeButton" prefHeight="36.0" prefWidth="39.0" style="-fx-background-color: #E84E10#E84E10;" text="Bike" textFill="#FFFFFF" wrapText="true">
-               <font>
-                  <Font name="Arial Bold" size="20.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
+                <Label id="distanceMeasure" fx:id="distance" layoutX="70.0" layoutY="388.0" text="Distance: 0" textFill="#ffffff">
+                    <font>
+                        <Font name="Arial Bold" size="16.0" />
+                    </font>
+                </Label>
+                <Label id="timeMeasure" fx:id="timeLabel" layoutX="59.0" layoutY="417.0" text="Travel Time: 0" textFill="#ffffff">
+                    <font>
+                        <Font name="Arial Bold" size="16.0" />
+                    </font>
+                </Label>
+                <Button id="transportButton" fx:id="transportButton" focusTraversable="false" layoutX="45.0" layoutY="319.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="135.0" style="-fx-background-color: #E84E10#E84E10;" text="Transport" textFill="#FFFFFF" wrapText="true">
+                    <font>
+                        <Font name="Arial Bold" size="20.0" />
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
+                <Button id="bikeButton" fx:id="bikeButton" focusTraversable="false" layoutX="117.0" layoutY="269.0" mnemonicParsing="false" onAction="#setupBikeButton" prefHeight="36.0" prefWidth="74.0" style="-fx-background-color: #E84E10#E84E10;" text="Bike" textFill="#FFFFFF" wrapText="true">
+                    <font>
+                        <Font name="Arial Bold" size="20.0" />
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
+                <ChoiceBox fx:id="choiceBox" layoutX="45.0" layoutY="201.0" prefWidth="150.0" />
+                <Button id="walkButton" fx:id="walkButton" focusTraversable="false" layoutX="34.0" layoutY="269.0" mnemonicParsing="false" onAction="#setupWalkButton" prefHeight="36.0" prefWidth="74.0" style="-fx-background-color: #E84E10#E84E10;" text="Walk" textFill="#FFFFFF" wrapText="true">
+                    <font>
+                        <Font name="Arial Bold" size="20.0" />
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
             </children>
         </Pane>
     </children>
