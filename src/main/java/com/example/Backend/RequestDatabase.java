@@ -10,6 +10,7 @@ import com.example.Backend.Algorithms.Algorithms;
 
 public class RequestDatabase {
     private static final double CORD_DISTANCE = 0.01;
+    DataToHashMap<String> dataReader = new DataToHashMap<String>();
 
     private static ResultSet findNearestStops(double x_cord, double y_cord){
         try 
@@ -31,7 +32,7 @@ public class RequestDatabase {
         }
     }
 
-    public static Trip findBusRoute(double[] startPoint, double[] endPoint){
+    private static Trip computeBusRoute(double[] startPoint, double[] endPoint){
         Trip trip;
         String resultTripID = "";
         String resultTripName = "";
@@ -130,6 +131,14 @@ public class RequestDatabase {
             return null;
         }
         return trip;
+    }
+
+    public Trip findBusRoute(String startPostalCode, String endPostalCode){
+        dataReader.hashMapConverter();
+        double[] startCords = dataReader.getCoordinates(startPostalCode);
+        double[] endCords = dataReader.getCoordinates(endPostalCode);
+
+        return computeBusRoute(startCords, endCords);
     }
 }
 
