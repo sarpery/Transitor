@@ -81,8 +81,8 @@ public class RequestDatabase {
                 {
                     startCords.next();
                     endCords.next();
-                    startLonLan[i] = startCords.getInt(i + 1);
-                    endLonLan[i] = endCords.getInt(i + 1);
+                    startLonLan[i] = startCords.getDouble(i + 1);
+                    endLonLan[i] = endCords.getDouble(i + 1);
                 }
 
                 Algorithms<String> alg = new Algorithms<>();
@@ -111,7 +111,7 @@ public class RequestDatabase {
             while(resultTrip.next())
             {
                 double[] LonLan = new double[2];
-                for(int i = 0; i < 2; ++i) LonLan[i] = resultTrip.getInt(i + 1);
+                for(int i = 0; i < 2; ++i) LonLan[i] = resultTrip.getDouble(i + 1);
                 
                 resultList.add(LonLan);
             }
