@@ -63,5 +63,4 @@ public class Algorithms<T> {
     public double getCost(){
         return 0;
     }
-
 }
