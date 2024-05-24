@@ -4,9 +4,11 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 import com.example.Backend.Algorithms.Algorithms;
+import com.example.Backend.Graph.Trip;
 
 public class RequestDatabase {
     private static final double CORD_DISTANCE = 0.01;
@@ -20,7 +22,7 @@ public class RequestDatabase {
 
             PreparedStatement nearestStopsRequest = myCon.prepareStatement("SELECT stop_id " +
             "FROM stops_maastricht " +
-            "WHERE (stop_lon BETWEEN " + (x_cord - CORD_DISTANCE) + " AND " + (x_cord + CORD_DISTANCE) + ") " +
+            "WHERE (stop_lan BETWEEN " + (x_cord - CORD_DISTANCE) + " AND " + (x_cord + CORD_DISTANCE) + ") " +
             "AND (stop_lon BETWEEN " + (y_cord - CORD_DISTANCE) + " AND " + (y_cord + CORD_DISTANCE) + ") ");
 
             return nearestStopsRequest.executeQuery();
@@ -59,14 +61,18 @@ public class RequestDatabase {
             endString += ")";
 
 
+            String currentTime = LocalTime.now().toString();
+
             PreparedStatement nearestStopsRequest = myCon.prepareStatement(
-                "SELECT stm1.trip_id, stm1.stop_id as departure_point, stm2.stop_id as arrival_point stm1.departure_time, stm2.arrival_time, stm1.fare_units_traveled as start_distance, stm2.fare_units_traveled as end_distance" +
-                "FROM (SELECT * FROM stop_times_maastricht where stop_id in " + startString + ") as stm1 " +
-                "JOIN (SELECT * FROM stop_times_maastricht where stop_id in " + endString + ") as stm2 " +
-                "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence");
+                "SELECT stm1.trip_id, stm1.stop_id as departure_point, stm2.stop_id as arrival_point, stm1.departure_time, stm2.arrival_time, stm1.fare_units_traveled as start_distance, stm2.fare_units_traveled as end_distance " +
+                "FROM (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + startString + ") as stm1 " +
+                "JOIN (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + endString  +") as stm2 " +
+                "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence and stm1.departure_time >= '" + currentTime +"'");
 
             ResultSet trips = nearestStopsRequest.executeQuery();
             long bestTime = Integer.MAX_VALUE;
+
+            int c = 0;
             while(trips.next())
             {
                 String startStop = trips.getString("departure_point");
@@ -81,13 +87,13 @@ public class RequestDatabase {
 
                 ResultSet startCords = startCordsQuery.executeQuery();
                 ResultSet endCords = endCordsQuery.executeQuery();
+                startCords.next();
+                endCords.next();
 
                 double[] startLonLan = new double[2]; double[] endLonLan = new double[2];
                 for(int i = 0; i < 2; ++i)
                 {
-                    startCords.next();
-                    endCords.next();
-                    startLonLan[i] = startCords.getDouble(i + 1);
+                    startLonLan[i] = startCords.getDouble(i +1);
                     endLonLan[i] = endCords.getDouble(i + 1);
                 }
 
@@ -115,7 +121,7 @@ public class RequestDatabase {
 
             resultList.add(new double[]{bestTime, 0});
 
-            PreparedStatement tripQuery = myCon.prepareStatement("SELECT shape_pt_lon as pt_lon, shap_pt_lan as pt_lan " +
+            PreparedStatement tripQuery = myCon.prepareStatement("SELECT shape_pt_lon as pt_lon, shape_pt_lat as pt_lat " +
             "FROM shapes_maastricht " +
             "WHERE shape_id IN (" +
             "SELECT shape_id " +
@@ -139,32 +145,5 @@ public class RequestDatabase {
         double[] endCords = dataReader.getCoordinates(endPostalCode);
 
         return computeBusRoute(startCords, endCords);
-    }
-}
-
-class Trip{
-    public ArrayList<double[]> travelPoints;
-    public long travelTime;
-    public double traveledDistance;
-    public int tripNumber;
-
-    public Trip(ResultSet shape, long travelTime, double traveledDistance, int tripNumber){
-        this.travelTime = travelTime;
-        this.traveledDistance = traveledDistance;
-        this.tripNumber = tripNumber;
-        createPointList(shape);
-    }
-
-    private void createPointList(ResultSet shape){
-        travelPoints = new ArrayList<double[]>();
-        try{
-        while(shape.next())
-            {
-                double[] LonLan = new double[2];
-                for(int i = 0; i < 2; ++i) LonLan[i] = shape.getDouble(i + 1);
-                
-                travelPoints.add(LonLan);
-            }
-        } catch(Exception e){ System.out.println(e); }
     }
 }

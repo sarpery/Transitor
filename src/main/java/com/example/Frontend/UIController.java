@@ -21,6 +21,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Path;
 import javafx.scene.shape.Polygon;
 
 
@@ -81,6 +82,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
 
     public CustomMapLayer cL = new CustomMapLayer();
+
+
 
 
     @FXML
@@ -144,6 +147,13 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
     }
 
+    private void pathDrawBus(String start, String end){
+        mapView.removeLayer(cL);
+        CustomMapLayerBus cLB = new CustomMapLayerBus(start, end);
+        mapView.addLayer(cLB);
+        mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
+    }
+
     public void startPath(String input){
         startText = startZip.getText();
         endText = endZip.getText();
@@ -151,7 +161,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         try {
             if (Objects.equals(choiceBox.getSelectionModel().getSelectedItem(), "Dijkstra")) {
                 System.out.println("Calculating the way with Dijkstra...");
-                pathDrawBut(searchDijkstra(getGraph(), startText, endText));
+               // pathDrawBut(searchDijkstra(getGraph(), startText, endText));
+                pathDrawBus(startText, endText);
             }else {
                 System.out.println("Calculating the way with Astar...");
                 pathDrawBut(searchAstar(getGraph(), startText, endText));
