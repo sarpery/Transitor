@@ -100,25 +100,18 @@ public class RequestDatabase {
 
             resultList.add(new double[]{bestTime, 0});
 
-            PreparedStatement tripQuery = myCon.prepareStatement("SELECT stop_id " +
-            "FROM stop_times_maastricht " + 
-            "WHERE trip_id = " + "'" + resultTripID + "'");
+            PreparedStatement tripQuery = myCon.prepareStatement("SELECT shape_pt_lon as pt_lon, shap_pt_lan as pt_lan " +
+            "FROM shapes_maastricht " +
+            "WHERE shape_id IN (" +
+            "SELECT shape_id " +
+            "FROM trips_maastricht " +
+            "WHERE trip_id = '" + resultTripID + "')");
             ResultSet resultTrip = tripQuery.executeQuery();
             
             while(resultTrip.next())
             {
-                String stopID = resultTrip.getString(1);
-                PreparedStatement stopCordsQuery = myCon.prepareStatement("SELECT stop_lon, stop_lan " +
-                "FROM stops " + 
-                "WHERE stop_id = " + stopID);
-                ResultSet stopCords = stopCordsQuery.executeQuery();
-
                 double[] LonLan = new double[2];
-                for(int i = 0; i < 2; ++i)
-                {
-                    stopCords.next();
-                    LonLan[i] = stopCords.getInt(i + 1);
-                }
+                for(int i = 0; i < 2; ++i) LonLan[i] = resultTrip.getInt(i + 1);
                 
                 resultList.add(LonLan);
             }
