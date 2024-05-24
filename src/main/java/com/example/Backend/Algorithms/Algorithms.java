@@ -47,6 +47,10 @@ public class Algorithms<T> {
         return calculateTime(startCords, endCords, WALKING_SPEED);
     }
 
+    public int getWalkingTime(double[] startCords, double[] endCords){
+        return calculateTime(startCords, endCords, WALKING_SPEED);
+    }
+
     public double getCyclingTime(T startPostalCode, T endPostalCode){
 
         dataReader.hashMapConverter();
