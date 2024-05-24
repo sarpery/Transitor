@@ -1,17 +1,18 @@
 package com.example.Frontend;
 
-import com.example.Backend.Graph.Trip;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.example.Backend.RequestDatabase;
+import com.example.Backend.Graph.Trip;
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
+
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CustomMapLayerBus extends MapLayer {
 

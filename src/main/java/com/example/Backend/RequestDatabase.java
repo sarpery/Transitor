@@ -11,7 +11,7 @@ import com.example.Backend.Algorithms.Algorithms;
 import com.example.Backend.Graph.Trip;
 
 public class RequestDatabase {
-    private static final double CORD_DISTANCE = 0.01;
+    private static final double CORD_DISTANCE = 0.035;
     DataToHashMap<String> dataReader = new DataToHashMap<String>();
 
     private static ResultSet findNearestStops(double x_cord, double y_cord){
@@ -71,6 +71,8 @@ public class RequestDatabase {
 
             ResultSet trips = nearestStopsRequest.executeQuery();
             long bestTime = Integer.MAX_VALUE;
+            String finalStartStop = "";
+            String finalEndStop = "";
 
             int c = 0;
             while(trips.next())
@@ -107,6 +109,8 @@ public class RequestDatabase {
                     bestTime = travelTime;
                     resultTripID = trips.getString("trip_id");
                     distance = ((double)(trips.getInt("start_distance") - trips.getInt("end_distance")))/1000;
+                    finalStartStop = startStop;
+                    finalEndStop = endStop;
                 }
             }
 
@@ -129,7 +133,7 @@ public class RequestDatabase {
             "WHERE trip_id = '" + resultTripID + "')");
             ResultSet resultTrip = tripQuery.executeQuery();
             
-            trip = new Trip(resultTrip, bestTime, distance, tripNum);
+            trip = new Trip(resultTrip, bestTime, distance, tripNum, finalStartStop, finalEndStop);
         }
         catch(Exception e)
         {

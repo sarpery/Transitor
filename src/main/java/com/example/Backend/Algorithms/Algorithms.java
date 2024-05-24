@@ -10,7 +10,7 @@ public class Algorithms<T> {
     DataToHashMap<T> dataReader = new DataToHashMap<T>();
 
     //in km 
-    private double calculateDistanceHaversine(double[] startCords, double[] endCords){
+    public double calculateDistanceHaversine(double[] startCords, double[] endCords){
         double dLat = deg2rad(startCords[0] - endCords[0]);
         double dLon = deg2rad(startCords[1] - endCords[1]);
         double h = Math.pow(Math.sin(dLat/2), 2) + Math.cos(deg2rad(startCords[0]))*Math.cos(deg2rad(endCords[0]))*Math.pow(Math.sin(dLon/2), 2);
