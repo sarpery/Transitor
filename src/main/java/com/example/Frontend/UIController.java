@@ -2,6 +2,7 @@ package com.example.Frontend;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import com.example.Controller.AlgoConnecter;
@@ -14,10 +15,7 @@ import com.gluonhq.maps.MapView;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -27,7 +25,7 @@ import javafx.scene.shape.Polygon;
 
 
 public class UIController implements Initializable, AlgoConnecter, HashController, GraphController, SearchConnector {
- private double initX, initY;
+    private double initX, initY;
     private double aAX = 0;
     private double aAY = 0;
 
@@ -37,23 +35,15 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private double zipXX = 5.721714464;
     private double zipYY = 50.82346493;
 
+    public static boolean algo = true;
+
     @FXML
     private MapView mapView;
 
     @FXML
-    private Circle circle1;
+    private ChoiceBox<String> choiceBox;
 
-    @FXML
-    private Line distanceLine;
-
-    @FXML
-    private Circle circle2;
-
-    @FXML
-    private Polygon map;
-
-    @FXML
-    private Label speed;
+    private String[] algos = {"Dijkstra", "Astar"};
 
     @FXML
     private Label timeLabel;
@@ -87,6 +77,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     @FXML
     MapPoint point = new MapPoint(50.849365,5.694548);
+
+
 
     public CustomMapLayer cL = new CustomMapLayer();
 
@@ -125,14 +117,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         }
     }
 
-    public void setupToolTip(){
-        locationToolTip.setTooltip(
-                new Tooltip(
-                        "Popular locations:\n" +
-                                "- DACS: 6229EN\n" +
-                                "- Vrijthof: 6211LE\n\n" + "GROUP 10\n"));
-    }
-
     @FXML
     private void setupWalkButton() {
         walkButton.setOnAction(e -> {
@@ -153,36 +137,11 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     public static double by;
 
     @FXML
-    private void pathDrawBut(List<String> ls) throws Exception {
-        String start;
-        String end;
-
-        for (int i = 0; i < ls.size() - 1; i++) {
-            start = ls.get(i);
-            end = ls.get(i+1);
-            
-            mapView.removeLayer(cL);
-
-         ax = getLat(start);
-         ay = getLon(start);
-
-         bx = getLat(end);
-         by = getLon(end);
-
-         pointStart = new MapPoint(ax, ay);
-         pointEnd = new MapPoint(bx, by);
-
-
-        cL = new CustomMapLayer();
+    private void pathDrawBut(List<String> ls)  {
+        mapView.removeLayer(cL);
+        cL = new CustomMapLayer(ls);
         mapView.addLayer(cL);
-
         mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
-
-
-        System.out.println(ax);
-        System.out.println(ay);
-
-        }
     }
 
     public void startPath(String input){
@@ -190,8 +149,14 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         endText = endZip.getText();
 
         try {
-            System.out.println(searchDijkstra(getGraph(), startText, endText));
-            pathDrawBut(searchDijkstra(getGraph(), startText, endText));
+            if (Objects.equals(choiceBox.getSelectionModel().getSelectedItem(), "Dijkstra")) {
+                System.out.println("Calculating the way with Dijkstra...");
+                pathDrawBut(searchDijkstra(getGraph(), startText, endText));
+            }else {
+                System.out.println("Calculating the way with Astar...");
+                pathDrawBut(searchAstar(getGraph(), startText, endText));
+
+            }
 
             if(input.equals("walk")) {
                 walkBikeCalcs(startText, endText, "walk");
@@ -211,21 +176,22 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        setupToolTip();
         hashTheData();
         graphTheData();
         mapView = createMapView();
         mapPane.getChildren().add(mapView);
         VBox.setVgrow(mapView, Priority.ALWAYS);
-        System.out.println(mapView.getZoom());
+        choiceBox.getItems().addAll(algos);
+        choiceBox.setValue("Dijkstra");
 
+        choiceBox.show();
 
     }
 
 
     private MapView createMapView() {
         MapView newMapView = new MapView();
-        newMapView.setPrefSize(667,528);
+        newMapView.setPrefSize(667,538);
         newMapView.flyTo(0,point,0.1);
         newMapView.setZoom(12);
         return newMapView;

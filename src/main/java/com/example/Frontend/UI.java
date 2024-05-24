@@ -12,9 +12,10 @@ public class UI extends Application {
     public void start(Stage primaryStage) throws IOException {
         scene = new Scene(loadFXML("Ui"), 901, 528);
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
-    
+
     public static void main(String[] args) {
         launch(args);
     }
