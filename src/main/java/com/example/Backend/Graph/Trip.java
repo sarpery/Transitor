@@ -24,7 +24,7 @@ public class Trip{
         try
         {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "DacsDacs1-2");
+            Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "BCS1510_BCS1510");
             PreparedStatement startCordsQuery = myCon.prepareStatement("SELECT stop_lon, stop_lan " +
                 "FROM stops " +
                 "WHERE stop_id = " + startStop);
@@ -37,7 +37,7 @@ public class Trip{
                 startCords.next();
                 endCords.next();
 
-                for(int i = 0; i < 2; ++i)
+                for(int i = 0; i < 2; i++)
                 {
                     startPoint[i] = startCords.getDouble(i +1);
                     endPoint[i] = endCords.getDouble(i + 1);

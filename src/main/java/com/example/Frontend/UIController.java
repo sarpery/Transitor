@@ -4,32 +4,24 @@ import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 
 import com.example.Controller.AlgoConnecter;
-import com.example.Controller.SearchConnector;
 import com.example.Controller.GraphController;
 import com.example.Controller.HashController;
+import com.example.Controller.SearchConnector;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
 import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.Polygon;
 
 
 public class UIController implements Initializable, AlgoConnecter, HashController, GraphController, SearchConnector {
@@ -189,7 +181,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     @FXML
     private void setupBusButton() {
         transportButton.setOnAction(e -> {
-            startPath("bus");
+            startPath("transport");
         });
     }
 
@@ -211,6 +203,12 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         CustomMapLayerBus cLB = new CustomMapLayerBus(start, end);
         mapView.addLayer(cLB);
         mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
+
+        distance.setText("Distance: " + cLB.trip.traveledDistance + " km");
+        System.out.println(cLB.trip.traveledDistance);
+
+        timeLabel.setText("Transport time: " + cLB.trip.travelTime + " min");
+            System.out.println("Transport time: " + cLB.trip.travelTime);
     }
 
     public void startPath(String input) {

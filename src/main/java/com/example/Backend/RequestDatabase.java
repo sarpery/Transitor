@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalTime;
-import java.util.ArrayList;
 
 import com.example.Backend.Algorithms.Algorithms;
 import com.example.Backend.Graph.Trip;
@@ -18,7 +17,7 @@ public class RequestDatabase {
         try 
         {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "BCS1510", "BCS1510");
+            Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "BCS1510_BCS1510");
 
             PreparedStatement nearestStopsRequest = myCon.prepareStatement("SELECT stop_id " +
             "FROM stops_maastricht " +
@@ -37,15 +36,12 @@ public class RequestDatabase {
     private static Trip computeBusRoute(double[] startPoint, double[] endPoint){
         Trip trip;
         String resultTripID = "";
-        String resultTripName = "";
         double distance = 0;
-
-        ArrayList<double[]> resultList = new ArrayList<double[]>();
 
         try
         {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "BCS1510", "BCS1510");
+            Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "BCS1510_BCS1510");
 
 
             ResultSet startPoints = findNearestStops(startPoint[0], startPoint[1]);
@@ -102,7 +98,8 @@ public class RequestDatabase {
                 Algorithms<String> alg = new Algorithms<>();
                 Date time_1 = trips.getDate("departure_time");
                 Date time_2 = trips.getDate("arrival_time");
-                long travelTime = alg.getWalkingTime(startLonLan, startPoint) + alg.getWalkingTime(endLonLan, endPoint) + ((time_1.getTime()/1000) - (time_2.getTime()/1000));
+                System.out.println(time_1.getTime() - time_2.getTime());
+                long travelTime = alg.getWalkingTime(startLonLan, startPoint) + alg.getWalkingTime(endLonLan, endPoint) + ((time_1.getTime()/60000) - (time_2.getTime())/60000);
 
                 if(travelTime < bestTime)
                 {
@@ -112,6 +109,8 @@ public class RequestDatabase {
                     finalStartStop = startStop;
                     finalEndStop = endStop;
                 }
+
+                if(++c > 300) break;
             }
 
 
@@ -122,8 +121,6 @@ public class RequestDatabase {
             tripName.next();
 
             int tripNum = Integer.parseInt(tripName.getString(1));
-
-            resultList.add(new double[]{bestTime, 0});
 
             PreparedStatement tripQuery = myCon.prepareStatement("SELECT shape_pt_lon as pt_lon, shape_pt_lat as pt_lat " +
             "FROM shapes_maastricht " +

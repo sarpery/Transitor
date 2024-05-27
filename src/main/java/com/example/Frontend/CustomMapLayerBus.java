@@ -19,11 +19,12 @@ public class CustomMapLayerBus extends MapLayer {
     private List<double[]> coordinatesList;
     private List<Node> nodesOnMap = new ArrayList<Node>();
     private List<Line> linesOnMap = new ArrayList<Line>();
+    public Trip trip;
 
 
     public CustomMapLayerBus(String startCord, String endCord ) {
         RequestDatabase requestDatabase = new RequestDatabase();
-        Trip trip = requestDatabase.findBusRoute(startCord, endCord);
+        trip = requestDatabase.findBusRoute(startCord, endCord);
         coordinatesList = trip.travelPoints;
         for (int i = 0; i < coordinatesList.size(); i++){
             Node icon;
