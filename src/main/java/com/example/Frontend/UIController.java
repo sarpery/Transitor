@@ -103,28 +103,30 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     public String startText;
     public String endText;
 
-
-
-
-    public void walkBikeCalcs(String startText, String endText, String input) throws Exception {
+    public void calculateDistance(String startText, String endText) throws Exception {
         System.out.println(startText);
         System.out.println(endText);
-        int time = 0;
 
         double distance1 = getDistance(startText, endText);
         double roundedNumber = Math.round(distance1 * 1000.0) / 1000.0;
-        distance.setText("Distance: " + String.valueOf(roundedNumber) + " km");
+        distance.setText("Distance: " + roundedNumber + " km");
         System.out.println(getDistance(startText, endText));
+    }
 
-        if(input.equals("walk")) {
-            time = (int) walkingTime(startText, endText);
-            timeLabel.setText("Walking time: " + String.valueOf(time) + " min");
+    public void calculateWalkTime(String startText, String endText) throws Exception {
+            int time = (int) walkingTime(startText, endText);
+            timeLabel.setText("Walking time: " + time + " min");
             System.out.println("Walking time: " + time);
-        }else if(input.equals("bike")) {
-            time = (int) cyclingTime(startText, endText);
-            timeLabel.setText("Biking time: " + String.valueOf(time) + " min");
+    }
+
+    public void calculateBikeTime(String startText, String endText) throws Exception {
+            int time = (int) cyclingTime(startText, endText);
+            timeLabel.setText("Biking time: " + time + " min");
             System.out.println("Biking time: " + time);
-        }
+    }
+
+    public void calculateBusTime(String startText, String endText) throws Exception {
+        //add bus time logic
     }
 
     @FXML
@@ -218,10 +220,12 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         try {
             if (input.equals("walk")) {
                 getAlgorithm(startText, endText);
-                walkBikeCalcs(startText, endText, "walk");
+                calculateDistance(startText,endText);
+                calculateWalkTime(startText, endText);
             } else if (input.equals("bike")) {
                 getAlgorithm(startText, endText);
-                walkBikeCalcs(startText, endText, "bike");
+                calculateDistance(startText,endText);
+                calculateBikeTime(startText, endText);
             } else if (input.equals("transport")) {
                 pathDrawBus(startText, endText);
             }

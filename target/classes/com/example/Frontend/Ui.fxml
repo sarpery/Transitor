@@ -48,7 +48,7 @@
                         <Font name="Arial Bold" size="16.0" />
                     </font>
                 </Label>
-                <Button id="transportButton" fx:id="transportButton" focusTraversable="false" layoutX="45.0" layoutY="319.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="135.0" style="-fx-background-color: #E84E10#E84E10;" text="Transport" textFill="#FFFFFF" wrapText="true">
+                <Button id="transportButton" fx:id="transportButton" focusTraversable="false" layoutX="45.0" layoutY="319.0" mnemonicParsing="false" onAction="#setupBusButton" prefHeight="36.0" prefWidth="135.0" style="-fx-background-color: #E84E10#E84E10;" text="Transport" textFill="#FFFFFF" wrapText="true">
                     <font>
                         <Font name="Arial Bold" size="20.0" />
                     </font>
