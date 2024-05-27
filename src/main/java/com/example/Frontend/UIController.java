@@ -189,7 +189,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     @FXML
     private void setupBusButton() {
         transportButton.setOnAction(e -> {
-            startPath("bus");
+            startPath("transport");
         });
     }
 
