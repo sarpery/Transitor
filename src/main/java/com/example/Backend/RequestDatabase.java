@@ -1,13 +1,13 @@
 package com.example.Backend;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.Duration;
 import java.time.LocalTime;
 
 import com.example.Backend.Algorithms.Algorithms;
-import com.example.Backend.Graph.Trip;
+import com.example.Backend.Graph.Trip;;
 
 public class RequestDatabase {
     private static final double CORD_DISTANCE = 0.035;
@@ -33,7 +33,7 @@ public class RequestDatabase {
         }
     }
 
-    private static Trip computeBusRoute(double[] startPoint, double[] endPoint){
+    private Trip computeBusRoute(double[] startPoint, double[] endPoint){
         Trip trip;
         String resultTripID = "";
         double distance = 0;
@@ -60,7 +60,7 @@ public class RequestDatabase {
             String currentTime = LocalTime.now().toString();
 
             PreparedStatement nearestStopsRequest = myCon.prepareStatement(
-                "SELECT stm1.trip_id, stm1.stop_id as departure_point, stm2.stop_id as arrival_point, stm1.departure_time, stm2.arrival_time, stm1.fare_units_traveled as start_distance, stm2.fare_units_traveled as end_distance " +
+                "SELECT stm1.trip_id, stm1.stop_id as departure_point, stm2.stop_id as arrival_point, stm1.departure_time, stm2.arrival_time, stm1.shape_dist_traveled as start_distance, stm2.shape_dist_traveled as end_distance " +
                 "FROM (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + startString + ") as stm1 " +
                 "JOIN (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + endString  +") as stm2 " +
                 "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence and stm1.departure_time >= '" + currentTime +"'");
@@ -76,10 +76,10 @@ public class RequestDatabase {
                 String startStop = trips.getString("departure_point");
                 String endStop = trips.getString("arrival_point");
 
-                PreparedStatement startCordsQuery = myCon.prepareStatement("SELECT stop_lon, stop_lan " +
+                PreparedStatement startCordsQuery = myCon.prepareStatement("SELECT stop_lan, stop_lon " +
                 "FROM stops " +
                 "WHERE stop_id = " + startStop);
-                PreparedStatement endCordsQuery = myCon.prepareStatement("SELECT stop_lon, stop_lan " +
+                PreparedStatement endCordsQuery = myCon.prepareStatement("SELECT stop_lan, stop_lon " +
                 "FROM stops " +
                 "WHERE stop_id = " + endStop);
 
@@ -96,16 +96,18 @@ public class RequestDatabase {
                 }
 
                 Algorithms<String> alg = new Algorithms<>();
-                Date time_1 = trips.getDate("departure_time");
-                Date time_2 = trips.getDate("arrival_time");
-                System.out.println(time_1.getTime() - time_2.getTime());
-                long travelTime = alg.getWalkingTime(startLonLan, startPoint) + alg.getWalkingTime(endLonLan, endPoint) + ((time_1.getTime()/60000) - (time_2.getTime())/60000);
+                String time_1 = trips.getString("departure_time");
+                String time_2 = trips.getString("arrival_time");
+                Duration time = parseDuration(time_2).minus(parseDuration(time_1));
+                long travelTime = time.toMinutes() + alg.getWalkingTime(startLonLan, startPoint) + alg.getWalkingTime(endLonLan, endPoint);
 
                 if(travelTime < bestTime)
                 {
                     bestTime = travelTime;
                     resultTripID = trips.getString("trip_id");
-                    distance = ((double)(trips.getInt("start_distance") - trips.getInt("end_distance")))/1000;
+                    distance = ((double)(trips.getInt("end_distance") - trips.getInt("start_distance")))/1000 +
+                            alg.calculateDistanceHaversine(startPoint, startLonLan) + alg.calculateDistanceHaversine(endLonLan, endPoint);
+                    distance = Math.round(distance*1000.0)/1000.0;
                     finalStartStop = startStop;
                     finalEndStop = endStop;
                 }
@@ -146,5 +148,33 @@ public class RequestDatabase {
         double[] endCords = dataReader.getCoordinates(endPostalCode);
 
         return computeBusRoute(startCords, endCords);
+    }
+
+    private Duration parseDuration(String durationStr) {
+        // Split the input string by ":"
+        String[] parts = durationStr.split(":");
+        
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Invalid duration format, expected HH:MM:SS");
+        }
+
+        try {
+            long hours = Long.parseLong(parts[0]);
+            long minutes = Long.parseLong(parts[1]);
+            long seconds = Long.parseLong(parts[2]);
+
+            // Validate the parsed values
+            if (minutes < 0 || minutes >= 60) {
+                throw new IllegalArgumentException("Minutes must be between 0 and 59");
+            }
+            if (seconds < 0 || seconds >= 60) {
+                throw new IllegalArgumentException("Seconds must be between 0 and 59");
+            }
+
+            // Create the Duration object
+            return Duration.ofHours(hours).plusMinutes(minutes).plusSeconds(seconds);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid number format in duration string", e);
+        }
     }
 }
