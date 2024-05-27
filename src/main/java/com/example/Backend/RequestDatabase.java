@@ -18,7 +18,7 @@ public class RequestDatabase {
         try 
         {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "DacsDacs1-2");
+            Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "BCS1510", "BCS1510");
 
             PreparedStatement nearestStopsRequest = myCon.prepareStatement("SELECT stop_id " +
             "FROM stops_maastricht " +
@@ -45,7 +45,7 @@ public class RequestDatabase {
         try
         {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "DacsDacs1-2");
+            Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "BCS1510", "BCS1510");
 
 
             ResultSet startPoints = findNearestStops(startPoint[0], startPoint[1]);

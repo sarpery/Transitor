@@ -4,6 +4,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 
 import com.example.Controller.AlgoConnecter;
 import com.example.Controller.SearchConnector;
@@ -12,6 +15,10 @@ import com.example.Controller.HashController;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -127,10 +134,60 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         });
     }
 
+    /*
+    not working action listener with button disabling
+    @FXML
+    private void setupWalkButton() {
+        walkButton.setOnAction(e -> {
+            walkButton.setDisable(true);
+            bikeButton.setDisable(true);
+            transportButton.setDisable(true);
+
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() throws Exception {
+                    startPath("walk");
+                    return null;
+                }
+
+                @Override
+                protected void succeeded() {
+                    walkButton.setDisable(false);
+                    bikeButton.setDisable(false);
+                    transportButton.setDisable(false);
+                }
+
+                @Override
+                protected void failed() {
+                    walkButton.setDisable(false);
+                    bikeButton.setDisable(false);
+                    transportButton.setDisable(false);
+                }
+
+                @Override
+                protected void cancelled() {
+                    walkButton.setDisable(false);
+                    bikeButton.setDisable(false);
+                    transportButton.setDisable(false);
+                }
+            };
+
+            new Thread(task).start();
+        });
+    }
+*/
+
     @FXML
     private void setupBikeButton() {
         bikeButton.setOnAction(e -> {
             startPath("bike");
+        });
+    }
+
+    @FXML
+    private void setupBusButton() {
+        transportButton.setOnAction(e -> {
+            startPath("bus");
         });
     }
 
@@ -154,37 +211,38 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
     }
 
-    public void startPath(String input){
-        startText = startZip.getText();
-        endText = endZip.getText();
+    public void startPath(String input) {
+        String startText = startZip.getText();
+        String endText = endZip.getText();
 
         try {
-            if (Objects.equals(choiceBox.getSelectionModel().getSelectedItem(), "Dijkstra")) {
-                System.out.println("Calculating the way with Dijkstra...");
-               // pathDrawBut(searchDijkstra(getGraph(), startText, endText));
-                pathDrawBus(startText, endText);
-            }else {
-                System.out.println("Calculating the way with Astar...");
-                pathDrawBut(searchAstar(getGraph(), startText, endText));
-
-            }
-
-            if(input.equals("walk")) {
+            if (input.equals("walk")) {
+                getAlgorithm(startText, endText);
                 walkBikeCalcs(startText, endText, "walk");
-            }else if(input.equals("bike")) {
+            } else if (input.equals("bike")) {
+                getAlgorithm(startText, endText);
                 walkBikeCalcs(startText, endText, "bike");
-            } else if(input.equals("transport")) {
-                //add transport logic
+            } else if (input.equals("transport")) {
+                pathDrawBus(startText, endText);
             }
-        }
-        catch (Exception e) {
-            ErrorPopup popup = new ErrorPopup(e.getMessage());
-            popup.display();
+        } catch (Exception e) {
+            // Show error popup on the JavaFX Application Thread
+            Platform.runLater(() -> {
+                ErrorPopup popup = new ErrorPopup(e.getMessage());
+                popup.display();
+            });
         }
     }
 
-
-
+    public void getAlgorithm(String startText, String endText){
+        if (Objects.equals(choiceBox.getSelectionModel().getSelectedItem(), "Dijkstra")) {
+            System.out.println("Calculating the way with Dijkstra...");
+            pathDrawBut(searchDijkstra(getGraph(), startText, endText));
+        } else {
+            System.out.println("Calculating the way with Astar...");
+            pathDrawBut(searchAstar(getGraph(), startText, endText));
+        }
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         hashTheData();
