@@ -1,7 +1,6 @@
 package com.example.Frontend.PathStrategy;
 
 import com.example.Frontend.UIController;
-import com.gluonhq.maps.MapView;
 import javafx.scene.control.Label;
 
 public class TransportPath implements Path {

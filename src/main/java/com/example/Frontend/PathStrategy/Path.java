@@ -1,6 +1,5 @@
 package com.example.Frontend.PathStrategy;
 
-import com.gluonhq.maps.MapView;
 import javafx.scene.control.Label;
 
 public interface Path {

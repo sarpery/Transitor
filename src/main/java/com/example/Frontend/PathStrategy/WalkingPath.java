@@ -1,6 +1,6 @@
 package com.example.Frontend.PathStrategy;
+
 import com.example.Controller.AlgoConnecter;
-import com.gluonhq.maps.MapView;
 import javafx.scene.control.Label;
 
 public class WalkingPath implements Path, AlgoConnecter {
