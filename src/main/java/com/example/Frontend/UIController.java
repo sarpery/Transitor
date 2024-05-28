@@ -235,7 +235,11 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private void pathDrawBus(String start, String end){
         mapView.removeLayer(cL);
         mapView.removeLayer(cLB);
-        cLB = new CustomMapLayerBus(start, end);
+        try {
+            cLB = new CustomMapLayerBus(start, end);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
         mapView.addLayer(cLB);
         mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
 

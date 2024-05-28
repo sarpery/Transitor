@@ -82,13 +82,18 @@ public class RequestDatabase {
 
 
             double searchRadius = 0;
-            ResultSet startPoints = findNearestStopsDinamic(startPoint[0], startPoint[1]);
-            ResultSet endPoints = findNearestStopsDinamic(endPoint[0], endPoint[1]);
+            // ResultSet startPoints = findNearestStopsDinamic(startPoint[0], startPoint[1]);
+            // ResultSet endPoints = findNearestStopsDinamic(endPoint[0], endPoint[1]);
+            ResultSet startPoints; ResultSet endPoints;
 
             ResultSet tripsNumber;
             Statement tripNumberRequest = myCon.createStatement();
             do
             {
+                searchRadius += CORD_DISTANCE_STAP*2;
+                startPoints = findNearestStopsStatic(startPoint[0], startPoint[1], searchRadius);
+                endPoints = findNearestStopsStatic(endPoint[0], endPoint[1], searchRadius);
+
                 String startString = "(";
                 String endString = "(";
                 while(startPoints.next()) startString += "'" + startPoints.getString(1) + "', ";
@@ -99,20 +104,28 @@ public class RequestDatabase {
                 endString += ")";
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-                String minTime = localTime.plusMinutes(0).format(formatter);
+                String minTime = localTime.plusMinutes(5).format(formatter);
                 String maxTime = localTime.plusMinutes(30).format(formatter);
 
 
                 tripsNumber = tripNumberRequest.executeQuery("SELECT COUNT(*)" +
                 "FROM (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + startString + ") as stm1 " +
                 "JOIN (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + endString  +") as stm2 " +
-                "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence and stm1.departure_time BETWEEN '" + minTime +"' AND '"+ maxTime + "' LIMIT 100");
-                tripsNumber.next();
+                "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence and stm1.departure_time BETWEEN '" + minTime +"' AND '"+ maxTime + "'");
 
-                searchRadius += CORD_DISTANCE_STAP*2;
-                startPoints = findNearestStopsStatic(startPoint[0], startPoint[1], searchRadius);
-                endPoints = findNearestStopsStatic(endPoint[0], endPoint[1], searchRadius);
-            }while(tripsNumber.getInt(1) < 50);
+                System.out.println("SELECT COUNT(*)" +
+                "FROM (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + startString + ") as stm1 " +
+                "JOIN (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + endString  +") as stm2 " +
+                "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence and stm1.departure_time BETWEEN '" + minTime +"' AND '"+ maxTime + "'");
+                System.out.println(); System.out.println();
+
+
+                tripsNumber.next();
+            }while(tripsNumber.getInt(1) == 0);
+
+            startPoints = findNearestStopsStatic(startPoint[0], startPoint[1], searchRadius);
+            endPoints = findNearestStopsStatic(endPoint[0], endPoint[1], searchRadius);
+
 
             String startString = "(";
             String endString = "(";
@@ -125,7 +138,7 @@ public class RequestDatabase {
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
             String currentTime = localTime.format(formatter);
-            String minTime = localTime.plusMinutes(0).format(formatter);
+            String minTime = localTime.plusMinutes(3).format(formatter);
             String maxTime = localTime.plusMinutes(30).format(formatter);
 
             PreparedStatement possibleTripsRequest = myCon.prepareStatement(
@@ -133,6 +146,12 @@ public class RequestDatabase {
                 "FROM (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + startString + ") as stm1 " +
                 "JOIN (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + endString  +") as stm2 " +
                 "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence and stm1.departure_time BETWEEN '" + minTime +"' AND '"+ maxTime + "' LIMIT 100");
+
+            System.out.println("SELECT stm1.trip_id, stm1.stop_id as departure_point, stm2.stop_id as arrival_point, stm1.departure_time, stm2.arrival_time, stm1.shape_dist_traveled as start_distance, stm2.shape_dist_traveled as end_distance " +
+            "FROM (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + startString + ") as stm1 " +
+            "JOIN (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + endString  +") as stm2 " +
+            "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence and stm1.departure_time BETWEEN '" + minTime +"' AND '"+ maxTime + "' LIMIT 100");
+
 
             ResultSet trips = possibleTripsRequest.executeQuery();
             long bestTime = Integer.MAX_VALUE;
