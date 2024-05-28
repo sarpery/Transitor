@@ -14,11 +14,15 @@ public class Trip{
     public long travelTime;
     public double traveledDistance;
     public String tripNumber;
+    public String departure;
+    public String arrival;
 
-    public Trip(ResultSet shape, long travelTime, double traveledDistance, String tripNumber, String startStop, String endStop){
+    public Trip(ResultSet shape, long travelTime, double traveledDistance, String tripNumber, String startStop, String endStop, String departure, String arrival){
         this.travelTime = travelTime;
         this.traveledDistance = traveledDistance;
         this.tripNumber = tripNumber;
+        this.departure = departure;
+        this.arrival = arrival;
 
         double[] startPoint = new double[2]; double[] endPoint = new double[2];
         try

@@ -14,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.StrokeType;
 
 public class CustomMapLayerBus extends MapLayer implements HashController {
 
@@ -52,9 +53,13 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
             }
             else {
                 icon = new Circle(5,Color.BLUE);
+                icon.setVisible(false);
                 line = new Line();
+                line.setStrokeWidth(4.5);
+                line.setStroke(Color.BLUE);
                 getChildren().add(line);
                 linesOnMap.add(line);
+
             }
             getChildren().add(icon);
             nodesOnMap.add(i, icon);
@@ -74,13 +79,11 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
         startLine = new Line();
         getChildren().add(startLine);
         getChildren().add(startNode);
-     //   startEndNodes.add(startNode);
 
         endNode = new Circle(10,Color.RED);
         endLine = new Line();
         getChildren().add(endLine);
         getChildren().add(endNode);
-   //     startEndNodes.add(endNode);
 
 
     }
@@ -93,6 +96,23 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
 
                 double lon = coordinatesList.get(a)[0];
                 double lat = coordinatesList.get(a)[1];
+                if (a == 0){
+                    MapPoint mapPoint = new MapPoint(lat, lon);
+                    Point2D pointOnMap = getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
+
+                    MapPoint mapPointSt = new MapPoint(startEndCoordinatesList.get(0)[1], startEndCoordinatesList.get(0)[0]);
+                    Point2D pointSt = getMapPoint(mapPointSt.getLatitude(), mapPointSt.getLongitude());
+
+                    startNode.setTranslateX(pointSt.getX());
+                    startNode.setTranslateY(pointSt.getY());
+
+                    startLine.setStartX(pointSt.getX());
+                    startLine.setStartY(pointSt.getY());
+                    startLine.setEndX((pointOnMap.getX()));
+                    startLine.setEndY((pointOnMap.getY()));
+
+                }
+
                 if (a>0) {
                     Line currentLine = linesOnMap.get(a - 1);
                     double prevLon = coordinatesList.get(a - 1)[0];
@@ -122,24 +142,12 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
                     currentNode.setTranslateX(pointOnMap.getX());
                     currentNode.setTranslateY(pointOnMap.getY());
                 }
-                if (a == 0){
-                    MapPoint mapPoint = new MapPoint(lat, lon);
-                    Point2D pointOnMap = getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
 
-                    MapPoint mapPointSt = new MapPoint(startEndCoordinatesList.get(0)[1], startEndCoordinatesList.get(0)[0]);
-                    Point2D pointSt = getMapPoint(mapPointSt.getLatitude(), mapPointSt.getLongitude());
-                    startLine.setStartX(pointSt.getX());
-                    startLine.setStartY(pointSt.getY());
-                    startLine.setEndX((pointOnMap.getX()));
-                    startLine.setEndY((pointOnMap.getY()));
-                    startNode.setTranslateX(pointSt.getX());
-                    startNode.setTranslateY(pointSt.getY());
-                }
 
                 if ( a == coordinatesList.size()-1){
                     MapPoint mapPointCur = new MapPoint(lat, lon);
                     Point2D pointCur = getMapPoint(mapPointCur.getLatitude(), mapPointCur.getLongitude());
-                   
+
                     MapPoint mapPointEd = new MapPoint(startEndCoordinatesList.get(1)[1], startEndCoordinatesList.get(1)[0]);
                     Point2D pointEd = getMapPoint(mapPointEd.getLatitude(), mapPointEd.getLongitude());
 
@@ -160,11 +168,6 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }
-
-        for (int a = 0; a < startEndCoordinatesList.size(); a++ ){
-
-
         }
 
 

@@ -222,7 +222,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         timeLabel.setText("Transport time: " + cLB.trip.travelTime + " min");
             System.out.println("Transport time: " + cLB.trip.travelTime);
 
-        addBusInfo("Bus Number:" + cLB.trip.tripNumber);
+        addBusInfo("Bus Number:" + cLB.trip.tripNumber + "\n" + cLB.trip.departure + "-" + cLB.trip.arrival);
     }
 
     public void startPath(String input) {
