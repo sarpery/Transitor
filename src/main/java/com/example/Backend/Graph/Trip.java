@@ -28,7 +28,7 @@ public class Trip{
         try
         {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "BCS1510_BCS1510");
+            Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "BCS1510", "BCS1510");
             PreparedStatement startCordsQuery = myCon.prepareStatement("SELECT stop_lon, stop_lan " +
                 "FROM stops " +
                 "WHERE stop_id = " + startStop);

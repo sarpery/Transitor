@@ -70,9 +70,10 @@ public class RequestDatabase {
 
         try
         {
-            LocalTime localTime = LocalTime.now();
+            //LocalTime localTime = LocalTime.now();
+            LocalTime localTime = LocalTime.parse("10:00:00");
             Class.forName("com.mysql.cj.jdbc.Driver");
-            myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "BCS1510_BCS1510");
+            myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "BCS1510", "BCS1510");
 
 
             double searchRadius = 0;
