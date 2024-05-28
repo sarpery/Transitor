@@ -81,6 +81,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
 
     public CustomMapLayer cL = new CustomMapLayer();
+    public CustomMapLayerBus cLB;
 
 
 
@@ -95,24 +96,56 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     public String startText;
     public String endText;
 
-    public void calculateDistance(String startText, String endText) throws Exception {
+    public void calculateDistance(List<String> list) throws Exception {
         System.out.println(startText);
         System.out.println(endText);
 
-        double distance1 = getDistance(startText, endText);
+        String start ;
+        String end ;
+        double distance1 = 0;
+
+        for (int i = 0; i < list.size()-1; i++) {
+            start = list.get(i);
+            end = list.get(i+1);
+             distance1 = distance1 + getDistance(start, end);
+
+        }
+
+        
         double roundedNumber = Math.round(distance1 * 1000.0) / 1000.0;
         distance.setText("Distance: " + roundedNumber + " km");
-        System.out.println(getDistance(startText, endText));
+        System.out.println(distance1);
     }
 
-    public void calculateWalkTime(String startText, String endText) throws Exception {
-            int time = (int) walkingTime(startText, endText);
+    public void calculateWalkTime(List<String> ls) throws Exception {
+
+        String start ;
+        String end ;
+        double distance = 0;
+
+        for (int i = 0; i < ls.size() - 1 ; i++) {
+            start = ls.get(i);
+            end = ls.get(i + 1);
+            distance =  distance + getDistance(start, end);
+        }
+        int time = (int) (distance/0.075);
+            
             timeLabel.setText("Walking time: " + time + " min");
             System.out.println("Walking time: " + time);
     }
 
-    public void calculateBikeTime(String startText, String endText) throws Exception {
-            int time = (int) cyclingTime(startText, endText);
+    public void calculateBikeTime(List<String> ls) throws Exception {
+
+        String start ;
+        String end ;
+        double distance = 0;
+
+        for (int i = 0; i < algos.length; i++) {
+            start = ls.get(i);
+            end = ls.get(i + 1);
+            distance =  distance + getDistance(start, end);
+        }
+            int time = (int) (distance/0.4);
             timeLabel.setText("Biking time: " + time + " min");
             System.out.println("Biking time: " + time);
     }
@@ -193,6 +226,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     @FXML
     private void pathDrawBut(List<String> ls)  {
         mapView.removeLayer(cL);
+        mapView.removeLayer(cLB);
         cL = new CustomMapLayer(ls);
         mapView.addLayer(cL);
         mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
@@ -200,7 +234,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     private void pathDrawBus(String start, String end){
         mapView.removeLayer(cL);
-        CustomMapLayerBus cLB = new CustomMapLayerBus(start, end);
+        mapView.removeLayer(cLB);
+        cLB = new CustomMapLayerBus(start, end);
         mapView.addLayer(cLB);
         mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
 
@@ -217,13 +252,14 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
         try {
             if (input.equals("walk")) {
-                getAlgorithm(startText, endText);
-                calculateDistance(startText,endText);
-                calculateWalkTime(startText, endText);
+                List<String> list = getAlgorithm(startText, endText);
+                
+                calculateDistance(list);
+                calculateWalkTime(list);
             } else if (input.equals("bike")) {
-                getAlgorithm(startText, endText);
-                calculateDistance(startText,endText);
-                calculateBikeTime(startText, endText);
+                List<String> list1 = getAlgorithm(startText, endText);
+                calculateDistance(list1);
+                calculateBikeTime(list1);
             } else if (input.equals("transport")) {
                 pathDrawBus(startText, endText);
             }
@@ -236,13 +272,17 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         }
     }
 
-    public void getAlgorithm(String startText, String endText){
+    public List<String> getAlgorithm(String startText, String endText){
         if (Objects.equals(choiceBox.getSelectionModel().getSelectedItem(), "Dijkstra")) {
+            List<String> list = searchDijkstra(getGraph(), startText, endText);
             System.out.println("Calculating the way with Dijkstra...");
-            pathDrawBut(searchDijkstra(getGraph(), startText, endText));
+            pathDrawBut(list);
+            return list;
         } else {
+            List<String> list = searchAstar(getGraph(), startText, endText);
             System.out.println("Calculating the way with Astar...");
-            pathDrawBut(searchAstar(getGraph(), startText, endText));
+            pathDrawBut(list);
+            return list;
         }
     }
     @Override
@@ -267,6 +307,4 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         newMapView.setZoom(12);
         return newMapView;
     }
-
-
 }
