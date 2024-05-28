@@ -221,32 +221,43 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
         timeLabel.setText("Transport time: " + cLB.trip.travelTime + " min");
             System.out.println("Transport time: " + cLB.trip.travelTime);
+
+        addBusInfo("Bus Number:" + cLB.trip.tripNumber);
     }
 
     public void startPath(String input) {
         String startText = startZip.getText();
         String endText = endZip.getText();
 
+        if(!mapContains(endText) || !mapContains(startText))
+        {
+            ErrorPopup popup = new ErrorPopup("invalid postal code");
+            popup.display();
+            System.out.println("not found");
+        }
+        else
+        {
+
         try {
             if (input.equals("walk")) {
-                List<String> list = getAlgorithm(startText, endText);
-                
-                calculateDistance(list);
-                calculateWalkTime(list);
+                getAlgorithm(startText, endText);
+                calculateDistance(startText,endText);
+                calculateWalkTime(startText, endText);
             } else if (input.equals("bike")) {
-                List<String> list1 = getAlgorithm(startText, endText);
-                calculateDistance(list1);
-                calculateBikeTime(list1);
+                getAlgorithm(startText, endText);
+                calculateDistance(startText,endText);
+                calculateBikeTime(startText, endText);
             } else if (input.equals("transport")) {
                 pathDrawBus(startText, endText);
             }
         } catch (Exception e) {
             // Show error popup on the JavaFX Application Thread
             Platform.runLater(() -> {
-                ErrorPopup popup = new ErrorPopup(e.getMessage());
+                ErrorPopup popup = new ErrorPopup("algo error");
                 popup.display();
             });
         }
+    }
     }
 
     public void getAlgorithm(String startText, String endText){

@@ -34,12 +34,6 @@ public class RequestDatabase {
             } while(stops.getInt(1) < 5);
 
 
-            System.out.println("SELECT stop_id " +
-            "FROM stops_maastricht " +
-            "WHERE (stop_lan BETWEEN " + (x_cord - searchRadius) + " AND " + (x_cord + searchRadius) + ") " +
-            "AND (stop_lon BETWEEN " + (y_cord - searchRadius) + " AND " + (y_cord + searchRadius) + ") ");
-            System.out.println(); System.out.println();
-
             return nearestStopsRequest.executeQuery("SELECT stop_id " +
             "FROM stops_maastricht " +
             "WHERE (stop_lan BETWEEN " + (x_cord - searchRadius) + " AND " + (x_cord + searchRadius) + ") " +
@@ -113,12 +107,6 @@ public class RequestDatabase {
                 "JOIN (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + endString  +") as stm2 " +
                 "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence and stm1.departure_time BETWEEN '" + minTime +"' AND '"+ maxTime + "'");
 
-                System.out.println("SELECT COUNT(*)" +
-                "FROM (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + startString + ") as stm1 " +
-                "JOIN (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + endString  +") as stm2 " +
-                "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence and stm1.departure_time BETWEEN '" + minTime +"' AND '"+ maxTime + "'");
-                System.out.println(); System.out.println();
-
 
                 tripsNumber.next();
             }while(tripsNumber.getInt(1) == 0);
@@ -146,11 +134,6 @@ public class RequestDatabase {
                 "FROM (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + startString + ") as stm1 " +
                 "JOIN (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + endString  +") as stm2 " +
                 "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence and stm1.departure_time BETWEEN '" + minTime +"' AND '"+ maxTime + "' LIMIT 100");
-
-            System.out.println("SELECT stm1.trip_id, stm1.stop_id as departure_point, stm2.stop_id as arrival_point, stm1.departure_time, stm2.arrival_time, stm1.shape_dist_traveled as start_distance, stm2.shape_dist_traveled as end_distance " +
-            "FROM (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + startString + ") as stm1 " +
-            "JOIN (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + endString  +") as stm2 " +
-            "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence and stm1.departure_time BETWEEN '" + minTime +"' AND '"+ maxTime + "' LIMIT 100");
 
 
             ResultSet trips = possibleTripsRequest.executeQuery();
@@ -204,13 +187,13 @@ public class RequestDatabase {
             }
 
 
-            PreparedStatement tripNameQuery = myCon.prepareStatement("SELECT trip_short_name " +
-            "FROM trips " +
-            "WHERE trip_id = '" + resultTripID + "'");
+            PreparedStatement tripNameQuery = myCon.prepareStatement("SELECT route_short_name " +
+            "FROM routes " +
+            "WHERE route_id IN (SELECT route_id FROM trips WHERE trip_id = '" + resultTripID + "')");
             ResultSet tripName = tripNameQuery.executeQuery();
             tripName.next();
 
-            int tripNum = Integer.parseInt(tripName.getString(1));
+            String tripNum = tripName.getString(1);
 
             PreparedStatement tripQuery = myCon.prepareStatement("SELECT shape_pt_lon as pt_lon, shape_pt_lat as pt_lat " +
             "FROM shapes_maastricht " +

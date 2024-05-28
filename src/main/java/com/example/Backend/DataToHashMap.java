@@ -59,7 +59,7 @@ public class DataToHashMap<T> {
     }
 
 
-    private boolean mapContains(T key) {
+    public boolean mapContains(T key) {
        
         if (coordinatesData.containsKey(key)) {
             return true;

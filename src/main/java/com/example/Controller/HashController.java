@@ -21,4 +21,8 @@ public interface HashController {
     default double getLon(String code) throws Exception {
         return map.getLon(code);
     }
+
+    default boolean mapContains(String code){
+        return map.mapContains(code);
+    }
 }

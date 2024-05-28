@@ -38,12 +38,12 @@
                         <Font name="Arial" size="12.0" />
                     </font>
                 </TextField>
-                <Label id="distanceMeasure" fx:id="distance" layoutX="70.0" layoutY="388.0" text="Distance: 0" textFill="#ffffff">
+                <Label id="distanceMeasure" fx:id="distance" layoutX="56.0" layoutY="387.0" text="Distance: 0" textAlignment="CENTER" textFill="#ffffff">
                     <font>
                         <Font name="Arial Bold" size="16.0" />
                     </font>
                 </Label>
-                <Label id="timeMeasure" fx:id="timeLabel" layoutX="59.0" layoutY="417.0" text="Travel Time: 0" textFill="#ffffff">
+                <Label id="timeMeasure" fx:id="timeLabel" layoutX="45.0" layoutY="417.0" text="Travel Time: 0" textAlignment="CENTER" textFill="#ffffff">
                     <font>
                         <Font name="Arial Bold" size="16.0" />
                     </font>
@@ -73,6 +73,11 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
+            <Label id="timeMeasure" fx:id="busInfo" layoutX="48.0" layoutY="437.0" prefHeight="42.0" prefWidth="187.0" text="Road number: 9" textAlignment="CENTER" textFill="#ffffff">
+               <font>
+                  <Font name="Arial Bold" size="16.0" />
+               </font>
+            </Label>
             </children>
         </Pane>
     </children>

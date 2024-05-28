@@ -13,9 +13,9 @@ public class Trip{
     public ArrayList<double[]> travelPoints;
     public long travelTime;
     public double traveledDistance;
-    public int tripNumber;
+    public String tripNumber;
 
-    public Trip(ResultSet shape, long travelTime, double traveledDistance, int tripNumber, String startStop, String endStop){
+    public Trip(ResultSet shape, long travelTime, double traveledDistance, String tripNumber, String startStop, String endStop){
         this.travelTime = travelTime;
         this.traveledDistance = traveledDistance;
         this.tripNumber = tripNumber;
