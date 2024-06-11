@@ -109,16 +109,19 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     @FXML
     private void setupWalkButton() {
             startPath(new WalkingPath());
+            deactivateButtons();
     }
 
     @FXML
     private void setupBikeButton() {
         startPath(new BikingPath());
+        deactivateButtons();
     }
 
     @FXML
     private void setupBusButton() {
             startPath(new TransportPath(this));
+            deactivateButtons();
     }
 
     public static double ax;
@@ -133,6 +136,26 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         cL = new CustomMapLayer(ls);
         mapView.addLayer(cL);
         mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
+    }
+
+    @FXML
+    private void deactivateButtons(){
+        walkButton.setDisable(true);
+        bikeButton.setDisable(true);
+        transportButton.setDisable(true);
+        choiceBox.setDisable(true);
+        startZip.setDisable(true);
+        endZip.setDisable(true);
+    }
+
+    @FXML
+    private void activateButtons(){
+        walkButton.setDisable(false);
+        bikeButton.setDisable(false);
+        transportButton.setDisable(false);
+        choiceBox.setDisable(false);
+        startZip.setDisable(false);
+        endZip.setDisable(false);
     }
 
     public void pathDrawBus(String start, String end) throws Exception {
@@ -159,6 +182,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
                 System.out.println("Transport time: " + cLB.trip.travelTime);
 
                 addBusInfo("Bus Number:" + cLB.trip.tripNumber + "\n" + cLB.trip.departure + "-" + cLB.trip.arrival);
+                activateButtons();
             }
         });
 
@@ -207,6 +231,7 @@ private List<String> result;
                 @Override
                 public void handle(WorkerStateEvent t) {
                     pathDrawBut((List<String>) task.getValue());
+                    activateButtons();
                 }
             });
 
@@ -224,6 +249,7 @@ private List<String> result;
                 @Override
                 public void handle(WorkerStateEvent t) {
                     pathDrawBut((List<String>) task.getValue());
+                    activateButtons();
                 }
             });
 
