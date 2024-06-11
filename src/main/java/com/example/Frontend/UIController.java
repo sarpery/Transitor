@@ -17,6 +17,9 @@ import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
 import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -105,23 +108,17 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     @FXML
     private void setupWalkButton() {
-        walkButton.setOnAction(e -> {
             startPath(new WalkingPath());
-        });
     }
 
     @FXML
     private void setupBikeButton() {
-        bikeButton.setOnAction(e -> {
-            startPath(new BikingPath());
-        });
+        startPath(new BikingPath());
     }
 
     @FXML
     private void setupBusButton() {
-        transportButton.setOnAction(e -> {
             startPath(new TransportPath(this));
-        });
     }
 
     public static double ax;
@@ -141,17 +138,31 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     public void pathDrawBus(String start, String end) throws Exception {
         mapView.removeLayer(cL);
         mapView.removeLayer(cLB);
-        cLB = new CustomMapLayerBus(start, end);
-        mapView.addLayer(cLB);
-        mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
 
-        distance.setText("Distance: " + cLB.trip.traveledDistance + " km");
-        System.out.println(cLB.trip.traveledDistance);
+        Task task = new Task<CustomMapLayerBus>() {
+            @Override
+            protected CustomMapLayerBus call() throws Exception {
+                return new CustomMapLayerBus(start, end);
+            }
+        };
+        new Thread(task).start();
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent t) {
+                cLB = (CustomMapLayerBus) task.getValue();
+                mapView.addLayer(cLB);
+                mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
+                distance.setText("Distance: " + cLB.trip.traveledDistance + " km");
+                System.out.println(cLB.trip.traveledDistance);
 
-        timeLabel.setText("Transport time: " + cLB.trip.travelTime + " min");
-        System.out.println("Transport time: " + cLB.trip.travelTime);
+                timeLabel.setText("Transport time: " + cLB.trip.travelTime + " min");
+                System.out.println("Transport time: " + cLB.trip.travelTime);
 
-        addBusInfo("Bus Number:" + cLB.trip.tripNumber + "\n" + cLB.trip.departure + "-" + cLB.trip.arrival);
+                addBusInfo("Bus Number:" + cLB.trip.tripNumber + "\n" + cLB.trip.departure + "-" + cLB.trip.arrival);
+            }
+        });
+
+
     }
 
     private void startPath(Path strategy) {
@@ -179,14 +190,44 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     }
 
 
+private List<String> result;
+
     public void getAlgorithm(String startText, String endText){
         busInfo.setVisible(false);
         if (Objects.equals(choiceBox.getSelectionModel().getSelectedItem(), "Dijkstra")) {
             System.out.println("Calculating the way with Dijkstra...");
-            pathDrawBut(searchDijkstra(getGraph(), startText, endText));
+            Task task = new Task<List<String>>() {
+                @Override
+                protected List<String> call() throws Exception {
+                    return searchDijkstra(getGraph(), startText, endText);
+                }
+            };
+            new Thread(task).start();
+            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent t) {
+                    pathDrawBut((List<String>) task.getValue());
+                }
+            });
+
+
         } else {
             System.out.println("Calculating the way with Astar...");
-            pathDrawBut(searchAstar(getGraph(), startText, endText));
+            Task task = new Task<List<String>>() {
+                @Override
+                protected List<String> call() throws Exception {
+                    return searchAstar(getGraph(), startText, endText);
+                }
+            };
+            new Thread(task).start();
+            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent t) {
+                    pathDrawBut((List<String>) task.getValue());
+                }
+            });
+
+
         }
     }
     @Override
@@ -196,11 +237,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         mapView = createMapView();
         mapPane.getChildren().add(mapView);
         VBox.setVgrow(mapView, Priority.ALWAYS);
-        choiceBox.getItems().addAll(algos);
         choiceBox.setValue("Dijkstra");
-
-        choiceBox.show();
-
+        choiceBox.getItems().addAll(algos);
     }
 
     private MapView createMapView() {
