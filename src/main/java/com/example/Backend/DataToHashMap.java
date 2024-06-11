@@ -11,14 +11,15 @@ public class DataToHashMap<T> {
     
     private HashMap<String, double[]> coordinatesData = new HashMap<String, double[]>();
 
-    public DataToHashMap(){
-
+    private String fileName;
+    public DataToHashMap(String fileName){
+        this.fileName = fileName;
     }
     
     public void hashMapConverter(){
 
         
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/java/com/example/Data/MassZipLatLon.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");

@@ -1,11 +1,12 @@
 package com.example.Controller;
 
+import com.example.Backend.DataToHashMap;
 import com.example.Backend.Algorithms.Algorithms;
 
 public interface AlgoConnecter {
     
     
-    Algorithms<String> algo = new Algorithms<String>();
+    Algorithms<String> algo = new Algorithms<String>(new DataToHashMap<String>("src/main/java/com/example/Data/MassZipLatLon.txt"));
 
     default double getDistance(String startCords, String endCords) throws Exception{
         return algo.getDistance(startCords, endCords);

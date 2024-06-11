@@ -9,8 +9,10 @@ public class Algorithms<T> {
     private final double CYCLING_SPEED = 0.4; //kpm
     private final int EARTH_RADIUS = 6371;
 
-    DataToHashMap<T> dataReader = new DataToHashMap<T>();
-
+    DataToHashMap<T> dataReader;
+    public Algorithms(DataToHashMap<T> dataReader) {
+        this.dataReader = dataReader;
+    }
     //in km 
     public double calculateDistanceHaversine(double[] startCords, double[] endCords){
         double dLat = deg2rad(startCords[0] - endCords[0]);
@@ -102,5 +104,4 @@ public class Algorithms<T> {
             throw new IllegalArgumentException("Invalid number format in duration string", e);
         }
     }
-
 }

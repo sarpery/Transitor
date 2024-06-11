@@ -12,7 +12,7 @@ import com.example.Backend.Graph.Trip;;
 public class RequestDatabase<T> {
     private static final double CORD_DISTANCE_STAP = 0.001;
     private static Connection myCon;
-    DataToHashMap<String> dataReader = new DataToHashMap<String>();
+    DataToHashMap<String> dataReader = new DataToHashMap<String>("src/main/java/com/example/Data/MassZipLatLon.txt");
 
     public RequestDatabase(){
         try{

@@ -9,8 +9,8 @@ import com.example.Backend.RequestDatabase;
 import com.example.Backend.Algorithms.Algorithms;
 
 public class Trip{
-    private Algorithms<double[]> alg = new Algorithms<double[]>();
-    private RequestDatabase<String> rDB = new RequestDatabase<String>();
+    private Algorithms<double[]> alg = new Algorithms<double[]>(new DataToHashMap<double[]>("src/main/java/com/example/Data/MassZipLatLon.txt"));;
+    public ArrayList<double[]> travelPoints;
     public long travelTime;
     public double traveledDistance;
     public String tripNumber;
