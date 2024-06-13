@@ -180,9 +180,9 @@ public class RequestDatabase {
                 String time_1 = trips.getString("departure_time");
                 String time_2 = trips.getString("arrival_time");
 
-                if(parseDuration(time_1).minus(parseDuration(localTime.plusMinutes(alg.getWalkingTime(startPoint, startLonLan)).format(formatter))).toMillis() < 0){continue; }
+                if(alg.parseDuration(time_1).minus(alg.parseDuration(localTime.plusMinutes(alg.getWalkingTime(startPoint, startLonLan)).format(formatter))).toMillis() < 0){continue; }
 
-                Duration time = parseDuration(time_2).minus(parseDuration(currentTime));
+                Duration time = alg.parseDuration(time_2).minus(alg.parseDuration(currentTime));
                 long travelTime = time.toMinutes() + alg.getWalkingTime(endLonLan, endPoint);
 
                 if(travelTime < bestTime)
@@ -232,33 +232,5 @@ public class RequestDatabase {
         double[] endCords = dataReader.getCoordinates(endPostalCode);
 
         return computeBusRoute(startCords, endCords);
-    }
-
-    private Duration parseDuration(String durationStr) {
-        // Split the input string by ":"
-        String[] parts = durationStr.split(":");
-        
-        if (parts.length != 3) {
-            throw new IllegalArgumentException("Invalid duration format, expected HH:MM:SS");
-        }
-
-        try {
-            long hours = Long.parseLong(parts[0]);
-            long minutes = Long.parseLong(parts[1]);
-            long seconds = Long.parseLong(parts[2]);
-
-            // Validate the parsed values
-            if (minutes < 0 || minutes >= 60) {
-                throw new IllegalArgumentException("Minutes must be between 0 and 59");
-            }
-            if (seconds < 0 || seconds >= 60) {
-                throw new IllegalArgumentException("Seconds must be between 0 and 59");
-            }
-
-            // Create the Duration object
-            return Duration.ofHours(hours).plusMinutes(minutes).plusSeconds(seconds);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid number format in duration string", e);
-        }
     }
 }

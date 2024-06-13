@@ -48,8 +48,8 @@ public class Dijkstra<T> {
             visited.add(current);
 
             for (EdgeNode<T> neighbor : graph.neighbors(current)) {
-                T next = neighbor.getElement();
-                int newDistance = distance.get(current) + neighbor.getWeight();
+                T next = neighbor.getName();
+                Integer newDistance = distance.get(current) + neighbor.getWeight();
                 if (newDistance < distance.get(next)) {
                     distance.put(next, newDistance);
                     previous.put(next, current);

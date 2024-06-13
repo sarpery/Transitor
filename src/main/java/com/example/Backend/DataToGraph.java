@@ -44,7 +44,4 @@ public class DataToGraph<T> {
     public AdjacencyListGraph<String> getGraph() {
         return graph;
     }
-
-    
-    
 }

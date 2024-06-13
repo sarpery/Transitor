@@ -1,13 +1,8 @@
 package com.example.Backend.Graph;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
 
 public class AdjacencyListGraph<T> implements Graph<T> {
 
@@ -72,11 +67,27 @@ public class AdjacencyListGraph<T> implements Graph<T> {
         }
     }
 
+
+     public void addEdge(T x, T y, String arr, String dep, int dis, T name) {
+        if (!verteces.containsKey(x)) {
+            System.out.println("The vertex " + x + " is not in the Graph.");
+        } else if (!verteces.containsKey(y)) {
+            System.out.println("The vertex " + y + " is not in the Graph.");
+        } else {
+            List<EdgeNode<T>> adjList = verteces.get(x);
+            if (adjList.contains(new EdgeNode<T>(y, name, arr, dep, dis))) {
+               // System.out.println("The edge from " + x + " to " + y + " is already in the graph");
+            } else {
+                adjList.add(new EdgeNode<T>(y, name, arr, dep, dis));
+            }
+        }
+    }
+
     public Integer getEdgeWeight(T source, T target) {
         List<EdgeNode<T>> adjacentVertices = verteces.get(source);
         if (adjacentVertices != null) {
             for (EdgeNode<T> edgeNode : adjacentVertices) {
-                if (edgeNode.getElement().equals(target)) {
+                if (edgeNode.getName().equals(target)) {
                     return edgeNode.getWeight();
                 }
             }
@@ -100,7 +111,7 @@ public class AdjacencyListGraph<T> implements Graph<T> {
             result += vertex + " neighbours: -> ";
             List<EdgeNode<T>> neighbours = verteces.get(vertex);
             for (EdgeNode<T> edge : neighbours) {
-                result += edge.getElement() + "->";
+                result += edge.getName() + "->";
             }
             result += "null\n";
         }
@@ -113,54 +124,6 @@ public class AdjacencyListGraph<T> implements Graph<T> {
     public List<T> getVertecesList() {
         return new LinkedList<T>(verteces.keySet());
     }
-
-
-
-    //   public List<T> dijkstra(T start, T target) {
-    //     Map<T, Integer> distance = new HashMap<>();
-    //     Map<T, T> previous = new HashMap<>();
-    //     PriorityQueue<T> priorityQueue = new PriorityQueue<>((u, v) -> distance.get(u) - distance.get(v));
-    //     Set<T> visited = new HashSet<>();
-
-    //     // Initialize distances
-    //     for (T vertex : verteces.keySet()) {
-    //         distance.put(vertex, Integer.MAX_VALUE);
-    //         previous.put(vertex, null);
-    //     }
-    //     distance.put(start, 0);
-    //     priorityQueue.add(start);
-
-    //     while (!priorityQueue.isEmpty()) {
-    //         T current = priorityQueue.poll();
-    //         if (current.equals(target)) {
-    //             break; // Reached the target
-    //         }
-    //         if (visited.contains(current)) {
-    //             continue;
-    //         }
-    //         visited.add(current);
-
-    //         for (EdgeNode<T> neighbor : neighbors(current)) {
-    //             T next = neighbor.getElement();
-    //             int newDistance = distance.get(current) + neighbor.getWeight();
-    //             if (newDistance < distance.get(next)) {
-    //                 distance.put(next, newDistance);
-    //                 previous.put(next, current);
-    //                 priorityQueue.add(next);
-    //             }
-    //         }
-    //     }
-
-    //     // Reconstruct the path from start to target
-    //     List<T> path = new LinkedList<>();
-    //     T current = target;
-    //     while (current != null) {
-    //         path.add(0, current);
-    //         current = previous.get(current);
-    //     }
-
-    //     return path;
-    // }
 
 
 }

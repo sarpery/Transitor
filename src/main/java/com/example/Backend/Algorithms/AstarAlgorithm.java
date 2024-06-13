@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-
-
 import com.example.Backend.Graph.AdjacencyListGraph;
 import com.example.Backend.Graph.EdgeNode;
 
@@ -56,7 +54,7 @@ public List<T> aStarSearch(T start, T goal) {
         closedSet.add(current);
 
         for (EdgeNode<T> edge : graph.neighbors(current)) {
-            T neighbor = edge.getElement();
+            T neighbor = edge.getName();
             if (closedSet.contains(neighbor)) {
                 continue; // Neighbor already evaluated
             }
