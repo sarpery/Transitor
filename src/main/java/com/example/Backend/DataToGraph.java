@@ -10,11 +10,11 @@ public class DataToGraph<T> {
     
     AdjacencyListGraph<String> graph = new AdjacencyListGraph<String>();
 
-    public void graphTheData(){
+    public void graphTheData(String fileName){
 
         
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/java/com/example/Data/FilteredDistances.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
                  // Split the data string into main postal code and pairs of other postal codes with distances

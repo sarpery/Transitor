@@ -22,7 +22,6 @@ public class AlgorithmsTests {
     @BeforeAll
     public static void init() throws IOException {
         tempFile = Files.createFile(tempDir.resolve("temp.txt"));
-        // hasmap reads from src/main/java/com/exampl e/Data/MassZipLatLon.txt
         ArrayList<String> lines = new ArrayList<String>();
 
         lines.add("ALPHA,15,63");
