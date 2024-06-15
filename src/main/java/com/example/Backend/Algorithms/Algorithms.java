@@ -13,6 +13,11 @@ public class Algorithms<T> {
     public Algorithms(DataToHashMap<T> dataReader) {
         this.dataReader = dataReader;
     }
+
+    public Algorithms() {
+        dataReader = new DataToHashMap<T>("src/main/java/com/example/Data/MassZipLatLon.txt");
+    }
+
     //in km 
     public double calculateDistanceHaversine(double[] startCords, double[] endCords){
         double dLat = deg2rad(startCords[0] - endCords[0]);
