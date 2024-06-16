@@ -3,6 +3,7 @@ package com.example.Backend.Graph;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class AdjacencyListGraph<T> implements Graph<T> {
 
@@ -16,6 +17,7 @@ public class AdjacencyListGraph<T> implements Graph<T> {
     public List<EdgeNode<T>> neighbors(T x) {
         List<EdgeNode<T>> neighboursElements = new LinkedList<EdgeNode<T>>();
         if (!verteces.containsKey(x)) {
+
         } else {
             List<EdgeNode<T>> adjList = verteces.get(x);
             for (EdgeNode<T> edge : adjList) {
@@ -23,7 +25,8 @@ public class AdjacencyListGraph<T> implements Graph<T> {
             }
         }
         return neighboursElements;
-    }   
+    }
+
 
    
 
@@ -31,6 +34,7 @@ public class AdjacencyListGraph<T> implements Graph<T> {
     @Override
     public void addVertex(T x) {
         if (verteces.containsKey(x)) {
+
         } else {
             List<EdgeNode<T>> newList = new LinkedList<EdgeNode<T>>();
             verteces.put(x, newList);
@@ -39,8 +43,8 @@ public class AdjacencyListGraph<T> implements Graph<T> {
 
     @Override
     public void removeVertex(T x) {
-        if (!verteces.containsKey(x)) {
-        } else {
+        if (verteces.containsKey(x)) {
+            removeIngoingEdges(x);
             verteces.remove(x);
         }
     }
@@ -56,6 +60,7 @@ public class AdjacencyListGraph<T> implements Graph<T> {
         } else {
             List<EdgeNode<T>> adjList = verteces.get(x);
             if (adjList.contains(new EdgeNode<T>(y, dis))) {
+
             } else {
                 adjList.add(new EdgeNode<T>(y, dis));
             }
@@ -65,13 +70,13 @@ public class AdjacencyListGraph<T> implements Graph<T> {
 
      public void addEdge(T x, T y, String arr, String dep, int dis, String name) {
         if (!verteces.containsKey(x)) {
+
         } else if (!verteces.containsKey(y)) {
             System.out.println("The vertex " + y + " is not in the Graph.");
         } else {
             List<EdgeNode<T>> adjList = verteces.get(x);
             if (adjList.contains(new EdgeNode<T>(y, name, arr, dep, dis))) {
-                if(x.equals("6218TL") || y.equals("6218TL")){
-                }
+
             } else {
                 adjList.add(new EdgeNode<T>(y, name, arr, dep, dis));
             }
@@ -96,6 +101,8 @@ public class AdjacencyListGraph<T> implements Graph<T> {
         return (weight1 != null) ? weight1 : weight2;
     }
 
+   
+
     @Override
     public String toString() {
         String result = "";
@@ -118,5 +125,10 @@ public class AdjacencyListGraph<T> implements Graph<T> {
         return new LinkedList<T>(verteces.keySet());
     }
 
-
+    private void removeIngoingEdges(T vertex) {
+        for (Map.Entry<T, List<EdgeNode<T>>> entry : verteces.entrySet()) {
+            List<EdgeNode<T>> adj = entry.getValue();
+            adj.remove(new EdgeNode<T>(vertex, null));
+        }
+    }
 }

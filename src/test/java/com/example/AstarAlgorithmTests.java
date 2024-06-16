@@ -5,9 +5,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
@@ -16,7 +14,6 @@ import com.example.Backend.DataToGraph;
 import com.example.Backend.DataToHashMap;
 import com.example.Backend.Algorithms.Algorithms;
 import com.example.Backend.Algorithms.AstarAlgorithm;
-import com.example.Backend.Graph.AdjacencyListGraph;
 
 public class AstarAlgorithmTests {
     AstarAlgorithm<String> astarAlgorithm;
@@ -127,6 +124,4 @@ public class AstarAlgorithmTests {
             assertTrue(expectedPath[i].equals(path.get(i)));
         }
     }
-
-    // The AStar algorithm uses both distances read from the provided datatohashmap file, and graph values (which should be the same values * 1000 rounded down)
 }
