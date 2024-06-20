@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
+import com.example.Backend.Algorithms.BusDijkstra;
 import com.example.Backend.Graph.AdjacencyListGraph;
 
 public class DatabaseToGraph {
@@ -70,12 +71,14 @@ public class DatabaseToGraph {
         }
     }
 
-    public AdjacencyListGraph<String> getGraph() {
+    public static AdjacencyListGraph<String> getGraph() {
         return graph;
     }
 
     public static void main(String[] args){
         graphTheData();
-        System.out.println(graph.toString());
+        BusDijkstra<String> bs = new BusDijkstra<String>(getGraph());
+        System.out.println(bs.dijkstra("2578110", "2578131"));
+        //System.out.println(graph.toString());
     }
 }
