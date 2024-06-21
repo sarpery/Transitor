@@ -11,7 +11,7 @@ public class PathSearch<T> {
     Dijkstra<T> dj;
     
 
-    public List<T> searchAStar(AdjacencyListGraph<T> graph, T start, T target){
+    public List<String> searchAStar(AdjacencyListGraph<String> graph, String start, String target){
          as = new AstarAlgorithm<>(graph);
 
         return as.aStarSearch(start, target);
@@ -19,8 +19,8 @@ public class PathSearch<T> {
     }
 
 
-    public List<T> dijkstraSearch(AdjacencyListGraph<T> graph1, T start, T target){
-        dj = new Dijkstra<>(graph1);
+    public List<String> dijkstraSearch(AdjacencyListGraph<String> graph, String start, String target){
+        dj = new Dijkstra<>(graph);
 
        return dj.dijkstra(start, target);
     }

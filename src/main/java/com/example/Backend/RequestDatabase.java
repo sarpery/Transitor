@@ -11,10 +11,17 @@ import java.time.format.DateTimeFormatter;
 import com.example.Backend.Algorithms.Algorithms;
 import com.example.Backend.Graph.Trip;;
 
-public class RequestDatabase {
+public class RequestDatabase<T> {
     private static final double CORD_DISTANCE_STAP = 0.001;
     private static Connection myCon;
     DataToHashMap<String> dataReader = new DataToHashMap<String>();
+
+    public RequestDatabase(){
+        try{
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "BCS1510_BCS1510");
+        }catch(Exception e){ System.out.println(e); }
+    }
 
     private static ResultSet findNearestStopsDinamic(double x_cord, double y_cord){
         try
@@ -31,25 +38,8 @@ public class RequestDatabase {
                 stops.next();
 
                 searchRadius += CORD_DISTANCE_STAP;
-            } while(stops.getInt(1) < 5);
+            } while(stops.getInt(1) < 10);
 
-
-            return nearestStopsRequest.executeQuery("SELECT stop_id " +
-            "FROM stops_maastricht " +
-            "WHERE (stop_lan BETWEEN " + (x_cord - searchRadius) + " AND " + (x_cord + searchRadius) + ") " +
-            "AND (stop_lon BETWEEN " + (y_cord - searchRadius) + " AND " + (y_cord + searchRadius) + ") ");
-        }
-        catch(Exception e)
-        {
-            System.out.println(e);
-            return null;
-        }
-    }
-
-    private static ResultSet findNearestStopsStatic(double x_cord, double y_cord, double searchRadius){
-        try
-        {
-            Statement nearestStopsRequest = myCon.createStatement();
 
             return nearestStopsRequest.executeQuery("SELECT stop_id " +
             "FROM stops_maastricht " +
@@ -70,59 +60,11 @@ public class RequestDatabase {
 
         try
         {
-            //LocalTime localTime = LocalTime.now();
-            LocalTime localTime = LocalTime.parse("10:00:00");
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "BCS1510", "BCS1510");
-
-
-            double searchRadius = 0;
-            // ResultSet startPoints = findNearestStopsDinamic(startPoint[0], startPoint[1]);
-            // ResultSet endPoints = findNearestStopsDinamic(endPoint[0], endPoint[1]);
+            LocalTime localTime = LocalTime.now();
             ResultSet startPoints; ResultSet endPoints;
 
-            ResultSet tripsNumber = null;
-            Statement tripNumberRequest = myCon.createStatement();
-            do
-            {
-                System.out.println(searchRadius);
-                searchRadius += CORD_DISTANCE_STAP*2;
-                startPoints = findNearestStopsStatic(startPoint[0], startPoint[1], searchRadius);
-                endPoints = findNearestStopsStatic(endPoint[0], endPoint[1], searchRadius);
-
-                String startString = "(";
-                String endString = "(";
-                while(startPoints.next()) startString += "'" + startPoints.getString(1) + "', ";
-                while(endPoints.next()) endString += "'" + endPoints.getString(1) + "', ";
-
-                if(startString.length() == 1 || endString.length() == 1){continue;}
-
-                startString = startString.substring(0, startString.length() - 2);
-                endString = endString.substring(0, endString.length() - 2);
-                startString += ")";
-                endString += ")";
-                
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-                String minTime = localTime.plusMinutes(15).format(formatter);
-                String maxTime = localTime.plusMinutes(60).format(formatter);
-
-
-                tripsNumber = tripNumberRequest.executeQuery("SELECT COUNT(*)" +
-                "FROM (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + startString + ") as stm1 " +
-                "JOIN (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + endString  +") as stm2 " +
-                "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence and stm1.departure_time BETWEEN '" + minTime +"' AND '"+ maxTime + "'");
-                System.out.println("SELECT COUNT(*)" +
-                "FROM (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + startString + ") as stm1 " +
-                "JOIN (SELECT * FROM stop_times_maastricht WHERE stop_id IN " + endString  +") as stm2 " +
-                "ON stm1.trip_id = stm2.trip_id and stm1.stop_sequence < stm2.stop_sequence and stm1.departure_time BETWEEN '" + minTime +"' AND '"+ maxTime + "'");
-                System.out.println();
-
-
-                tripsNumber.next();
-            }while(tripsNumber == null || tripsNumber.getInt(1) == 0);
-
-            startPoints = findNearestStopsStatic(startPoint[0], startPoint[1], searchRadius);
-            endPoints = findNearestStopsStatic(endPoint[0], endPoint[1], searchRadius);
+            startPoints = findNearestStopsDinamic(startPoint[0], startPoint[1]);
+            endPoints = findNearestStopsDinamic(endPoint[0], endPoint[1]);
 
 
             String startString = "(";

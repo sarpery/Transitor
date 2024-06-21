@@ -1,7 +1,6 @@
 package com.example.Backend.Graph;
 
 import java.util.List;
-import java.util.Map;
 
 public interface Graph<T> {
  
@@ -30,7 +29,7 @@ public interface Graph<T> {
      * @param x
      * @param y
      */
-    public void addEdge(T x, T y, Integer dis);
+    public void addEdge(T x, String y, Integer dis);
 
    
    

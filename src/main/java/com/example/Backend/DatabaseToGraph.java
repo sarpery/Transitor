@@ -29,24 +29,39 @@ public class DatabaseToGraph {
     public static void graphTheData(){
         try{
         connect();
-        getVertexes();
-        PreparedStatement edgeQuery = myCon.prepareStatement("SELECT * FROM single_bus_rides");
-        ResultSet edges = edgeQuery.executeQuery();
+        PreparedStatement busEdgeQuery = myCon.prepareStatement("SELECT * FROM single_bus_rides");
+        ResultSet busEdges = busEdgeQuery.executeQuery();
 
         
         getVertexes();
         addVertexes();
 
-        while(edges.next())
+        while(busEdges.next())
         {
-            String name = edges.getString("trip_id");
-            String start_point = edges.getString("start_stop");
-            String end_point = edges.getString("end_stop");
-            String departure = edges.getString("departure_time");
-            String arrival = edges.getString("arrival_time");
-            Integer distance = edges.getInt("distance");
+            String name = busEdges.getString("trip_id");
+            String start_point = busEdges.getString("start_stop");
+            String end_point = busEdges.getString("end_stop");
+            String departure = busEdges.getString("departure_time");
+            String arrival = busEdges.getString("arrival_time");
+            Integer distance = busEdges.getInt("distance");
 
             graph.addEdge(start_point, end_point, arrival, departure,  distance, name);
+        }
+
+        PreparedStatement walkEdgeQuery = myCon.prepareStatement("SELECT * FROM walking_ages");
+        ResultSet walkEdges = walkEdgeQuery.executeQuery();
+
+        while(walkEdges.next())
+        {
+            String name = "null:" + walkEdges.getString("pt1") + "-" + walkEdges.getString("pt2");
+            String start_point = walkEdges.getString("pt1");
+            String end_point = walkEdges.getString("pt2");
+            String departure = walkEdges.getDouble("pt1_lan") + ":" + walkEdges.getDouble("pt1_lon");
+            String arrival = walkEdges.getDouble("pt2_lan") + ":" + walkEdges.getDouble("pt2_lon");
+            Integer distance = 0;
+
+            graph.addEdge(start_point, end_point, arrival, departure,  distance, name);
+            graph.addEdge(end_point, start_point, departure, arrival,  distance, name);
         }
         } catch(Exception e) { e.printStackTrace(); }
     }
@@ -60,15 +75,17 @@ public class DatabaseToGraph {
     }
 
     private static void getVertexes() throws SQLException {
-        PreparedStatement vertexQuery = myCon.prepareStatement("SELECT stop_id FROM stops_maastricht");
+        PreparedStatement vertexQuery = myCon.prepareStatement("SELECT point_id FROM points");
 
         
         ResultSet vertexes = vertexQuery.executeQuery();
 
         while(vertexes.next())
         {
-            bus_stops.add(vertexes.getString("stop_id"));
+            bus_stops.add(vertexes.getString("point_id"));
         }
+
+
     }
 
     public static AdjacencyListGraph<String> getGraph() {
@@ -78,7 +95,7 @@ public class DatabaseToGraph {
     public static void main(String[] args){
         graphTheData();
         BusDijkstra<String> bs = new BusDijkstra<String>(getGraph());
-        System.out.println(bs.dijkstra("2578110", "2578131"));
+        System.out.println(bs.dijkstra("6229VP", "6218TL"));
         //System.out.println(graph.toString());
     }
 }

@@ -26,7 +26,7 @@ public class BusDijkstra<T> {
 
     public List<String> dijkstra(T start, T target) {
         Map<T, Integer> distance = new HashMap<>();
-        Map<T, T> previousTrips = new HashMap<>();
+        Map<T, String> previousTrips = new HashMap<>();
         Map<T, T> previousStops = new HashMap<>();
         PriorityQueue<T> priorityQueue = new PriorityQueue<>((u, v) -> Math.toIntExact(resultTimes.get(u) - resultTimes.get(v)));
         Set<T> visited = new HashSet<>();
@@ -47,6 +47,7 @@ public class BusDijkstra<T> {
         while (!priorityQueue.isEmpty()) {
             T current = priorityQueue.poll();
             if (current.equals(target)) {
+                System.out.println("!!!");
                 break; // Reached the target
             }
             if (visited.contains(current)) {
@@ -56,7 +57,11 @@ public class BusDijkstra<T> {
 
             for (EdgeNode<T> neighbor : graph.neighbors(current)) {
                 T next = neighbor.destination_point;
-                Long newTime = calcTime(current, neighbor);
+                Long newTime;
+                if(neighbor.getName().startsWith("null"))
+                    newTime = calcTimeWalking(current, neighbor);
+                else
+                    newTime = calcTimeBus(current, neighbor);
                 if (newTime < resultTimes.get(next)) {
                     resultTimes.put(next, newTime);
                     previousTrips.put(next, neighbor.getName());
@@ -68,12 +73,12 @@ public class BusDijkstra<T> {
 
         // Reconstruct the path from start to target
         LinkedList<T> path = new LinkedList<>();
-        LinkedList<T> trips = new LinkedList<>();
+        LinkedList<String> trips = new LinkedList<>();
         T current = target;
         trips.add(previousTrips.get(target));
         path.add(target);
         while (current != null) {
-            if(trips.getFirst().equals(previousTrips.get(current)))
+            if(trips.getFirst().equals(previousTrips.get(current)) && !previousTrips.get(current).startsWith("null"))
                 current = previousStops.get(current);
             else
             {
@@ -94,11 +99,11 @@ public class BusDijkstra<T> {
             result.add(it1.next() + "-" + it2.next());
         }
 
-
+        System.out.println(resultTimes.get(target));
         return result;
     }
 
-    private Long calcTime(T startPoint, EdgeNode<T> edge){
+    private Long calcTimeBus(T startPoint, EdgeNode<T> edge){
         
         Long currentTime = resultTimes.get(startPoint);
         Long reachTime = alg.parseDuration(edge.departure_time).minus(alg.parseDuration(time)).toMinutes();
@@ -106,5 +111,15 @@ public class BusDijkstra<T> {
         if(reachTime - currentTime < 0) return (long)Integer.MAX_VALUE;
 
         return alg.parseDuration(edge.arrival_time).minus(alg.parseDuration(time)).toMinutes();
+    }
+
+    private Long calcTimeWalking(T startPoint, EdgeNode<T> edge){
+        
+        String[] pt1String = edge.arrival_time.split(":");
+        double[] pt1 = {Double.parseDouble(pt1String[0]), Double.parseDouble(pt1String[1])};
+        String[] pt2String = edge.departure_time.split(":");
+        double[] pt2 = {Double.parseDouble(pt2String[0]), Double.parseDouble(pt2String[1])};
+
+        return (long) (alg.getWalkingTime(pt1, pt2) + resultTimes.get(startPoint));
     }
 }

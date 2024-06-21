@@ -15,22 +15,22 @@ import com.example.Backend.Graph.EdgeNode;
 
 public class Dijkstra<T> {
     
-    private AdjacencyListGraph<T> graph;
+    private AdjacencyListGraph<String> graph;
     
-    public Dijkstra(AdjacencyListGraph<T> graph1){
+    public Dijkstra(AdjacencyListGraph<String> graph1){
 
         this.graph = graph1;
     }
 
 
-    public List<T> dijkstra(T start, T target) {
-        Map<T, Integer> distance = new HashMap<>();
-        Map<T, T> previous = new HashMap<>();
-        PriorityQueue<T> priorityQueue = new PriorityQueue<>((u, v) -> distance.get(u) - distance.get(v));
-        Set<T> visited = new HashSet<>();
+    public List<String> dijkstra(String start, String target) {
+        Map<String, Integer> distance = new HashMap<>();
+        Map<String, String> previous = new HashMap<>();
+        PriorityQueue<String> priorityQueue = new PriorityQueue<>((u, v) -> distance.get(u) - distance.get(v));
+        Set<String> visited = new HashSet<>();
 
         // Initialize distances
-        for (T vertex : graph.verteces.keySet()) {
+        for (String vertex : graph.verteces.keySet()) {
             distance.put(vertex, Integer.MAX_VALUE);
             previous.put(vertex, null);
         }
@@ -38,7 +38,7 @@ public class Dijkstra<T> {
         priorityQueue.add(start);
 
         while (!priorityQueue.isEmpty()) {
-            T current = priorityQueue.poll();
+            String current = priorityQueue.poll();
             if (current.equals(target)) {
                 break; // Reached the target
             }
@@ -47,8 +47,8 @@ public class Dijkstra<T> {
             }
             visited.add(current);
 
-            for (EdgeNode<T> neighbor : graph.neighbors(current)) {
-                T next = neighbor.getName();
+            for (EdgeNode<String> neighbor : graph.neighbors(current)) {
+                String next = neighbor.getName();
                 Integer newDistance = distance.get(current) + neighbor.getWeight();
                 if (newDistance < distance.get(next)) {
                     distance.put(next, newDistance);
@@ -59,8 +59,8 @@ public class Dijkstra<T> {
         }
 
         // Reconstruct the path from start to target
-        List<T> path = new LinkedList<>();
-        T current = target;
+        List<String> path = new LinkedList<>();
+        String current = target;
         while (current != null) {
             path.add(0, current);
             current = previous.get(current);

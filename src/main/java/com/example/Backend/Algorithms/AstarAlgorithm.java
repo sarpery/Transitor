@@ -14,37 +14,37 @@ import com.example.Backend.Graph.EdgeNode;
 
 public class AstarAlgorithm<T> {
 
-private AdjacencyListGraph<T> graph;
-Algorithms<T> alg = new Algorithms<T>();
+private AdjacencyListGraph<String> graph;
+Algorithms<String> alg = new Algorithms<String>();
 
-public AstarAlgorithm(AdjacencyListGraph<T> graph){
+public AstarAlgorithm(AdjacencyListGraph<String> graph){
 
     this.graph = graph;
 }
 
 
 
-public List<T> aStarSearch(T start, T goal) {
-    Map<T, Double> gScore = new HashMap<>();
+public List<String> aStarSearch(String start, String goal) {
+    Map<String, Double> gScore = new HashMap<>();
 
     // Initialize gScore for start node
     gScore.put(start, 0.0);
     double fScore = gScore.get(start) + heuristicCost(start, goal);
 
     // Define a comparator using a lambda expression
-    Comparator<T> comparator = Comparator.comparingDouble(node -> getTotalCost(node, gScore, goal));
+    Comparator<String> comparator = Comparator.comparingDouble(node -> getTotalCost(node, gScore, goal));
 
     // Use PriorityQueue constructor with the defined comparator
-    PriorityQueue<T> openSet = new PriorityQueue<>(comparator);
+    PriorityQueue<String> openSet = new PriorityQueue<>(comparator);
 
-    Set<T> closedSet = new HashSet<>();
-    Map<T, T> cameFrom = new HashMap<>();
+    Set<String> closedSet = new HashSet<>();
+    Map<String, String> cameFrom = new HashMap<>();
 
     // Add start node to open set
     openSet.add(start);
 
     while (!openSet.isEmpty()) {
-        T current = openSet.poll();
+        String current = openSet.poll();
 
         if (current.equals(goal)) {
             // Reconstruct path
@@ -53,8 +53,8 @@ public List<T> aStarSearch(T start, T goal) {
 
         closedSet.add(current);
 
-        for (EdgeNode<T> edge : graph.neighbors(current)) {
-            T neighbor = edge.getName();
+        for (EdgeNode<String> edge : graph.neighbors(current)) {
+            String neighbor = edge.getName();
             if (closedSet.contains(neighbor)) {
                 continue; // Neighbor already evaluated
             }
@@ -78,7 +78,7 @@ public List<T> aStarSearch(T start, T goal) {
     return null;
 }
 
-private int heuristicCost(T from, T to) {
+private int heuristicCost(String from, String to) {
     
     
     double dis = 100000 * alg.getDistance(from, to);
@@ -87,8 +87,8 @@ private int heuristicCost(T from, T to) {
     return cal;
 }
 
-private List<T> reconstructPath(Map<T, T> cameFrom, T current) {
-    List<T> path = new ArrayList<>();
+private List<String> reconstructPath(Map<String, String> cameFrom, String current) {
+    List<String> path = new ArrayList<>();
     path.add(current);
     while (cameFrom.containsKey(current)) {
         current = cameFrom.get(current);
@@ -97,7 +97,7 @@ private List<T> reconstructPath(Map<T, T> cameFrom, T current) {
     return path;
 }
 
-public double getTotalCost(T element, Map<T, Double> gScore, T goal) {
+public double getTotalCost(String element, Map<String, Double> gScore, String goal) {
     return gScore.getOrDefault(element, Double.MAX_VALUE) + heuristicCost(element, goal);
 }
 
