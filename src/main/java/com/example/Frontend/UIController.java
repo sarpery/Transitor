@@ -4,10 +4,11 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.geojson.FeatureCollection;
 
 import com.example.Controller.AlgoConnecter;
 import com.example.Controller.GraphController;
@@ -17,11 +18,7 @@ import com.example.Frontend.PathStrategy.BikingPath;
 import com.example.Frontend.PathStrategy.Path;
 import com.example.Frontend.PathStrategy.TransportPath;
 import com.example.Frontend.PathStrategy.WalkingPath;
-<<<<<<< HEAD
-=======
-import com.example.Frontend.PathStrategy.BikingPath;
 import com.fasterxml.jackson.databind.ObjectMapper;
->>>>>>> 1c3e7d007763b6c7f8b0a8b26d16b9276f45562c
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
@@ -32,13 +29,13 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.geojson.FeatureCollection;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 
 public class UIController implements Initializable, AlgoConnecter, HashController, GraphController, SearchConnector {
@@ -56,9 +53,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     @FXML
     private MapView mapView;
-
-
-    private String[] algos = {"Dijkstra", "Astar"};
 
     private int startScore = 0;
 
@@ -84,6 +78,9 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private Button transportButton;
 
     @FXML
+    private Button heatmapButton;
+
+    @FXML
     private TextField startZip;
 
     @FXML
@@ -99,6 +96,10 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     public Label busInfo;
 
     public CustomMapLayer cL = new CustomMapLayer();
+
+    public CustomHeatmapLayer cLH = new CustomHeatmapLayer(this);
+
+    public UIController uiController = this;
     public CustomMapLayerBus cLB;
 
     @FXML
@@ -140,6 +141,12 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
             deactivateButtons();
     }
 
+    @FXML
+    private void setupHeatmapButton() throws Exception {
+            drawHeatmap(getAllZipCodes());
+            deactivateButtons();
+    }
+
     public static double ax;
     public static double ay;
     public static double bx;
@@ -149,35 +156,16 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private void pathDrawBut(List<String> ls)  {
         mapView.removeLayer(cL);
         mapView.removeLayer(cLB);
+        mapView.removeLayer(cLH);
         cL = new CustomMapLayer(ls);
         mapView.addLayer(cL);
         mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
     }
 
-    @FXML
-    private void deactivateButtons(){
-        if (!isFail) {
-            walkButton.setDisable(true);
-            bikeButton.setDisable(true);
-            transportButton.setDisable(true);
-            startZip.setDisable(true);
-            endZip.setDisable(true);
-        }
-        isFail = false;
-    }
-
-    @FXML
-    private void activateButtons(){
-        walkButton.setDisable(false);
-        bikeButton.setDisable(false);
-        transportButton.setDisable(false);
-        startZip.setDisable(false);
-        endZip.setDisable(false);
-    }
-
     public void pathDrawBus(String start, String end) throws Exception {
         mapView.removeLayer(cL);
         mapView.removeLayer(cLB);
+        mapView.removeLayer(cLH);
 
         Task task = new Task<CustomMapLayerBus>() {
             @Override
@@ -202,9 +190,55 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
                 activateButtons();
             }
         });
-
-
     }
+
+    @FXML
+    private void drawHeatmap(List<String> ls) throws Exception {
+        mapView.removeLayer(cL);
+        mapView.removeLayer(cLB);
+        mapView.removeLayer(cLH);
+
+        Task task = new Task<CustomHeatmapLayer>() {
+            @Override
+            protected CustomHeatmapLayer call() throws Exception {
+                return new CustomHeatmapLayer(ls, uiController);
+            }
+        };
+        new Thread(task).start();
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent t) {
+                cLH = (CustomHeatmapLayer) task.getValue();
+                mapView.addLayer(cLH);
+                mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
+                activateButtons();
+            }
+        });
+    }
+
+    @FXML
+    public void deactivateButtons(){
+        if (!isFail) {
+            walkButton.setDisable(true);
+            bikeButton.setDisable(true);
+            transportButton.setDisable(true);
+            startZip.setDisable(true);
+            endZip.setDisable(true);
+            heatmapButton.setDisable(true);
+        }
+        isFail = false;
+    }
+
+    @FXML
+    public void activateButtons(){
+        walkButton.setDisable(false);
+        bikeButton.setDisable(false);
+        transportButton.setDisable(false);
+        startZip.setDisable(false);
+        endZip.setDisable(false);
+        heatmapButton.setDisable(false);
+    }
+
 private boolean isFail = false;
 
     private void startPath(Path strategy) {
@@ -220,10 +254,10 @@ private boolean isFail = false;
                 if (!(strategy instanceof TransportPath)) {
                     getAlgorithm(startText, endText);
                     calculateDistance(startText, endText);
-                   startScoreLabel.setText("Score: " + String.valueOf(accessibility(startText)));
-                   endScoreLabel.setText("Score: " + String.valueOf(accessibility(endText)));
                 }
                 strategy.calculateTime(startText, endText, timeLabel);
+                startScoreLabel.setText("Score: " + String.valueOf(accessibility(startText)));
+                endScoreLabel.setText("Score: " + String.valueOf(accessibility(endText)));
             } catch (Exception e) {
                 // Show error popup on the JavaFX Application Thread
                 Platform.runLater(() -> {
@@ -259,7 +293,6 @@ private List<String> result;
     public void initialize(URL url, ResourceBundle resourceBundle) {
         hashTheData();
         graphTheData();
-        graphTheDatabase();
         mapView = createMapView();
         mapPane.getChildren().add(mapView);
         VBox.setVgrow(mapView, Priority.ALWAYS);
@@ -317,4 +350,19 @@ private List<String> result;
         return score;
     }
 
+    public Circle createHeatmapPoint(String postalCode) throws Exception {
+        int score = accessibility(postalCode);
+        Circle icon;
+
+        if (score > 5) {
+            icon = new Circle(5, Color.GREEN);
+        } else if (score > 3) {
+            icon = new Circle(5, Color.YELLOW);
+        } else if (score > 1) {
+            icon = new Circle(5, Color.ORANGE);
+        } else {
+            icon = new Circle(5, Color.RED);
+        }
+        return icon;
+    }
 }
