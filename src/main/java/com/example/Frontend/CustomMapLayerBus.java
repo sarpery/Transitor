@@ -14,7 +14,6 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.StrokeType;
 
 public class CustomMapLayerBus extends MapLayer implements HashController {
 
@@ -94,8 +93,8 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
             try {
                 Node currentNode = nodesOnMap.get(a);
 
-                double lon = coordinatesList.get(a)[0];
-                double lat = coordinatesList.get(a)[1];
+                double lon = coordinatesList.get(a)[1];
+                double lat = coordinatesList.get(a)[0];
                 if (a == 0){
                     MapPoint mapPoint = new MapPoint(lat, lon);
                     Point2D pointOnMap = getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
@@ -115,8 +114,8 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
 
                 if (a>0) {
                     Line currentLine = linesOnMap.get(a - 1);
-                    double prevLon = coordinatesList.get(a - 1)[0];
-                    double prevLat = coordinatesList.get(a - 1)[1];
+                    double prevLon = coordinatesList.get(a - 1)[1];
+                    double prevLat = coordinatesList.get(a - 1)[0];
                     MapPoint mapPointPrev = new MapPoint(prevLat, prevLon);
                     Point2D pointPrev = getMapPoint(mapPointPrev.getLatitude(), mapPointPrev.getLongitude());
 
