@@ -37,6 +37,7 @@ public class Trip{
             System.out.println(i+1 + "/" + travelList.size() + "-" + tripId);
             travelPoints.addAll(createPointList(tripId, startPoint, endPoint));
         }
+        traveledDistance = ((int)(traveledDistance*100))/100.0;
     }
 
     private LinkedList<double[]> createPointList(String tripID, String startPointName, String endPointName){
@@ -85,7 +86,7 @@ public class Trip{
                     travelPoints.add(tempTravelPoints.get(i));
                 }
 
-                traveledDistance += (shapeDist.get(endPointIndex) - shapeDist.get(startPointIndex));
+                traveledDistance += (shapeDist.get(endPointIndex) - shapeDist.get(startPointIndex))/1000;
             } catch(Exception e){ System.out.println(e); return null;}
         }
         else
