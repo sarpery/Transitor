@@ -3,7 +3,9 @@ package com.example.Backend;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DataToHashMap<T> {
     
@@ -37,8 +39,6 @@ public class DataToHashMap<T> {
         }
 
     }
-
-
 
     public double getLat(T key){
 
@@ -87,6 +87,10 @@ public class DataToHashMap<T> {
         
         return coord;
 
+    }
+
+    public List<String> getAllZipCodes() {
+        return new ArrayList<>(coordinatesData.keySet());
     }
 }
 

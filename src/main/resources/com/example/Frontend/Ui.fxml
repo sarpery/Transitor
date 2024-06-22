@@ -42,7 +42,7 @@
                         <Font name="Arial Bold" size="16.0" />
                     </font>
                 </Label>
-                <Label id="timeMeasure" fx:id="timeLabel" focusTraversable="false" layoutX="50.0" layoutY="459.0" text="Travel Time: 0" textFill="#ffffff">
+                <Label id="timeMeasure" fx:id="timeLabel" focusTraversable="false" layoutX="50.0" layoutY="454.0" text="Travel Time: 0" textFill="#ffffff">
                     <font>
                         <Font name="Arial Bold" size="16.0" />
                     </font>
@@ -71,7 +71,7 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-            <Label id="timeMeasure" fx:id="busInfo" layoutX="48.0" layoutY="437.0" prefHeight="42.0" prefWidth="187.0" text="Road number: 9" textAlignment="CENTER" textFill="#ffffff" visible="false">
+            <Label id="timeMeasure" fx:id="busInfo" layoutX="41.0" layoutY="474.0" prefHeight="42.0" prefWidth="187.0" text="Road number: 9" textAlignment="CENTER" textFill="WHITE" visible="false">
                <font>
                   <Font name="Arial Bold" size="16.0" />
                </font>
@@ -86,6 +86,14 @@
                   <Font name="Arial Bold" size="16.0" />
                </font>
             </Label>
+            <Button id="heatmapButton" fx:id="heatmapButton" layoutX="68.0" layoutY="389.0" mnemonicParsing="false" onAction="#setupHeatmapButton" prefHeight="0.0" prefWidth="95.0" style="-fx-background-color: #AE0B12#AE0B12;" text="Heatmap" textFill="#FFFFFF" wrapText="true">
+               <font>
+                  <Font name="Arial Bold" size="15.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
             </children>
         </Pane>
     </children>
