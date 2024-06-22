@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
-import com.example.Backend.Algorithms.BusDijkstra;
 import com.example.Backend.Graph.AdjacencyListGraph;
 
 public class DatabaseToGraph {
@@ -15,7 +14,7 @@ public class DatabaseToGraph {
     private  static LinkedList<String> bus_stops = new LinkedList<String>();
     private static Connection myCon;
 
-    private static void connect(){
+    private  void connect(){
         try{
             
             myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "BCS1510_BCS1510");
@@ -26,7 +25,7 @@ public class DatabaseToGraph {
         }
     }
 
-    public static void graphTheData(){
+    public  void graphTheDatabase(){
         try{
         connect();
         PreparedStatement busEdgeQuery = myCon.prepareStatement("SELECT * FROM single_bus_rides");
@@ -53,20 +52,21 @@ public class DatabaseToGraph {
 
         while(walkEdges.next())
         {
-            String name = "null:" + walkEdges.getString("pt1") + "-" + walkEdges.getString("pt2");
+            String name1 = "null:" + walkEdges.getString("pt1") + "-" + walkEdges.getString("pt2");
+            String name2 = "null:" + walkEdges.getString("pt2") + "-" + walkEdges.getString("pt1");
             String start_point = walkEdges.getString("pt1");
             String end_point = walkEdges.getString("pt2");
             String departure = walkEdges.getDouble("pt1_lan") + ":" + walkEdges.getDouble("pt1_lon");
             String arrival = walkEdges.getDouble("pt2_lan") + ":" + walkEdges.getDouble("pt2_lon");
             Integer distance = 0;
 
-            graph.addEdge(start_point, end_point, arrival, departure,  distance, name);
-            graph.addEdge(end_point, start_point, departure, arrival,  distance, name);
+            graph.addEdge(start_point, end_point, arrival, departure,  distance, name1);
+            graph.addEdge(end_point, start_point, departure, arrival,  distance, name2);
         }
         } catch(Exception e) { e.printStackTrace(); }
     }
     
-    private static void addVertexes(){
+    private  void addVertexes(){
         
         for(int i = 0; i < bus_stops.size();i++){
 
@@ -74,7 +74,7 @@ public class DatabaseToGraph {
         }
     }
 
-    private static void getVertexes() throws SQLException {
+    private  void getVertexes() throws SQLException {
         PreparedStatement vertexQuery = myCon.prepareStatement("SELECT point_id FROM points");
 
         
@@ -88,14 +88,13 @@ public class DatabaseToGraph {
 
     }
 
-    public static AdjacencyListGraph<String> getGraph() {
+    public  AdjacencyListGraph<String> getGraph() {
         return graph;
     }
 
-    public static void main(String[] args){
-        graphTheData();
-        BusDijkstra<String> bs = new BusDijkstra<String>(getGraph());
-        System.out.println(bs.dijkstra("6229VP", "6218TL"));
-        //System.out.println(graph.toString());
-    }
+    // public static void main(String[] args){
+    //     graphTheDatabase();
+    //     BusDijkstra<String> bs = new BusDijkstra<String>(getGraph());
+    //      System.out.println(bs.dijkstra("6229VP", "6218TL"));
+    // }
 }

@@ -18,7 +18,7 @@ public class BusDijkstra<T> {
     private Map<T, Long> resultTimes = new HashMap<>();
     private Algorithms<String> alg = new Algorithms<>();
     private String time;
-    
+    private Long timeCost;
     public BusDijkstra(AdjacencyListGraph<T> graph1){
 
         this.graph = graph1;
@@ -30,6 +30,7 @@ public class BusDijkstra<T> {
         Map<T, T> previousStops = new HashMap<>();
         PriorityQueue<T> priorityQueue = new PriorityQueue<>((u, v) -> Math.toIntExact(resultTimes.get(u) - resultTimes.get(v)));
         Set<T> visited = new HashSet<>();
+        
 
         // Initialize distances
         for (T vertex : graph.verteces.keySet()) {
@@ -100,7 +101,12 @@ public class BusDijkstra<T> {
         }
 
         System.out.println(resultTimes.get(target));
+        timeCost = resultTimes.get(target);
         return result;
+    }
+
+    public Long getTime(){
+        return timeCost;
     }
 
     private Long calcTimeBus(T startPoint, EdgeNode<T> edge){

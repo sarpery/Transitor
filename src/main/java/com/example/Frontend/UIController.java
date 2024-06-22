@@ -9,10 +9,10 @@ import com.example.Controller.AlgoConnecter;
 import com.example.Controller.GraphController;
 import com.example.Controller.HashController;
 import com.example.Controller.SearchConnector;
+import com.example.Frontend.PathStrategy.BikingPath;
 import com.example.Frontend.PathStrategy.Path;
 import com.example.Frontend.PathStrategy.TransportPath;
 import com.example.Frontend.PathStrategy.WalkingPath;
-import com.example.Frontend.PathStrategy.BikingPath;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
@@ -260,6 +260,7 @@ private List<String> result;
     public void initialize(URL url, ResourceBundle resourceBundle) {
         hashTheData();
         graphTheData();
+        graphTheDatabase();
         mapView = createMapView();
         mapPane.getChildren().add(mapView);
         VBox.setVgrow(mapView, Priority.ALWAYS);

@@ -1,92 +1,99 @@
 package com.example.Backend.Graph;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
+import com.example.Backend.RequestDatabase;
 import com.example.Backend.Algorithms.Algorithms;
 
 public class Trip{
-    private Algorithms<double[]> alg = new Algorithms<double[]>();;
-    public ArrayList<double[]> travelPoints;
+    private Algorithms<double[]> alg = new Algorithms<double[]>();
+    private RequestDatabase<String> rDB = new RequestDatabase<String>();
     public long travelTime;
     public double traveledDistance;
     public String tripNumber;
     public String departure;
     public String arrival;
+    public ArrayList<double[]> travelPoints;
 
-    public Trip(ResultSet shape, long travelTime, double traveledDistance, String tripNumber, String startStop, String endStop, String departure, String arrival){
-        this.travelTime = travelTime;
-        this.traveledDistance = traveledDistance;
-        this.tripNumber = tripNumber;
-        this.departure = departure;
-        this.arrival = arrival;
+    public Trip(List<String> travelList, long time){
+        traveledDistance = 0;
+        travelTime = time;
+        travelPoints = new ArrayList<double[]>();
 
-        double[] startPoint = new double[2]; double[] endPoint = new double[2];
-        try
-        {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "BCS1510", "BCS1510");
-            PreparedStatement startCordsQuery = myCon.prepareStatement("SELECT stop_lon, stop_lan " +
-                "FROM stops " +
-                "WHERE stop_id = " + startStop);
-                PreparedStatement endCordsQuery = myCon.prepareStatement("SELECT stop_lon, stop_lan " +
-                "FROM stops " +
-                "WHERE stop_id = " + endStop);
-
-                ResultSet startCords = startCordsQuery.executeQuery();
-                ResultSet endCords = endCordsQuery.executeQuery();
-                startCords.next();
-                endCords.next();
-
-                for(int i = 0; i < 2; i++)
-                {
-                    startPoint[i] = startCords.getDouble(i +1);
-                    endPoint[i] = endCords.getDouble(i + 1);
-                }
-        } catch(Exception e){System.out.println(e);}
-        createPointList(shape, startPoint, endPoint);
+        String pointer1;
+        String pointer2;
+        for(int i = 0; i <= travelList.size() - 1 ; i++ ){
+            pointer1 = travelList.get(i);
+            String prts[] = pointer1.split("-");
+            String startPoint = prts[0];
+            pointer2 = travelList.get(i+1);
+            String parts[] = pointer2.split("-");
+            String endPoint = parts[0];
+            String part[] = parts[1].split(":");
+            String tripId = part[0];
+            travelPoints.addAll(createPointList(tripId, startPoint, endPoint));
+        }
     }
 
-    private void createPointList(ResultSet shape, double[] startPoint, double[] endPoint){
+    private LinkedList<double[]> createPointList(String tripID, String startPointName, String endPointName){
+        LinkedList<double[]> travelPoints = new LinkedList<double[]>();;
         double startPointBestDistance = Integer.MAX_VALUE;
         double endPointBestDistance = Integer.MAX_VALUE;
         int startPointIndex = 0;
         int endPointIndex = 0;
+        double[] startPoint = rDB.getPointCords(startPointName);
+        double[] endPoint = rDB.getPointCords(endPointName);
 
         int index = 0;
 
         ArrayList<double[]> tempTravelPoints = new ArrayList<double[]>();
-        try{
-            while(shape.next())
-            {
-                double[] LonLan = new double[2];
-                for(int i = 0; i < 2; ++i) LonLan[i] = shape.getDouble(i + 1);
+        ArrayList<Double> shapeDist = new ArrayList<Double>();
 
-                tempTravelPoints.add(LonLan);
-
-                if(alg.calculateDistanceHaversine(startPoint, LonLan) < startPointBestDistance)
+        if(!tripID.startsWith("null"))
+        {
+            ResultSet shape = rDB.getShape(tripID);
+            try{
+                while(shape.next())
                 {
-                    startPointBestDistance = alg.calculateDistanceHaversine(startPoint, LonLan);
-                    startPointIndex = index;
+                    double[] LonLan = new double[2];
+                    LonLan[0] = shape.getDouble("lan");
+                    LonLan[1] = shape.getDouble("lon");
+                    shapeDist.add(shape.getDouble("distance"));
+
+                    tempTravelPoints.add(LonLan);
+
+                    if(alg.calculateDistanceHaversine(startPoint, LonLan) < startPointBestDistance)
+                    {
+                        startPointBestDistance = alg.calculateDistanceHaversine(startPoint, LonLan);
+                        startPointIndex = index;
+                    }
+                    if(alg.calculateDistanceHaversine(endPoint, LonLan) < endPointBestDistance)
+                    {
+                        endPointBestDistance = alg.calculateDistanceHaversine(endPoint, LonLan);
+                        endPointIndex = index;
+                    }
+
+                    ++index;
                 }
-                if(alg.calculateDistanceHaversine(endPoint, LonLan) < endPointBestDistance)
+
+                for(int i = startPointIndex; i <= endPointIndex; ++i)
                 {
-                    endPointBestDistance = alg.calculateDistanceHaversine(endPoint, LonLan);
-                    endPointIndex = index;
+                    travelPoints.add(tempTravelPoints.get(i));
                 }
 
-                ++index;
-            }
+                traveledDistance += (shapeDist.get(endPointIndex) - shapeDist.get(startPointIndex));
+            } catch(Exception e){ System.out.println(e); return null;}
+        }
+        else
+        {
+            travelPoints.add(startPoint);
+            travelPoints.add(endPoint);
+            traveledDistance += alg.calculateDistanceHaversine(startPoint, endPoint);
+        }
 
-            travelPoints = new ArrayList<double[]>();
-
-            for(int i = startPointIndex; i <= endPointIndex; ++i)
-            {
-                travelPoints.add(tempTravelPoints.get(i));
-            }
-        } catch(Exception e){ System.out.println(e); }
+        return travelPoints;
     }
 }
