@@ -22,6 +22,7 @@ public class Trip{
         traveledDistance = 0;
         travelTime = time;
         travelPoints = new LinkedList<double[]>();
+        tripNumber = "";
 
         String pointer1;
         String pointer2;
@@ -34,8 +35,10 @@ public class Trip{
             String endPoint = parts[0];
             String part[] = parts[1].split(":");
             String tripId = part[0];
+
             System.out.println(i+1 + "/" + travelList.size() + "-" + tripId);
             travelPoints.addAll(createPointList(tripId, startPoint, endPoint));
+            if(!tripId.startsWith("null")) tripNumber += "- " + rDB.getBusNumber(tripId);
         }
         traveledDistance = ((int)(traveledDistance*100))/100.0;
     }

@@ -89,6 +89,19 @@ public class RequestDatabase<T> {
         } catch(Exception e){e.printStackTrace(); return null;}
     }
 
+    public String getBusNumber(String trip_id){
+        try{
+            System.out.println("SELECT route_short_name " +
+                "FROM routes WHERE route_id IN (SELECT route_id FROM trips_maastricht WHERE trip_id = '" + trip_id + "')");
+            PreparedStatement busNumQuery = myCon.prepareStatement("SELECT route_short_name " +
+                "FROM routes WHERE route_id IN (SELECT route_id FROM trips_maastricht WHERE trip_id = '" + trip_id + "')");
+            ResultSet busNumRS =  busNumQuery.executeQuery();
+            busNumRS.next();
+
+            return busNumRS.getString("route_short_name");
+        } catch(Exception e){e.printStackTrace(); return null;}
+    }
+
     public Trip findBusRoute(String startPostalCode, String endPostalCode){
         return computeBusRoute(startPostalCode, endPostalCode);
     }
