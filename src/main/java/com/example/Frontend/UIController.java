@@ -152,11 +152,14 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     @FXML
     private void deactivateButtons(){
-        walkButton.setDisable(true);
-        bikeButton.setDisable(true);
-        transportButton.setDisable(true);
-        startZip.setDisable(true);
-        endZip.setDisable(true);
+        if (!isFail) {
+            walkButton.setDisable(true);
+            bikeButton.setDisable(true);
+            transportButton.setDisable(true);
+            startZip.setDisable(true);
+            endZip.setDisable(true);
+        }
+        isFail = false;
     }
 
     @FXML
@@ -198,7 +201,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
 
     }
-
+private boolean isFail = false;
 
     private void startPath(Path strategy) {
         String startText = startZip.getText();
@@ -207,6 +210,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
             ErrorPopup popup = new ErrorPopup("invalid postal code");
             popup.display();
             System.out.println("not found");
+            isFail = true;
         } else {
             try {
                 if (!(strategy instanceof TransportPath)) {
