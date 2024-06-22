@@ -26,6 +26,7 @@ public class CustomHeatmapLayer extends MapLayer implements HashController{
         for (String postalCode : ls) {
             drawHeatmapPoints(postalCode);
         }
+        uiController.deactivateButtons();
     }
 
     public CustomHeatmapLayer(UIController uiController) {

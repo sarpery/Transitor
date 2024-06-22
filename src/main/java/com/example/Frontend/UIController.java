@@ -3,9 +3,7 @@ package com.example.Frontend;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,9 +26,7 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -81,6 +77,9 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private Button transportButton;
 
     @FXML
+    private Button heatmapButton;
+
+    @FXML
     private TextField startZip;
 
     @FXML
@@ -98,6 +97,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     public CustomMapLayer cL = new CustomMapLayer();
 
     public CustomHeatmapLayer cLH = new CustomHeatmapLayer(this);
+
+    public UIController uiController = this;
     public CustomMapLayerBus cLB;
 
     @FXML
@@ -141,7 +142,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     @FXML
     private void setupHeatmapButton() throws Exception {
-        drawHeatmap(getAllZipCodes());
+            drawHeatmap(getAllZipCodes());
+            deactivateButtons();
     }
 
     public static double ax;
@@ -194,30 +196,46 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         mapView.removeLayer(cL);
         mapView.removeLayer(cLB);
         mapView.removeLayer(cLH);
-        cLH = new CustomHeatmapLayer(ls, this);
-        mapView.addLayer(cLH);
-        mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
+
+        Task task = new Task<CustomHeatmapLayer>() {
+            @Override
+            protected CustomHeatmapLayer call() throws Exception {
+                return new CustomHeatmapLayer(ls, uiController);
+            }
+        };
+        new Thread(task).start();
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent t) {
+                cLH = (CustomHeatmapLayer) task.getValue();
+                mapView.addLayer(cLH);
+                mapView.setZoom(mapView.getZoom()+0.01); // This a dirty trick to make the map refresh after pressing the button
+                activateButtons();
+            }
+        });
     }
 
     @FXML
-    private void deactivateButtons(){
+    public void deactivateButtons(){
         if (!isFail) {
             walkButton.setDisable(true);
             bikeButton.setDisable(true);
             transportButton.setDisable(true);
             startZip.setDisable(true);
             endZip.setDisable(true);
+            heatmapButton.setDisable(true);
         }
         isFail = false;
     }
 
     @FXML
-    private void activateButtons(){
+    public void activateButtons(){
         walkButton.setDisable(false);
         bikeButton.setDisable(false);
         transportButton.setDisable(false);
         startZip.setDisable(false);
         endZip.setDisable(false);
+        heatmapButton.setDisable(false);
     }
 
 private boolean isFail = false;
@@ -235,10 +253,10 @@ private boolean isFail = false;
                 if (!(strategy instanceof TransportPath)) {
                     getAlgorithm(startText, endText);
                     calculateDistance(startText, endText);
-                   startScoreLabel.setText("Score: " + String.valueOf(accessibility(startText)));
-                   endScoreLabel.setText("Score: " + String.valueOf(accessibility(endText)));
                 }
                 strategy.calculateTime(startText, endText, timeLabel);
+                startScoreLabel.setText("Score: " + String.valueOf(accessibility(startText)));
+                endScoreLabel.setText("Score: " + String.valueOf(accessibility(endText)));
             } catch (Exception e) {
                 // Show error popup on the JavaFX Application Thread
                 Platform.runLater(() -> {
