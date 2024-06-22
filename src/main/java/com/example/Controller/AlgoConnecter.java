@@ -11,6 +11,10 @@ public interface AlgoConnecter {
         return algo.getDistance(startCords, endCords);
     }
 
+    default double calculateDistanceHaversine2(double a1, double a2, double b1, double b2) throws Exception{
+        return algo.calculateDistanceHaversine2( a1, a2, b1, b2);
+    }
+
 
 
     default double walkingTime(String startCords, String endCords) throws Exception{

@@ -1,9 +1,13 @@
 package com.example.Frontend;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.example.Controller.AlgoConnecter;
 import com.example.Controller.GraphController;
@@ -13,6 +17,7 @@ import com.example.Frontend.PathStrategy.Path;
 import com.example.Frontend.PathStrategy.TransportPath;
 import com.example.Frontend.PathStrategy.WalkingPath;
 import com.example.Frontend.PathStrategy.BikingPath;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
@@ -29,6 +34,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.geojson.FeatureCollection;
 
 
 public class UIController implements Initializable, AlgoConnecter, HashController, GraphController, SearchConnector {
@@ -47,10 +53,16 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     @FXML
     private MapView mapView;
 
-    @FXML
-    private ChoiceBox<String> choiceBox;
 
     private String[] algos = {"Dijkstra", "Astar"};
+
+    private int startScore = 0;
+
+    @FXML
+    private Label startScoreLabel;
+
+    @FXML
+    private Label endScoreLabel;
 
     @FXML
     private Label timeLabel;
@@ -143,7 +155,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         walkButton.setDisable(true);
         bikeButton.setDisable(true);
         transportButton.setDisable(true);
-        choiceBox.setDisable(true);
         startZip.setDisable(true);
         endZip.setDisable(true);
     }
@@ -153,7 +164,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         walkButton.setDisable(false);
         bikeButton.setDisable(false);
         transportButton.setDisable(false);
-        choiceBox.setDisable(false);
         startZip.setDisable(false);
         endZip.setDisable(false);
     }
@@ -189,6 +199,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     }
 
+
     private void startPath(Path strategy) {
         String startText = startZip.getText();
         String endText = endZip.getText();
@@ -201,6 +212,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
                 if (!(strategy instanceof TransportPath)) {
                     getAlgorithm(startText, endText);
                     calculateDistance(startText, endText);
+                   startScoreLabel.setText("Score: " + String.valueOf(accessibility(startText)));
+                   endScoreLabel.setText("Score: " + String.valueOf(accessibility(endText)));
                 }
                 strategy.calculateTime(startText, endText, timeLabel);
             } catch (Exception e) {
@@ -218,7 +231,6 @@ private List<String> result;
 
     public void getAlgorithm(String startText, String endText){
         busInfo.setVisible(false);
-        if (Objects.equals(choiceBox.getSelectionModel().getSelectedItem(), "Dijkstra")) {
             System.out.println("Calculating the way with Dijkstra...");
             Task task = new Task<List<String>>() {
                 @Override
@@ -234,27 +246,6 @@ private List<String> result;
                     activateButtons();
                 }
             });
-
-
-        } else {
-            System.out.println("Calculating the way with Astar...");
-            Task task = new Task<List<String>>() {
-                @Override
-                protected List<String> call() throws Exception {
-                    return searchAstar(getGraph(), startText, endText);
-                }
-            };
-            new Thread(task).start();
-            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                @Override
-                public void handle(WorkerStateEvent t) {
-                    pathDrawBut((List<String>) task.getValue());
-                    activateButtons();
-                }
-            });
-
-
-        }
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -263,8 +254,6 @@ private List<String> result;
         mapView = createMapView();
         mapPane.getChildren().add(mapView);
         VBox.setVgrow(mapView, Priority.ALWAYS);
-        choiceBox.setValue("Dijkstra");
-        choiceBox.getItems().addAll(algos);
     }
 
     private MapView createMapView() {
@@ -274,4 +263,49 @@ private List<String> result;
         newMapView.setZoom(12);
         return newMapView;
     }
+    final double centerLatitude = 50.851368;
+    final double centerLongitude = 5.690973;
+
+    private int accessibility(String postalCode) throws Exception {
+        int score = 0;
+       score += (calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), centerLatitude, centerLongitude));
+
+        InputStream inputStream = new FileInputStream("src/main/java/com/example/Frontend/tourism.geojson");
+        InputStream inputStream2 = new FileInputStream("src/main/java/com/example/Frontend/amenity.geojson");
+        InputStream inputStream3 = new FileInputStream("src/main/java/com/example/Frontend/shop.geojson");
+
+        FeatureCollection featureCollectionAll = new ObjectMapper().readValue(inputStream, FeatureCollection.class);
+        FeatureCollection featureCollection2 = new ObjectMapper().readValue(inputStream2, FeatureCollection.class);
+        FeatureCollection featureCollection3 = new ObjectMapper().readValue(inputStream3, FeatureCollection.class);
+
+        featureCollectionAll.addAll(featureCollection2.getFeatures());
+        featureCollectionAll.addAll(featureCollection3.getFeatures());
+
+        String regex = "longitude=([\\d.]+), latitude=([\\d.]+)";
+        Pattern p = Pattern.compile(regex);
+
+
+        for (int i = 0; i < featureCollectionAll.getFeatures().size()-1; i++){
+            String a = featureCollectionAll.getFeatures().get(i).toString();
+
+            if (a.contains("museum")){
+                String geoCord = featureCollectionAll.getFeatures().get(i).getGeometry().toString();
+                Matcher m = p.matcher(geoCord);
+                m.find();
+
+                double longitudeLoop = Double.parseDouble(m.group(1));
+                double latitudeLoop = Double.parseDouble(m.group(2));
+
+                if(calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop) < 0.5){
+                    System.out.println(calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop));
+                    System.out.println(a);
+                    score++;
+                }
+            }
+
+        }
+
+        return score;
+    }
+
 }
