@@ -1,5 +1,7 @@
 package com.example.Backend.Algorithms;
 
+import java.time.Duration;
+
 import com.example.Backend.DataToHashMap;
 
 public class Algorithms<T> {
@@ -72,4 +74,33 @@ public class Algorithms<T> {
     public double getCost(){
         return 0;
     }
+
+        public Duration parseDuration(String durationStr) {
+        // Split the input string by ":"
+        String[] parts = durationStr.split(":");
+        
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Invalid duration format, expected HH:MM:SS");
+        }
+
+        try {
+            long hours = Long.parseLong(parts[0]);
+            long minutes = Long.parseLong(parts[1]);
+            long seconds = Long.parseLong(parts[2]);
+
+            // Validate the parsed values
+            if (minutes < 0 || minutes >= 60) {
+                throw new IllegalArgumentException("Minutes must be between 0 and 59");
+            }
+            if (seconds < 0 || seconds >= 60) {
+                throw new IllegalArgumentException("Seconds must be between 0 and 59");
+            }
+
+            // Create the Duration object
+            return Duration.ofHours(hours).plusMinutes(minutes).plusSeconds(seconds);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid number format in duration string", e);
+        }
+    }
+
 }
