@@ -21,6 +21,15 @@ public class Algorithms<T> {
         return distance;
     }
 
+    public double calculateDistanceHaversine2(double aLat, double aLon,  double bLat, double bLon){
+        double dLat = deg2rad(aLat - bLat);
+        double dLon = deg2rad(aLon - bLon);
+        double h = Math.pow(Math.sin(dLat/2), 2) + Math.cos(deg2rad(aLat))*Math.cos(deg2rad(bLat))*Math.pow(Math.sin(dLon/2), 2);
+
+        return 2*EARTH_RADIUS*Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+    }
+
+
     private double deg2rad(double deg){
         return deg * (Math.PI/180);
     }
@@ -66,7 +75,7 @@ public class Algorithms<T> {
         return 0;
     }
 
-    public Duration parseDuration(String durationStr) {
+        public Duration parseDuration(String durationStr) {
         // Split the input string by ":"
         String[] parts = durationStr.split(":");
         
@@ -93,4 +102,5 @@ public class Algorithms<T> {
             throw new IllegalArgumentException("Invalid number format in duration string", e);
         }
     }
+
 }
