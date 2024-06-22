@@ -2,6 +2,8 @@ package com.example.Controller;
 
 import com.example.Backend.DataToHashMap;
 
+import java.util.List;
+
 public interface HashController {
 
     DataToHashMap<String> map = new DataToHashMap<String>();
@@ -24,5 +26,9 @@ public interface HashController {
 
     default boolean mapContains(String code){
         return map.mapContains(code);
+    }
+
+    default List<String> getAllZipCodes() {
+        return map.getAllZipCodes();
     }
 }

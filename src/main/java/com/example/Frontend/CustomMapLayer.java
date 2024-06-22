@@ -92,9 +92,6 @@ public class CustomMapLayer extends MapLayer implements HashController{
                     currentNode.setTranslateY(pointOnMap.getY());
                 }
 
-
-
-
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
