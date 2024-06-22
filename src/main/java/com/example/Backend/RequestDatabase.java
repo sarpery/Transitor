@@ -67,16 +67,16 @@ public class RequestDatabase<T> {
 
     public ResultSet getShape(String tripID){
         try{
-        PreparedStatement shapeQuery = myCon.prepareStatement("select shape_pt_sequence as sequence, shape_pt_lan as lan, shape_pt_lon as lon, shape_dist_travelled as distance" +
-            "FROM shapes_maastricht WHERE shape_id in " +
-            "SELECT shape_id FROM trips_maastricht WHERE trip_id = '" + tripID + "'");
+        PreparedStatement shapeQuery = myCon.prepareStatement("SELECT shape_pt_sequence as sequence, shape_pt_lat as lan, shape_pt_lon as lon, shape_dist_travelled as distance " +
+            "FROM shapes_maastricht WHERE shape_id IN " +
+            "(SELECT shape_id FROM trips_maastricht WHERE trip_id = '" + tripID + "')");
         return shapeQuery.executeQuery();
         } catch(Exception e){e.printStackTrace(); return null;}
     }
 
     public double[] getPointCords(String pointID){
         try{
-            PreparedStatement shapeQuery = myCon.prepareStatement("select lon, lan" +
+            PreparedStatement shapeQuery = myCon.prepareStatement("SELECT lon, lan " +
                 "FROM points WHERE point_id = '" + pointID + "'");
             ResultSet cords =  shapeQuery.executeQuery();
             cords.next();

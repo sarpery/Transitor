@@ -293,6 +293,7 @@ private List<String> result;
     public void initialize(URL url, ResourceBundle resourceBundle) {
         hashTheData();
         graphTheData();
+        graphTheDatabase();
         mapView = createMapView();
         mapPane.getChildren().add(mapView);
         VBox.setVgrow(mapView, Priority.ALWAYS);

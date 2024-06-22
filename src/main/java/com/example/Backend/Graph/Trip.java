@@ -16,16 +16,16 @@ public class Trip{
     public String tripNumber;
     public String departure;
     public String arrival;
-    public ArrayList<double[]> travelPoints;
+    public LinkedList<double[]> travelPoints;
 
     public Trip(List<String> travelList, long time){
         traveledDistance = 0;
         travelTime = time;
-        travelPoints = new ArrayList<double[]>();
+        travelPoints = new LinkedList<double[]>();
 
         String pointer1;
         String pointer2;
-        for(int i = 0; i <= travelList.size() - 1 ; i++ ){
+        for(int i = 0; i < travelList.size() - 1 ; i++ ){
             pointer1 = travelList.get(i);
             String prts[] = pointer1.split("-");
             String startPoint = prts[0];
@@ -34,6 +34,7 @@ public class Trip{
             String endPoint = parts[0];
             String part[] = parts[1].split(":");
             String tripId = part[0];
+            System.out.println(i+1 + "/" + travelList.size() + "-" + tripId);
             travelPoints.addAll(createPointList(tripId, startPoint, endPoint));
         }
     }
