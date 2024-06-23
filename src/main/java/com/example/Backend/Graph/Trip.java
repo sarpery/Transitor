@@ -39,7 +39,11 @@ public class Trip{
             System.out.println(i+1 + "/" + travelList.size() + "-" + tripId);
 
             if(!tripId.startsWith("null"))
-                tripStructure.add( new TripSegment("bus", createPointList(tripId, startPoint, endPoint)));
+            {
+                TripSegment tripSegment = new TripSegment("bus", createPointList(tripId, startPoint, endPoint));
+                tripSegment.setBusNumber(rDB.getBusNumber(tripId));
+                tripStructure.add(tripSegment);
+            }
             else
                 tripStructure.add( new TripSegment("walking", createPointList(tripId, startPoint, endPoint)));
 
@@ -110,16 +114,20 @@ public class Trip{
     public class TripSegment{
         private String type;
         private LinkedList<double[]> points = new LinkedList<double[]>();
+        private String busNumber = "null";
 
         public TripSegment(String type, LinkedList<double[]> points){
             this.type = type;
             this.points = points;
         }
 
+        public void setBusNumber(String busNumber){ this.busNumber = busNumber; }
+
         public boolean isWalking(){ return type.equals("walking"); }
 
         public boolean isBus(){ return type.equals("bus"); }
         
         public LinkedList<double[]> getPoints(){ return points; }
+        public String getBusNumber(){ return busNumber; }
     }
 }

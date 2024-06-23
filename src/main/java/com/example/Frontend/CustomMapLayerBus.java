@@ -7,9 +7,7 @@ import com.example.Backend.RequestDatabase;
 import com.example.Backend.Graph.Trip;
 import com.example.Controller.HashController;
 import com.gluonhq.maps.MapLayer;
-import com.gluonhq.maps.MapPoint;
 
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -17,7 +15,7 @@ import javafx.scene.shape.Line;
 
 public class CustomMapLayerBus extends MapLayer implements HashController {
 
-    private List<double[]> coordinatesList;
+    private List<Trip.TripSegment> coordinatesList;
     private List<Node> nodesOnMap = new ArrayList<Node>();
     private List<Line> linesOnMap = new ArrayList<Line>();
 
@@ -87,90 +85,90 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
 
     }
 
-    @Override
-    protected void layoutLayer() {
-        for (int a = 0; a < coordinatesList.size(); a++ ){
-            try {
-                Node currentNode = nodesOnMap.get(a);
+    // @Override
+    // protected void layoutLayer() {
+    //     for (int a = 0; a < coordinatesList.size(); a++ ){
+    //         try {
+    //             Node currentNode = nodesOnMap.get(a);
 
-                double lon = coordinatesList.get(a)[1];
-                double lat = coordinatesList.get(a)[0];
-                if (a == 0){
-                    MapPoint mapPoint = new MapPoint(lat, lon);
-                    Point2D pointOnMap = getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
+    //             double lon = coordinatesList.get(a)[1];
+    //             double lat = coordinatesList.get(a)[0];
+    //             if (a == 0){
+    //                 MapPoint mapPoint = new MapPoint(lat, lon);
+    //                 Point2D pointOnMap = getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
 
-                    MapPoint mapPointSt = new MapPoint(startEndCoordinatesList.get(0)[1], startEndCoordinatesList.get(0)[0]);
-                    Point2D pointSt = getMapPoint(mapPointSt.getLatitude(), mapPointSt.getLongitude());
+    //                 MapPoint mapPointSt = new MapPoint(startEndCoordinatesList.get(0)[1], startEndCoordinatesList.get(0)[0]);
+    //                 Point2D pointSt = getMapPoint(mapPointSt.getLatitude(), mapPointSt.getLongitude());
 
-                    startNode.setTranslateX(pointSt.getX());
-                    startNode.setTranslateY(pointSt.getY());
+    //                 startNode.setTranslateX(pointSt.getX());
+    //                 startNode.setTranslateY(pointSt.getY());
 
-                    startLine.setStartX(pointSt.getX());
-                    startLine.setStartY(pointSt.getY());
-                    startLine.setEndX((pointOnMap.getX()));
-                    startLine.setEndY((pointOnMap.getY()));
+    //                 startLine.setStartX(pointSt.getX());
+    //                 startLine.setStartY(pointSt.getY());
+    //                 startLine.setEndX((pointOnMap.getX()));
+    //                 startLine.setEndY((pointOnMap.getY()));
 
-                }
+    //             }
 
-                if (a>0) {
-                    Line currentLine = linesOnMap.get(a - 1);
-                    double prevLon = coordinatesList.get(a - 1)[1];
-                    double prevLat = coordinatesList.get(a - 1)[0];
-                    MapPoint mapPointPrev = new MapPoint(prevLat, prevLon);
-                    Point2D pointPrev = getMapPoint(mapPointPrev.getLatitude(), mapPointPrev.getLongitude());
-
-
-                    MapPoint mapPointCur = new MapPoint(lat, lon);
-                    Point2D pointCur = getMapPoint(mapPointCur.getLatitude(), mapPointCur.getLongitude());
-
-                    currentLine.setStartX(pointPrev.getX());
-                    currentLine.setStartY(pointPrev.getY());
-                    currentLine.setEndX(pointCur.getX());
-                    currentLine.setEndY(pointCur.getY());
-                    currentNode.setTranslateX(pointCur.getX());
-                    currentNode.setTranslateY(pointCur.getY());
+    //             if (a>0) {
+    //                 Line currentLine = linesOnMap.get(a - 1);
+    //                 double prevLon = coordinatesList.get(a - 1)[1];
+    //                 double prevLat = coordinatesList.get(a - 1)[0];
+    //                 MapPoint mapPointPrev = new MapPoint(prevLat, prevLon);
+    //                 Point2D pointPrev = getMapPoint(mapPointPrev.getLatitude(), mapPointPrev.getLongitude());
 
 
+    //                 MapPoint mapPointCur = new MapPoint(lat, lon);
+    //                 Point2D pointCur = getMapPoint(mapPointCur.getLatitude(), mapPointCur.getLongitude());
 
-
-                }
-
-                else {
-                    MapPoint mapPoint = new MapPoint(lat, lon);
-                    Point2D pointOnMap = getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
-                    currentNode.setTranslateX(pointOnMap.getX());
-                    currentNode.setTranslateY(pointOnMap.getY());
-                }
-
-
-                if ( a == coordinatesList.size()-1){
-                    MapPoint mapPointCur = new MapPoint(lat, lon);
-                    Point2D pointCur = getMapPoint(mapPointCur.getLatitude(), mapPointCur.getLongitude());
-
-                    MapPoint mapPointEd = new MapPoint(startEndCoordinatesList.get(1)[1], startEndCoordinatesList.get(1)[0]);
-                    Point2D pointEd = getMapPoint(mapPointEd.getLatitude(), mapPointEd.getLongitude());
-
-                    endLine.setStartX(pointCur.getX());
-                    endLine.setStartY(pointCur.getY());
-
-                    endLine.setEndX(pointEd.getX());
-                    endLine.setEndY(pointEd.getY());
-
-                    endNode.setTranslateX(pointEd.getX());
-                    endNode.setTranslateY(pointEd.getY());
-
-                }
+    //                 currentLine.setStartX(pointPrev.getX());
+    //                 currentLine.setStartY(pointPrev.getY());
+    //                 currentLine.setEndX(pointCur.getX());
+    //                 currentLine.setEndY(pointCur.getY());
+    //                 currentNode.setTranslateX(pointCur.getX());
+    //                 currentNode.setTranslateY(pointCur.getY());
 
 
 
 
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+    //             }
+
+    //             else {
+    //                 MapPoint mapPoint = new MapPoint(lat, lon);
+    //                 Point2D pointOnMap = getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
+    //                 currentNode.setTranslateX(pointOnMap.getX());
+    //                 currentNode.setTranslateY(pointOnMap.getY());
+    //             }
 
 
-    }
+    //             if ( a == coordinatesList.size()-1){
+    //                 MapPoint mapPointCur = new MapPoint(lat, lon);
+    //                 Point2D pointCur = getMapPoint(mapPointCur.getLatitude(), mapPointCur.getLongitude());
+
+    //                 MapPoint mapPointEd = new MapPoint(startEndCoordinatesList.get(1)[1], startEndCoordinatesList.get(1)[0]);
+    //                 Point2D pointEd = getMapPoint(mapPointEd.getLatitude(), mapPointEd.getLongitude());
+
+    //                 endLine.setStartX(pointCur.getX());
+    //                 endLine.setStartY(pointCur.getY());
+
+    //                 endLine.setEndX(pointEd.getX());
+    //                 endLine.setEndY(pointEd.getY());
+
+    //                 endNode.setTranslateX(pointEd.getX());
+    //                 endNode.setTranslateY(pointEd.getY());
+
+    //             }
+
+
+
+
+    //         } catch (Exception e) {
+    //             throw new RuntimeException(e);
+    //         }
+    //     }
+
+
+    //}
 
 
 
