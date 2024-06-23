@@ -16,12 +16,12 @@ public class Trip{
     public String tripNumber;
     public String departure;
     public String arrival;
-    public LinkedList<double[]> travelPoints;
+    public LinkedList<TripSegment> tripStructure;
 
     public Trip(List<String> travelList, long time){
         traveledDistance = 0;
         travelTime = time;
-        travelPoints = new LinkedList<double[]>();
+        tripStructure = new LinkedList<TripSegment>();
         tripNumber = "";
 
         String pointer1;
@@ -37,7 +37,12 @@ public class Trip{
             String tripId = part[0];
 
             System.out.println(i+1 + "/" + travelList.size() + "-" + tripId);
-            travelPoints.addAll(createPointList(tripId, startPoint, endPoint));
+
+            if(!tripId.startsWith("null"))
+                tripStructure.add( new TripSegment("bus", createPointList(tripId, startPoint, endPoint)));
+            else
+                tripStructure.add( new TripSegment("walking", createPointList(tripId, startPoint, endPoint)));
+
             if(!tripId.startsWith("null")) tripNumber += "- " + rDB.getBusNumber(tripId);
         }
         traveledDistance = ((int)(traveledDistance*100))/100.0;
@@ -100,5 +105,21 @@ public class Trip{
         }
 
         return travelPoints;
+    }
+
+    public class TripSegment{
+        private String type;
+        private LinkedList<double[]> points = new LinkedList<double[]>();
+
+        public TripSegment(String type, LinkedList<double[]> points){
+            this.type = type;
+            this.points = points;
+        }
+
+        public boolean isWalking(){ return type.equals("walking"); }
+
+        public boolean isBus(){ return type.equals("bus"); }
+        
+        public LinkedList<double[]> getPoints(){ return points; }
     }
 }
