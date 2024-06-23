@@ -1,5 +1,6 @@
 package com.example.Frontend;
 
+import com.example.Backend.Algorithms.AccesibilityFormula;
 import com.example.Controller.HashController;
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
@@ -17,6 +18,7 @@ public class CustomHeatmapLayer extends MapLayer implements HashController{
     private List<String> postalCodesList;
     private List<Node> nodesOnMap = new ArrayList<Node>();
     private UIController uiController;
+    private AccesibilityFormula accesibilityFormula = new AccesibilityFormula();
 
 
     public CustomHeatmapLayer(List<String> ls, UIController uiController) throws Exception {
@@ -34,7 +36,7 @@ public class CustomHeatmapLayer extends MapLayer implements HashController{
     }
 
     public void drawHeatmapPoints(String postalCode) throws Exception {
-        Circle icon = uiController.createHeatmapPoint(postalCode);
+        Circle icon = accesibilityFormula.createHeatmapPoint(postalCode);
         double lat = getLat(postalCode);
         double lon = getLon(postalCode);
         System.out.println(lat + " " + lon);

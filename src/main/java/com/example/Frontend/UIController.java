@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import org.geojson.FeatureCollection;
 
+import com.example.Backend.Algorithms.AccesibilityFormula;
 import com.example.Controller.AlgoConnecter;
 import com.example.Controller.GraphController;
 import com.example.Controller.HashController;
@@ -50,6 +51,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private double zipYY = 50.82346493;
 
     public static boolean algo = true;
+    private AccesibilityFormula accesibilityFormula = new AccesibilityFormula();
 
     @FXML
     private MapView mapView;
@@ -256,8 +258,8 @@ private boolean isFail = false;
                     calculateDistance(startText, endText);
                 }
                 strategy.calculateTime(startText, endText, timeLabel);
-                startScoreLabel.setText("Score: " + String.valueOf(accessibility(startText)));
-                endScoreLabel.setText("Score: " + String.valueOf(accessibility(endText)));
+                startScoreLabel.setText("Score: " + String.valueOf(accesibilityFormula.accessibility(startText)));
+                endScoreLabel.setText("Score: " + String.valueOf(accesibilityFormula.accessibility(endText)));
             } catch (Exception e) {
                 // Show error popup on the JavaFX Application Thread
                 Platform.runLater(() -> {
@@ -306,64 +308,5 @@ private List<String> result;
         newMapView.setZoom(12);
         return newMapView;
     }
-    final double centerLatitude = 50.851368;
-    final double centerLongitude = 5.690973;
-
-    private int accessibility(String postalCode) throws Exception {
-        int score = 0;
-       score += (calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), centerLatitude, centerLongitude));
-
-        InputStream inputStream = new FileInputStream("src/main/java/com/example/Frontend/tourism.geojson");
-        InputStream inputStream2 = new FileInputStream("src/main/java/com/example/Frontend/amenity.geojson");
-        InputStream inputStream3 = new FileInputStream("src/main/java/com/example/Frontend/shop.geojson");
-
-        FeatureCollection featureCollectionAll = new ObjectMapper().readValue(inputStream, FeatureCollection.class);
-        FeatureCollection featureCollection2 = new ObjectMapper().readValue(inputStream2, FeatureCollection.class);
-        FeatureCollection featureCollection3 = new ObjectMapper().readValue(inputStream3, FeatureCollection.class);
-
-        featureCollectionAll.addAll(featureCollection2.getFeatures());
-        featureCollectionAll.addAll(featureCollection3.getFeatures());
-
-        String regex = "longitude=([\\d.]+), latitude=([\\d.]+)";
-        Pattern p = Pattern.compile(regex);
-
-
-        for (int i = 0; i < featureCollectionAll.getFeatures().size()-1; i++){
-            String a = featureCollectionAll.getFeatures().get(i).toString();
-
-            if (a.contains("museum")){
-                String geoCord = featureCollectionAll.getFeatures().get(i).getGeometry().toString();
-                Matcher m = p.matcher(geoCord);
-                m.find();
-
-                double longitudeLoop = Double.parseDouble(m.group(1));
-                double latitudeLoop = Double.parseDouble(m.group(2));
-
-                if(calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop) < 0.5){
-                    System.out.println(calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop));
-                    System.out.println(a);
-                    score++;
-                }
-            }
-
-        }
-
-        return score;
-    }
-
-    public Circle createHeatmapPoint(String postalCode) throws Exception {
-        int score = accessibility(postalCode);
-        Circle icon;
-
-        if (score > 5) {
-            icon = new Circle(5, Color.GREEN);
-        } else if (score > 3) {
-            icon = new Circle(5, Color.YELLOW);
-        } else if (score > 1) {
-            icon = new Circle(5, Color.ORANGE);
-        } else {
-            icon = new Circle(5, Color.RED);
-        }
-        return icon;
-    }
+    
 }
