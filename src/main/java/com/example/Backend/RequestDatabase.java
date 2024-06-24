@@ -17,7 +17,7 @@ public class RequestDatabase<T> {
     public RequestDatabase(){
         try{
         Class.forName("com.mysql.cj.jdbc.Driver");
-        myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "BCS1510", "BCS1510");
+        myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "BCS1510_BCS1510");
         }catch(Exception e){ System.out.println(e); }
     }
 

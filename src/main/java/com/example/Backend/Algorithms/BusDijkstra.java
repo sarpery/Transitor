@@ -29,7 +29,7 @@ public class BusDijkstra<T> {
         Map<T, T> previousStops = new HashMap<>();
         PriorityQueue<T> priorityQueue = new PriorityQueue<>((u, v) -> Math.toIntExact(resultTimes.get(u) - resultTimes.get(v)));
         Set<T> visited = new HashSet<>();
-
+        
 
         // Initialize distances
         for (T vertex : graph.verteces.keySet()) {
@@ -89,7 +89,7 @@ public class BusDijkstra<T> {
 
         Iterator it1 = path.iterator();
         Iterator it2 = trips.iterator();
-
+        
 
         while(it1.hasNext())
         {
@@ -106,7 +106,7 @@ public class BusDijkstra<T> {
     }
 
     private Long calcTimeBus(T startPoint, EdgeNode<T> edge){
-
+        
         Long currentTime = resultTimes.get(startPoint);
         Long reachTime = alg.parseDuration(edge.departure_time).minus(alg.parseDuration(time)).toMinutes();
 
@@ -116,7 +116,7 @@ public class BusDijkstra<T> {
     }
 
     private Long calcTimeWalking(T startPoint, EdgeNode<T> edge){
-
+        
         String[] pt1String = edge.arrival_time.split(":");
         double[] pt1 = {Double.parseDouble(pt1String[0]), Double.parseDouble(pt1String[1])};
         String[] pt2String = edge.departure_time.split(":");
