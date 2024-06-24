@@ -76,11 +76,11 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
         double score = accessibility(postalCode);
         Circle icon;
 
-        if (score > 1200) {
+        if (score > 1000) {
             icon = new Circle(5, Color.GREEN);
-        } else if (score > 700) {
+        } else if (score > 500) {
             icon = new Circle(5, Color.YELLOW);
-        } else if (score > 250) {
+        } else if (score > 150) {
             icon = new Circle(5, Color.ORANGE);
         } else {
             icon = new Circle(5, Color.RED);

@@ -17,7 +17,7 @@ public class DatabaseToGraph {
     private  void connect(){
         try{
             
-            myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "root", "1234");
+            myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "BCS1510", "BCS1510");
 
 
         }catch(Exception e){

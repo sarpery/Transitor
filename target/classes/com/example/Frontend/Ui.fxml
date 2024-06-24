@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Circle?>
@@ -12,7 +14,7 @@
 
 <AnchorPane prefHeight="528.0" prefWidth="901.0" style="-fx-background-color: #00A2DB;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Frontend.UIController">
     <children>
-        <Pane id="visualizerPane" fx:id="mapPane" layoutX="236.0" prefHeight="537.0" prefWidth="667.0">
+        <Pane id="visualizerPane" fx:id="mapPane" layoutX="254.0" prefHeight="538.0" prefWidth="649.0">
             <children>
                 <Circle fx:id="circle1" fill="#22b738" layoutX="541.0" layoutY="220.0" opacity="0.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                 <Circle fx:id="circle2" fill="RED" layoutX="397.0" layoutY="366.0" opacity="0.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
@@ -20,34 +22,34 @@
                 <Label layoutX="532.0" layoutY="447.0" />
             </children>
         </Pane>
-        <Pane id="menuPane" layoutY="-1.0" prefHeight="538.0" prefWidth="234.0" style="-fx-background-color: #001C3D;">
+        <Pane id="menuPane" prefHeight="538.0" prefWidth="264.0" style="-fx-background-color: #001C3D;">
             <children>
-                <Label id="titleLabel" layoutX="44.0" layoutY="38.0" prefHeight="37.0" prefWidth="150.0" text="Transitor" textAlignment="CENTER" textFill="WHITE">
+                <Label id="titleLabel" layoutX="45.0" layoutY="14.0" prefHeight="37.0" prefWidth="150.0" text="Transitor" textAlignment="CENTER" textFill="WHITE">
                     <font>
                         <Font name="Arial" size="36.0" />
                     </font>
                 </Label>
-                <TextField id="targetTextArea" fx:id="endZip" alignment="CENTER" layoutX="42.0" layoutY="199.0" pickOnBounds="false" promptText="Target Zip Code">
+                <TextField id="targetTextArea" fx:id="endZip" alignment="CENTER" layoutX="44.0" layoutY="128.0" pickOnBounds="false" promptText="Target Zip Code" text="6228GR">
                     <font>
                         <Font name="Arial" size="12.0" />
                     </font>
                 </TextField>
-                <TextField id="startingTextArea" fx:id="startZip" alignment="CENTER" layoutX="44.0" layoutY="118.0" pickOnBounds="false" promptText="Starting Zip Code">
+                <TextField id="startingTextArea" fx:id="startZip" alignment="CENTER" layoutX="45.0" layoutY="64.0" pickOnBounds="false" promptText="Starting Zip Code" text="6211CL">
                     <font>
                         <Font name="Arial" size="12.0" />
                     </font>
                 </TextField>
-                <Label id="distanceMeasure" fx:id="distance" focusTraversable="false" layoutX="61.0" layoutY="429.0" text="Distance: 0" textFill="#ffffff">
+                <Label id="distanceMeasure" fx:id="distance" focusTraversable="false" layoutX="27.0" layoutY="360.0" text="Distance: 0" textFill="#ffffff">
                     <font>
                         <Font name="Arial Bold" size="16.0" />
                     </font>
                 </Label>
-                <Label id="timeMeasure" fx:id="timeLabel" focusTraversable="false" layoutX="50.0" layoutY="454.0" text="Travel Time: 0" textFill="#ffffff">
+                <Label id="timeMeasure" fx:id="timeLabel" focusTraversable="false" layoutX="24.0" layoutY="395.0" text="Travel Time: 0" textFill="#ffffff">
                     <font>
                         <Font name="Arial Bold" size="16.0" />
                     </font>
                 </Label>
-                <Button id="transportButton" fx:id="transportButton" layoutX="52.0" layoutY="344.0" mnemonicParsing="false" onAction="#setupBusButton" prefHeight="36.0" prefWidth="135.0" style="-fx-background-color: #E84E10#E84E10;" text="Transport" textFill="#FFFFFF" wrapText="true">
+                <Button id="transportButton" fx:id="transportButton" layoutX="60.0" layoutY="260.0" mnemonicParsing="false" onAction="#setupBusButton" prefHeight="36.0" prefWidth="135.0" style="-fx-background-color: #E84E10#E84E10;" text="Transport" textFill="#FFFFFF" wrapText="true">
                     <font>
                         <Font name="Arial Bold" size="20.0" />
                     </font>
@@ -55,7 +57,7 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Button id="bikeButton" fx:id="bikeButton" layoutX="124.0" layoutY="294.0" mnemonicParsing="false" onAction="#setupBikeButton" prefHeight="36.0" prefWidth="74.0" style="-fx-background-color: #E84E10#E84E10;" text="Bike" textFill="#FFFFFF" wrapText="true">
+                <Button id="bikeButton" fx:id="bikeButton" layoutX="138.0" layoutY="208.0" mnemonicParsing="false" onAction="#setupBikeButton" prefHeight="36.0" prefWidth="74.0" style="-fx-background-color: #E84E10#E84E10;" text="Bike" textFill="#FFFFFF" wrapText="true">
                     <font>
                         <Font name="Arial Bold" size="20.0" />
                     </font>
@@ -63,7 +65,7 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Button id="walkButton" fx:id="walkButton" layoutX="41.0" layoutY="294.0" mnemonicParsing="false" onAction="#setupWalkButton" prefHeight="36.0" prefWidth="74.0" style="-fx-background-color: #E84E10#E84E10;" text="Walk" textFill="#FFFFFF" wrapText="true">
+                <Button id="walkButton" fx:id="walkButton" layoutX="44.0" layoutY="208.0" mnemonicParsing="false" onAction="#setupWalkButton" prefHeight="36.0" prefWidth="74.0" style="-fx-background-color: #E84E10#E84E10;" text="Walk" textFill="#FFFFFF" wrapText="true">
                     <font>
                         <Font name="Arial Bold" size="20.0" />
                     </font>
@@ -71,22 +73,22 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-            <Label id="timeMeasure" fx:id="busInfo" layoutX="41.0" layoutY="474.0" prefHeight="42.0" prefWidth="187.0" text="Road number: 9" textAlignment="CENTER" textFill="WHITE" visible="false">
+            <Label id="timeMeasure" fx:id="busInfo" layoutX="24.0" layoutY="424.0" prefHeight="104.0" prefWidth="204.0" text="Road number: 9" textAlignment="CENTER" textFill="WHITE" visible="false">
                <font>
                   <Font name="Arial Bold" size="16.0" />
                </font>
             </Label>
-            <Label id="distanceMeasure" fx:id="startScoreLabel" focusTraversable="false" layoutX="83.0" layoutY="160.0" prefHeight="20.0" prefWidth="85.0" text="Score: " textFill="#ffffff">
+            <Label id="distanceMeasure" fx:id="startScoreLabel" focusTraversable="false" layoutX="50.0" layoutY="98.0" prefHeight="20.0" prefWidth="135.0" text="Score: " textFill="#ffffff">
                <font>
                   <Font name="Arial Bold" size="16.0" />
                </font>
             </Label>
-            <Label id="distanceMeasure" fx:id="endScoreLabel" focusTraversable="false" layoutX="83.0" layoutY="237.0" prefHeight="20.0" prefWidth="85.0" text="Score: " textFill="#ffffff">
+            <Label id="distanceMeasure" fx:id="endScoreLabel" focusTraversable="false" layoutX="49.0" layoutY="157.0" prefHeight="20.0" prefWidth="135.0" text="Score: " textFill="#ffffff">
                <font>
                   <Font name="Arial Bold" size="16.0" />
                </font>
             </Label>
-            <Button id="heatmapButton" fx:id="heatmapButton" layoutX="68.0" layoutY="389.0" mnemonicParsing="false" onAction="#setupHeatmapButton" prefHeight="0.0" prefWidth="95.0" style="-fx-background-color: #AE0B12#AE0B12;" text="Heatmap" textFill="#FFFFFF" wrapText="true">
+            <Button id="heatmapButton" fx:id="heatmapButton" layoutX="73.0" layoutY="318.0" mnemonicParsing="false" onAction="#setupHeatmapButton" prefHeight="0.0" prefWidth="95.0" style="-fx-background-color: #AE0B12#AE0B12;" text="Heatmap" textFill="#FFFFFF" wrapText="true">
                <font>
                   <Font name="Arial Bold" size="15.0" />
                </font>
@@ -94,6 +96,76 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
+            <ImageView fx:id="one" fitHeight="40.0" fitWidth="44.0" layoutX="9.0" layoutY="432.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Untitled.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="two" fitHeight="95.0" fitWidth="99.0" layoutX="15.0" layoutY="405.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Untitled%20(1).png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="three" fitHeight="36.0" fitWidth="47.0" layoutX="77.0" layoutY="433.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Untitled%20(2).png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="four" fitHeight="36.0" fitWidth="40.0" layoutX="111.0" layoutY="435.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Untitled%20(4).png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="five" fitHeight="46.0" fitWidth="46.0" layoutX="144.0" layoutY="428.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Screenshot%202024-06-23%20174439.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="six" fitHeight="36.0" fitWidth="36.0" layoutX="186.0" layoutY="434.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Untitled%20(5).png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="seven" fitHeight="34.0" fitWidth="35.0" layoutX="223.0" layoutY="435.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Untitled%20(7).png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="eight" fitHeight="34.0" fitWidth="30.0" layoutX="14.0" layoutY="486.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Untitled%20(8).png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="nine" fitHeight="34.0" fitWidth="45.0" layoutX="43.0" layoutY="485.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Untitled%20(10).png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="ten" fitHeight="40.0" fitWidth="36.0" layoutX="80.0" layoutY="484.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Untitled%20(3).png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="eleven" fitHeight="46.0" fitWidth="40.0" layoutX="115.0" layoutY="477.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Untitled%20(12).png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="twelve" fitHeight="34.0" fitWidth="38.0" layoutX="149.0" layoutY="484.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Untitled%20(9).png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="fifteen" fitHeight="40.0" fitWidth="33.0" layoutX="184.0" layoutY="484.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Untitled%20(6).png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="fiftySeven" fitHeight="54.0" fitWidth="32.0" layoutX="218.0" layoutY="481.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Untitled%20(11).png" />
+               </image>
+            </ImageView>
             </children>
         </Pane>
     </children>
