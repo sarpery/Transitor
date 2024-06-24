@@ -19,6 +19,14 @@ import javafx.scene.shape.Circle;
 
 public class AccesibilityFormula implements AlgoConnecter, HashController, GraphController, SearchConnector {
 
+    private double minScore = Integer.MAX_VALUE;
+    private double maxScore = Integer.MIN_VALUE;
+
+    private int totalScore = 0;
+    private int averageScore = 0;
+    private String minZip = "";
+    private String maxZip = "";
+
     public double accessibility(String postalCode) throws Exception {
         double score = 0;
         InputStream inputStream = new FileInputStream("src/main/java/com/example/Frontend/tourism.geojson");
@@ -70,9 +78,11 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
         return score;
     }
 
-    // we can adjust it however we want
     public Circle createHeatmapPoint(String postalCode) throws Exception {
         double score = accessibility(postalCode);
+        System.out.println(score + " " + postalCode);
+
+        calculations(score, postalCode);
         Circle icon;
 
         if (score > 1000) {
@@ -87,6 +97,24 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
         return icon;
     }
 
+    public void calculations(double score, String postalCode){
+
+        if(score < minScore){
+            minScore = (int)score;
+            minZip = postalCode;
+        }
+
+        if(score > maxScore){
+            maxScore = (int)score;
+            maxZip = postalCode;
+        }
+        System.out.println("Min score: " + minZip + ": " + minScore);
+        System.out.println("Max score: " + maxZip + ": " + maxScore);
+
+        totalScore+= (int)score;
+        averageScore = totalScore/3051;
+        System.out.println(averageScore);
+    }
     private static final double K = -Math.log(0.05) / 2000;
 
     public static double fallofFunction(double distance) {
