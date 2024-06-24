@@ -5,7 +5,7 @@ import java.time.Duration;
 import com.example.Backend.DataToHashMap;
 
 public class Algorithms<T> {
-    private final double WALKING_SPEED = 0.075; //kpm
+    private final double WALKING_SPEED = 0.045; //kpm
     private final double CYCLING_SPEED = 0.4; //kpm
     private final int EARTH_RADIUS = 6371;
 
