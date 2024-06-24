@@ -1,15 +1,10 @@
 package com.example.Frontend;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javafx.scene.image.ImageView;
-import org.geojson.FeatureCollection;
 
 import com.example.Backend.Algorithms.AccesibilityFormula;
 import com.example.Controller.AlgoConnecter;
@@ -20,7 +15,6 @@ import com.example.Frontend.PathStrategy.BikingPath;
 import com.example.Frontend.PathStrategy.Path;
 import com.example.Frontend.PathStrategy.TransportPath;
 import com.example.Frontend.PathStrategy.WalkingPath;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
@@ -36,8 +30,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 
 public class UIController implements Initializable, AlgoConnecter, HashController, GraphController, SearchConnector {
@@ -178,18 +170,21 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     @FXML
     private void setupWalkButton() {
+            showLabels();
             startPath(new WalkingPath());
             deactivateButtons();
     }
 
     @FXML
     private void setupBikeButton() {
+        showLabels();
         startPath(new BikingPath());
         deactivateButtons();
     }
 
     @FXML
     private void setupBusButton() {
+            showLabels();
             startPath(new TransportPath(this));
             deactivateButtons();
     }
@@ -198,6 +193,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private void setupHeatmapButton() throws Exception {
             drawHeatmap(getAllZipCodes());
             deactivateButtons();
+            hideAllBusSigns();
+            clearLabels();
     }
 
     public static double ax;
@@ -285,7 +282,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     }
 
     @FXML
-    public void activateButtons(){
+    private void activateButtons(){
         walkButton.setDisable(false);
         bikeButton.setDisable(false);
         transportButton.setDisable(false);
@@ -294,6 +291,19 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         heatmapButton.setDisable(false);
     }
 
+    private void clearLabels(){
+        startScoreLabel.setVisible(false);
+        endScoreLabel.setVisible(false);
+        timeLabel.setVisible(false);
+        distance.setVisible(false);
+    }
+
+    private void showLabels(){
+        startScoreLabel.setVisible(true);
+        endScoreLabel.setVisible(true);
+        timeLabel.setVisible(true);
+        distance.setVisible(true);
+    }
 private boolean isFail = false;
 
     private void startPath(Path strategy) {
@@ -315,8 +325,8 @@ private boolean isFail = false;
                 endScore = (int)accesibilityFormula.accessibility(endText);
                 startScoreLabel.setText("Score: " + String.valueOf(startScore));
                 endScoreLabel.setText("Score: " + String.valueOf(endScore));
-                System.out.println(startScore);
-                System.out.println(endScore);
+                System.out.println("Start score: " + startScore);
+                System.out.println("End score: " + endScore);
             } catch (Exception e) {
                 // Show error popup on the JavaFX Application Thread
                 Platform.runLater(() -> {
