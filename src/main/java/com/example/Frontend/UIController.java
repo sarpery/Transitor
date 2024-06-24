@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javafx.scene.image.ImageView;
 import org.geojson.FeatureCollection;
 
 import com.example.Controller.AlgoConnecter;
@@ -57,6 +58,60 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private int startScore = 0;
 
     @FXML
+    public ImageView one;
+
+    @FXML
+    public ImageView two;
+
+    @FXML
+    public ImageView three;
+
+    @FXML
+    public ImageView four;
+
+    @FXML
+    public ImageView five;
+
+    @FXML
+    public ImageView six;
+
+    @FXML
+    public ImageView seven;
+    @FXML
+    public ImageView eight;
+    @FXML
+    public ImageView nine;
+    @FXML
+    public ImageView ten;
+    @FXML
+    public ImageView eleven;
+    @FXML
+    public ImageView twelve;
+    @FXML
+    public ImageView fifteen;
+    @FXML
+    public ImageView fiftySeven;
+
+    public void hideAllBusSigns(){
+        one.setVisible(false);
+        two.setVisible(false);
+        three.setVisible(false);
+        four.setVisible(false);
+        five.setVisible(false);
+        six.setVisible(false);
+        seven.setVisible(false);
+        eight.setVisible(false);
+        nine.setVisible(false);
+        ten.setVisible(false);
+        eleven.setVisible(false);
+        twelve.setVisible(false);
+        fifteen.setVisible(false);
+        fiftySeven.setVisible(false);
+    }
+
+
+
+    @FXML
     private Label startScoreLabel;
 
     @FXML
@@ -92,6 +147,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     @FXML
     MapPoint point = new MapPoint(50.849365,5.694548);
 
+
     @FXML
     public Label busInfo;
 
@@ -109,7 +165,60 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     @FXML
     public void addBusInfo(String info) {
         busInfo.setText(info);
-        busInfo.setVisible(true);
+        busInfo.setVisible(false);
+
+        String busNos = info;
+        String[] arrString = busNos.split("-");
+        for (String a: arrString){
+            switch (a){
+                case "1":
+                    one.setVisible(true);
+                    break;
+                case "2":
+                    two.setVisible(true);
+                    break;
+                case "3":
+                    three.setVisible(true);
+                case "4":
+                    four.setVisible(true);
+                    break;
+                case "5":
+                    five.setVisible(true);
+                    break;
+                case "6":
+                    six.setVisible(true);
+                    break;
+                case "7":
+                    seven.setVisible(true);
+                    break;
+                case "8":
+                    eight.setVisible(true);
+                    break;
+                case "9":
+                    nine.setVisible(true);
+                    break;
+                case "10":
+                    ten.setVisible(true);
+                    break;
+                case "11":
+                    eleven.setVisible(true);
+                    break;
+                case "12":
+                    twelve.setVisible(true);
+                    break;
+                case "15":
+                    fifteen.setVisible(true);
+                    break;
+                case "57":
+                    fiftySeven.setVisible(true);
+                    break;
+                default:
+                    System.out.println("NO MATCH");
+                    System.out.println(a);
+
+
+            }
+        }
     }
 
 
@@ -163,6 +272,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     }
 
     public void pathDrawBus(String start, String end) throws Exception {
+        hideAllBusSigns();
+
         mapView.removeLayer(cL);
         mapView.removeLayer(cLB);
         mapView.removeLayer(cLH);
@@ -186,7 +297,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
                 timeLabel.setText("Transport time: " + cLB.trip.travelTime + " min");
                 System.out.println("Transport time: " + cLB.trip.travelTime);
 
-                addBusInfo("Bus Number:" + cLB.trip.tripNumber + "\n" + cLB.trip.departure + "-" + cLB.trip.arrival);
+                addBusInfo(cLB.trip.tripNumber);
                 activateButtons();
             }
         });
@@ -272,8 +383,9 @@ private boolean isFail = false;
 private List<String> result;
 
     public void getAlgorithm(String startText, String endText){
-        busInfo.setVisible(false);
-            System.out.println("Calculating the way with Dijkstra...");
+     //   busInfo.setVisible(false);
+        hideAllBusSigns();
+        System.out.println("Calculating the way with Dijkstra...");
             Task task = new Task<List<String>>() {
                 @Override
                 protected List<String> call() throws Exception {

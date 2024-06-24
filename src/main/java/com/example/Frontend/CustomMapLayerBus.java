@@ -1,31 +1,42 @@
 package com.example.Frontend;
 
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.example.Backend.RequestDatabase;
 import com.example.Backend.Graph.Trip;
 import com.example.Controller.HashController;
 import com.gluonhq.maps.MapLayer;
+import com.gluonhq.maps.MapPoint;
 
-import javafx.scene.Node;
+import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 public class CustomMapLayerBus extends MapLayer implements HashController {
 
-    private List<Trip.TripSegment> coordinatesList;
-    private List<Node> nodesOnMap = new ArrayList<Node>();
+    private List<double[]> coordinatesList = new ArrayList<>();
+
+
+    private LinkedList<Trip.TripSegment> tripSegmentList;
+    private List<Circle> nodesOnMap = new ArrayList<Circle>();
     private List<Line> linesOnMap = new ArrayList<Line>();
 
-    private List<Node> startEndNodes = new ArrayList();
+   // private List<Node> startEndNodes = new ArrayList();
     private List <double[]> startEndCoordinatesList = new ArrayList();
 
-    Node startNode;
-    Line startLine;
-    Node endNode;
-    Line endLine;
+    private List<Boolean> busOrNotList = new ArrayList<>();
+    private List<String> busNumList = new ArrayList<>();
+
+    private List<Circle> walkCircles = new ArrayList<>();
+
+//    Node startNode;
+//    Line startLine;
+//    Node endNode;
+//    Line endLine;
 
 
     public Trip trip;
@@ -34,144 +45,176 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
     public CustomMapLayerBus(String startCord, String endCord ) throws Exception {
         RequestDatabase requestDatabase = new RequestDatabase();
         trip = requestDatabase.findBusRoute(startCord, endCord);
-        coordinatesList = trip.tripStructure;
-        for (int i = 0; i < coordinatesList.size(); i++){
-            Node icon;
-            Line line;
-            if (i==0){
-                icon = new Circle(5, Color.GREEN);
-            }
-            else if (i == coordinatesList.size()-1){
-                icon = new Circle(5,Color.RED);
-                line = new Line();
-                getChildren().add(line);
-                linesOnMap.add(line);
 
-            }
-            else {
-                icon = new Circle(5,Color.BLUE);
-                icon.setVisible(false);
-                line = new Line();
-                line.setStrokeWidth(4.5);
-                line.setStroke(Color.BLUE);
-                getChildren().add(line);
-                linesOnMap.add(line);
+        tripSegmentList = trip.tripStructure;
 
-            }
-            getChildren().add(icon);
-            nodesOnMap.add(i, icon);
+        for (int ac = 0; ac < tripSegmentList.size(); ac++){
+            List<double[]> currentPartofList = tripSegmentList.get(ac).getPoints();
+            boolean isBus = tripSegmentList.get(ac).isBus();
+            String busNum = tripSegmentList.get(ac).getBusNumber();
+
+           for (int i = 0; i < currentPartofList.size(); i++) {
+               busOrNotList.add(isBus);
+               busNumList.add(busNum);
+               Circle icon;
+               Line line;
+               if (isBus){
+                   icon = new Circle(4, Color.RED);
+                   line = new Line();
+                   icon.setVisible(false);
+
+
+               } else {
+                   icon = new Circle(4, Color.BLUE);
+                   line = new Line();
+                   line.setStrokeWidth(1.6);
+
+               }
+               coordinatesList.add(currentPartofList.get(i));
+               getChildren().add(icon);
+               nodesOnMap.add(icon);
+               getChildren().add(line);
+               linesOnMap.add(line);
+
+           }
         }
+    }
+        int counter = 0;
+    @Override
+    protected void layoutLayer() {
+            for (int i = 0; i < coordinatesList.size(); i++) {
+                Circle currentNode = nodesOnMap.get(i);
+                Line currentLine = linesOnMap.get(i);
 
-        double lonS = getLon(startCord);
-        double latS = getLat(startCord);
-        double[] st = new double[]{lonS, latS};
-        double lonE = getLon(endCord);
-        double latE = getLat(endCord);
-        double [] ed = new double[]{lonE, latE};
+                double lon = coordinatesList.get(i)[1];
+                double lat = coordinatesList.get(i)[0];
 
-        startEndCoordinatesList.add(0, st);
-        startEndCoordinatesList.add(1, ed);
 
-        startNode = new Circle(10,Color.GREEN);
-        startLine = new Line();
-        getChildren().add(startLine);
-        getChildren().add(startNode);
+                MapPoint mapPointCur = new MapPoint(lat, lon);
+                Point2D pointCur = getMapPoint(mapPointCur.getLatitude(), mapPointCur.getLongitude());
 
-        endNode = new Circle(10,Color.RED);
-        endLine = new Line();
-        getChildren().add(endLine);
-        getChildren().add(endNode);
+                currentNode.setTranslateX(pointCur.getX());
+                currentNode.setTranslateY(pointCur.getY());
 
+                if (!(coordinatesList.size() == i+1)){
+                    double nextLon = coordinatesList.get(i+1)[1];
+                    double nextLat = coordinatesList.get(i+1)[0];
+
+                    MapPoint mapPointNext = new MapPoint(nextLat, nextLon);
+                    Point2D pointNext = getMapPoint(mapPointNext.getLatitude(), mapPointNext.getLongitude());
+
+
+                    currentLine.setStartX(pointCur.getX());
+                    currentLine.setStartY(pointCur.getY());
+                    currentLine.setEndX(pointNext.getX());
+                    currentLine.setEndY(pointNext.getY());
+
+
+                    if (busOrNotList.get(i+1)){
+                        currentLine.setStrokeWidth(4.5+0.5);
+
+                        switch (busNumList.get(i+1)){
+                            case "1":
+                                currentLine.setStroke(Color.DEEPPINK);
+                                break;
+                            case "2":
+                                currentLine.setStroke(Color.PURPLE);
+                                break;
+                            case "3":
+                                currentLine.setStroke(Color.DARKGREEN);
+                            case "4":
+                                currentLine.setStroke(Color.ORANGE);
+                                break;
+                            case "5":
+                                currentLine.setStroke(Color.DARKBLUE);
+                                break;
+                            case "6":
+                                currentLine.setStroke(Color.BLUEVIOLET);
+                                break;
+                            case "7":
+                                currentLine.setStroke(Color.YELLOW);
+                                break;
+                            case "8":
+                                currentLine.setStroke(Color.MEDIUMPURPLE);
+                                break;
+                            case "9":
+                                currentLine.setStroke(Color.LIGHTGREEN);
+                                break;
+                            case "10":
+                                currentLine.setStroke(Color.RED);
+                                break;
+                            case "11":
+                                currentLine.setStroke(Color.SADDLEBROWN);
+                                break;
+                            case "12":
+                                currentLine.setStroke(Color.DARKOLIVEGREEN);
+                                break;
+                            case "15":
+                                currentLine.setStroke(Color.TURQUOISE);
+                                break;
+                            case "57":
+                                currentLine.setStroke(Color.BROWN);
+                                break;
+                            default:
+                                System.out.println("NO MATCH");
+                                System.out.println(busNumList.get(i+1));
+                                currentLine.setStroke(Color.BLUE);
+
+                        }
+                    }
+
+                    if (i > 0 && busOrNotList.get(i-1) && !(busOrNotList.get(i))){
+                        currentNode.setFill(Color.YELLOW);
+                        currentNode.setRadius(6.7);
+                        currentNode.setVisible(true);
+                        currentNode.setStrokeWidth(1);
+                        currentNode.setStroke(Color.BLACK);
+                        currentNode.setViewOrder(-1);
+                    }
+
+                    if (i < busOrNotList.size() && busOrNotList.get(i+1) && !(busOrNotList.get(i))){
+                        currentNode.setFill(Color.YELLOW);
+                        currentNode.setRadius(6.7);
+                        currentNode.setVisible(true);
+                        currentNode.setStrokeWidth(1);
+                        currentNode.setStroke(Color.BLACK);
+                        currentNode.setViewOrder(-1);
+
+                    }
+
+                    if (i < busNumList.size() && busNumList.get(i) != busNumList.get(i+1) && busNumList.get(i) != "null" && busNumList.get(i+1) != "null"){
+                        currentNode.setFill(Color.ORANGE);
+                        currentNode.setRadius(6.7);
+                        currentNode.setVisible(true);
+                        currentNode.setStrokeWidth(1);
+                        currentNode.setStroke(Color.BLACK);
+                        currentNode.setViewOrder(-1);
+
+                    }
+                    if (i == 0){
+                        currentNode.setFill(Color.GREEN);
+                        currentNode.setStrokeWidth(1);
+                        currentNode.setStroke(Color.BLACK);
+                        currentNode.setRadius(9);
+                        currentNode.setVisible(true);
+                        currentNode.setViewOrder(-1);
+
+                    }
+
+                }
+                if(coordinatesList.size() == i+1){
+                    currentNode.setFill(Color.RED);
+                    currentNode.setStrokeWidth(1);
+                    currentNode.setStroke(Color.BLACK);
+                    currentNode.setRadius(9);
+                    currentNode.setVisible(true);
+                    currentNode.setViewOrder(-1);
+                }
+
+
+
+
+            }
 
     }
-
-    // @Override
-    // protected void layoutLayer() {
-    //     for (int a = 0; a < coordinatesList.size(); a++ ){
-    //         try {
-    //             Node currentNode = nodesOnMap.get(a);
-
-    //             double lon = coordinatesList.get(a)[1];
-    //             double lat = coordinatesList.get(a)[0];
-    //             if (a == 0){
-    //                 MapPoint mapPoint = new MapPoint(lat, lon);
-    //                 Point2D pointOnMap = getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
-
-    //                 MapPoint mapPointSt = new MapPoint(startEndCoordinatesList.get(0)[1], startEndCoordinatesList.get(0)[0]);
-    //                 Point2D pointSt = getMapPoint(mapPointSt.getLatitude(), mapPointSt.getLongitude());
-
-    //                 startNode.setTranslateX(pointSt.getX());
-    //                 startNode.setTranslateY(pointSt.getY());
-
-    //                 startLine.setStartX(pointSt.getX());
-    //                 startLine.setStartY(pointSt.getY());
-    //                 startLine.setEndX((pointOnMap.getX()));
-    //                 startLine.setEndY((pointOnMap.getY()));
-
-    //             }
-
-    //             if (a>0) {
-    //                 Line currentLine = linesOnMap.get(a - 1);
-    //                 double prevLon = coordinatesList.get(a - 1)[1];
-    //                 double prevLat = coordinatesList.get(a - 1)[0];
-    //                 MapPoint mapPointPrev = new MapPoint(prevLat, prevLon);
-    //                 Point2D pointPrev = getMapPoint(mapPointPrev.getLatitude(), mapPointPrev.getLongitude());
-
-
-    //                 MapPoint mapPointCur = new MapPoint(lat, lon);
-    //                 Point2D pointCur = getMapPoint(mapPointCur.getLatitude(), mapPointCur.getLongitude());
-
-    //                 currentLine.setStartX(pointPrev.getX());
-    //                 currentLine.setStartY(pointPrev.getY());
-    //                 currentLine.setEndX(pointCur.getX());
-    //                 currentLine.setEndY(pointCur.getY());
-    //                 currentNode.setTranslateX(pointCur.getX());
-    //                 currentNode.setTranslateY(pointCur.getY());
-
-
-
-
-    //             }
-
-    //             else {
-    //                 MapPoint mapPoint = new MapPoint(lat, lon);
-    //                 Point2D pointOnMap = getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
-    //                 currentNode.setTranslateX(pointOnMap.getX());
-    //                 currentNode.setTranslateY(pointOnMap.getY());
-    //             }
-
-
-    //             if ( a == coordinatesList.size()-1){
-    //                 MapPoint mapPointCur = new MapPoint(lat, lon);
-    //                 Point2D pointCur = getMapPoint(mapPointCur.getLatitude(), mapPointCur.getLongitude());
-
-    //                 MapPoint mapPointEd = new MapPoint(startEndCoordinatesList.get(1)[1], startEndCoordinatesList.get(1)[0]);
-    //                 Point2D pointEd = getMapPoint(mapPointEd.getLatitude(), mapPointEd.getLongitude());
-
-    //                 endLine.setStartX(pointCur.getX());
-    //                 endLine.setStartY(pointCur.getY());
-
-    //                 endLine.setEndX(pointEd.getX());
-    //                 endLine.setEndY(pointEd.getY());
-
-    //                 endNode.setTranslateX(pointEd.getX());
-    //                 endNode.setTranslateY(pointEd.getY());
-
-    //             }
-
-
-
-
-    //         } catch (Exception e) {
-    //             throw new RuntimeException(e);
-    //         }
-    //     }
-
-
-    //}
-
-
-
-
-
-}
+    }

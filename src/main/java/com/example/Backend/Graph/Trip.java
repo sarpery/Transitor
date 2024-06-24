@@ -47,7 +47,7 @@ public class Trip{
             else
                 tripStructure.add( new TripSegment("walking", createPointList(tripId, startPoint, endPoint)));
 
-            if(!tripId.startsWith("null")) tripNumber += "- " + rDB.getBusNumber(tripId);
+            if(!tripId.startsWith("null")) tripNumber += "-" + rDB.getBusNumber(tripId);
         }
         traveledDistance = ((int)(traveledDistance*100))/100.0;
     }
@@ -126,7 +126,7 @@ public class Trip{
         public boolean isWalking(){ return type.equals("walking"); }
 
         public boolean isBus(){ return type.equals("bus"); }
-        
+
         public LinkedList<double[]> getPoints(){ return points; }
         public String getBusNumber(){ return busNumber; }
     }
