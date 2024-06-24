@@ -68,9 +68,5 @@ public class RequestAPI {
         double[] coordinates = request(code);
         double latitude = coordinates[0];
         double longitude = coordinates[1];
-
-        // Outputting latitude and longitude
-        System.out.println("Latitude: " + latitude);
-        System.out.println("Longitude: " + longitude);
     }
 }

@@ -44,7 +44,6 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
         Pattern p = Pattern.compile(regex);
 
         for (int i = 0; i < featureCollectionAll.getFeatures().size()-1; i++){
-            //String a = featureCollectionAll.getFeatures().get(i).toString();
             Map<String, Object> as = featureCollectionAll.getFeatures().get(i).getProperties();
 
             String type = null;
@@ -68,7 +67,6 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
             double havDistance = calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop);
             double havDistanceMeters = havDistance * 1000;
             double benefit = fallofFunction(havDistanceMeters);
-            System.out.println(havDistanceMeters);
 
             if(benefit > 0.0){
                 score += benefit * amenityBenefit(type);
@@ -80,8 +78,6 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
 
     public Circle createHeatmapPoint(String postalCode) throws Exception {
         double score = accessibility(postalCode);
-        System.out.println(score + " " + postalCode);
-
         calculations(score, postalCode);
         Circle icon;
 
@@ -108,12 +104,12 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
             maxScore = (int)score;
             maxZip = postalCode;
         }
-        System.out.println("Min score: " + minZip + ": " + minScore);
-        System.out.println("Max score: " + maxZip + ": " + maxScore);
+        //System.out.println("Min score: " + minZip + ": " + minScore);
+        //System.out.println("Max score: " + maxZip + ": " + maxScore);
 
         totalScore+= (int)score;
         averageScore = totalScore/3051;
-        System.out.println(averageScore);
+        //System.out.println(averageScore);
     }
     private static final double K = -Math.log(0.05) / 2000;
 

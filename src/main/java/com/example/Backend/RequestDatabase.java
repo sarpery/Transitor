@@ -17,7 +17,7 @@ public class RequestDatabase<T> {
     public RequestDatabase(){
         try{
         Class.forName("com.mysql.cj.jdbc.Driver");
-        myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "BCS1510_BCS1510");
+        myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "BCS1510", "BCS1510");
         }catch(Exception e){ System.out.println(e); }
     }
 
@@ -91,8 +91,6 @@ public class RequestDatabase<T> {
 
     public String getBusNumber(String trip_id){
         try{
-            System.out.println("SELECT route_short_name " +
-                "FROM routes WHERE route_id IN (SELECT route_id FROM trips_maastricht WHERE trip_id = '" + trip_id + "')");
             PreparedStatement busNumQuery = myCon.prepareStatement("SELECT route_short_name " +
                 "FROM routes WHERE route_id IN (SELECT route_id FROM trips_maastricht WHERE trip_id = '" + trip_id + "')");
             ResultSet busNumRS =  busNumQuery.executeQuery();

@@ -36,8 +36,6 @@ public class Trip{
             String part[] = parts[1].split(":");
             String tripId = part[0];
 
-            System.out.println(i+1 + "/" + travelList.size() + "-" + tripId);
-
             if(!tripId.startsWith("null"))
             {
                 TripSegment tripSegment = new TripSegment("bus", createPointList(tripId, startPoint, endPoint));

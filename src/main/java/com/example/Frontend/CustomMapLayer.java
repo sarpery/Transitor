@@ -60,7 +60,6 @@ public class CustomMapLayer extends MapLayer implements HashController{
         for (int a = 0; a < coordinatesList.size(); a++ ){
             try {
                 String coordinate = coordinatesList.get(a);
-                System.out.println(coordinate);
                 Node currentNode = nodesOnMap.get(a);
                 double lat = getLat(coordinate);
                 double lon = getLon(coordinate);

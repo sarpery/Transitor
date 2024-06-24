@@ -17,7 +17,7 @@ public class DatabaseToGraph {
     private  void connect(){
         try{
             
-            myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "BCS1510_BCS1510");
+            myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "BCS1510", "BCS1510");
 
         }catch(Exception e){
             e.printStackTrace();
@@ -90,10 +90,4 @@ public class DatabaseToGraph {
     public  AdjacencyListGraph<String> getGraph() {
         return graph;
     }
-
-    // public static void main(String[] args){
-    //     graphTheDatabase();
-    //     BusDijkstra<String> bs = new BusDijkstra<String>(getGraph());
-    //      System.out.println(bs.dijkstra("6229VP", "6218TL"));
-    // }
 }

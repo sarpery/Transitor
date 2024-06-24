@@ -39,7 +39,6 @@ public class CustomHeatmapLayer extends MapLayer implements HashController{
         Circle icon = accesibilityFormula.createHeatmapPoint(postalCode);
         double lat = getLat(postalCode);
         double lon = getLon(postalCode);
-        System.out.println(lat + " " + lon);
 
         getChildren().add(icon);
         nodesOnMap.add(icon);

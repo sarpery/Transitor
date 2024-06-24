@@ -96,7 +96,6 @@ public class BusDijkstra<T> {
             result.add(it1.next() + "-" + it2.next());
         }
 
-        System.out.println(resultTimes.get(target));
         timeCost = resultTimes.get(target);
         return result;
     }

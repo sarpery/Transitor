@@ -16,7 +16,6 @@ public class AdjacencyListGraph<T> implements Graph<T> {
     public List<EdgeNode<T>> neighbors(T x) {
         List<EdgeNode<T>> neighboursElements = new LinkedList<EdgeNode<T>>();
         if (!verteces.containsKey(x)) {
-            System.out.println("The vertex " + x + " is not in the Graph.");
         } else {
             List<EdgeNode<T>> adjList = verteces.get(x);
             for (EdgeNode<T> edge : adjList) {
@@ -32,7 +31,6 @@ public class AdjacencyListGraph<T> implements Graph<T> {
     @Override
     public void addVertex(T x) {
         if (verteces.containsKey(x)) {
-           // System.out.println("The vertex " + x + " is already in the Graph.");
         } else {
             List<EdgeNode<T>> newList = new LinkedList<EdgeNode<T>>();
             verteces.put(x, newList);
@@ -42,7 +40,6 @@ public class AdjacencyListGraph<T> implements Graph<T> {
     @Override
     public void removeVertex(T x) {
         if (!verteces.containsKey(x)) {
-           // System.out.println("The vertex " + x + " is not in the Graph.");
         } else {
             verteces.remove(x);
         }
@@ -59,7 +56,6 @@ public class AdjacencyListGraph<T> implements Graph<T> {
         } else {
             List<EdgeNode<T>> adjList = verteces.get(x);
             if (adjList.contains(new EdgeNode<T>(y, dis))) {
-                System.out.println("The edge from " + x + " to " + y + " is already in the graph");
             } else {
                 adjList.add(new EdgeNode<T>(y, dis));
             }
@@ -69,14 +65,13 @@ public class AdjacencyListGraph<T> implements Graph<T> {
 
      public void addEdge(T x, T y, String arr, String dep, int dis, String name) {
         if (!verteces.containsKey(x)) {
-            System.out.println("The vertex " + x + " is not in the Graph.");
         } else if (!verteces.containsKey(y)) {
             System.out.println("The vertex " + y + " is not in the Graph.");
         } else {
             List<EdgeNode<T>> adjList = verteces.get(x);
             if (adjList.contains(new EdgeNode<T>(y, name, arr, dep, dis))) {
-                if(x.equals("6218TL") || y.equals("6218TL"))
-                    System.out.println("The edge from " + x + " to " + y + " is already in the graph");
+                if(x.equals("6218TL") || y.equals("6218TL")){
+                }
             } else {
                 adjList.add(new EdgeNode<T>(y, name, arr, dep, dis));
             }
@@ -100,8 +95,6 @@ public class AdjacencyListGraph<T> implements Graph<T> {
         Integer weight2 = getEdgeWeight(vertex2, vertex1);
         return (weight1 != null) ? weight1 : weight2;
     }
-
-   
 
     @Override
     public String toString() {
