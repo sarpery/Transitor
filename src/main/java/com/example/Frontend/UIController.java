@@ -1,12 +1,23 @@
 package com.example.Frontend;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableArray;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Box;
+import org.geojson.FeatureCollection;
 
-import com.example.Backend.Algorithms.AccesibilityFormula;
 import com.example.Controller.AlgoConnecter;
 import com.example.Controller.GraphController;
 import com.example.Controller.HashController;
@@ -15,6 +26,7 @@ import com.example.Frontend.PathStrategy.BikingPath;
 import com.example.Frontend.PathStrategy.Path;
 import com.example.Frontend.PathStrategy.TransportPath;
 import com.example.Frontend.PathStrategy.WalkingPath;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gluonhq.maps.MapPoint;
 import com.gluonhq.maps.MapView;
 
@@ -30,6 +42,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 
 public class UIController implements Initializable, AlgoConnecter, HashController, GraphController, SearchConnector {
@@ -44,15 +58,17 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private double zipYY = 50.82346493;
 
     public static boolean algo = true;
-    private AccesibilityFormula accesibilityFormula = new AccesibilityFormula();
 
     @FXML
     private MapView mapView;
 
-    private int startScore = 0;
-    private int endScore = 0;
+    @FXML
+    private ChoiceBox hourSelection;
 
-    private int score = 0;
+    @FXML
+    private ChoiceBox minuteSelection;
+
+    private int startScore = 0;
 
     @FXML
     public ImageView one;
@@ -89,6 +105,9 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     @FXML
     public ImageView fiftySeven;
 
+    @FXML
+    public Button currentTime;
+
     public void hideAllBusSigns(){
         one.setVisible(false);
         two.setVisible(false);
@@ -104,6 +123,15 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         twelve.setVisible(false);
         fifteen.setVisible(false);
         fiftySeven.setVisible(false);
+    }
+    @FXML
+    public void onCurrentTimePressed(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String time = LocalTime.now().format(formatter);
+        String hour = time.substring(0,2);
+        String minute = time.substring(3,5);
+        hourSelection.setValue(hour);
+        minuteSelection.setValue(minute);
     }
 
 
@@ -121,9 +149,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private Label distance;
 
     @FXML
-    private Label scoreLabel;
-
-    @FXML
     private Button walkButton;
 
     @FXML
@@ -136,16 +161,10 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private Button heatmapButton;
 
     @FXML
-    private Button calculateScoreButton;
-
-    @FXML
     private TextField startZip;
 
     @FXML
     private TextField endZip;
-
-    @FXML
-    private TextField checkZip;
 
     @FXML
     public Pane mapPane;
@@ -168,6 +187,32 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     public MapPoint pointStart;
     public MapPoint pointEnd;
 
+    public void setUpTimeSelection(){
+        ObservableList<String> obListHour = FXCollections.observableArrayList();
+        for(int i = 0; i < 24; i++){
+            if (0<=i && i<10){
+                obListHour.add("0" + Integer.toString(i));
+            }
+            else {
+                obListHour.add(Integer.toString(i));
+            }
+        }
+        hourSelection.setItems(obListHour);
+        hourSelection.setValue("12");
+
+        ObservableList<String> obListMin = FXCollections.observableArrayList();
+        for(int i = 0; i < 60; i++){
+            if (0<=i && i<10){
+                obListMin.add("0" + Integer.toString(i));
+            }
+            else {
+                obListMin.add(Integer.toString(i));
+            }
+        }
+        minuteSelection.setItems(obListMin);
+        minuteSelection.setValue("00");
+    }
+
 
     public void calculateDistance(String startText, String endText) throws Exception {
         System.out.println(startText);
@@ -181,21 +226,18 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     @FXML
     private void setupWalkButton() {
-            routingUI();
             startPath(new WalkingPath());
             deactivateButtons();
     }
 
     @FXML
     private void setupBikeButton() {
-        routingUI();
         startPath(new BikingPath());
         deactivateButtons();
     }
 
     @FXML
     private void setupBusButton() {
-            routingUI();
             startPath(new TransportPath(this));
             deactivateButtons();
     }
@@ -204,16 +246,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private void setupHeatmapButton() throws Exception {
             drawHeatmap(getAllZipCodes());
             deactivateButtons();
-            hideAllBusSigns();
-            heatmapUI();
-    }
-
-    @FXML
-    private void setupCalculateButton() throws Exception {
-        String text = checkZip.getText();
-        score = (int)accesibilityFormula.accessibility(text);
-        scoreLabel.setText("Score: " + String.valueOf(score));
-        System.out.println("Score for: " + text + ": " + score);
     }
 
     public static double ax;
@@ -234,6 +266,10 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     public void pathDrawBus(String start, String end) throws Exception {
         UIController ui = this;
         hideAllBusSigns();
+        String hour = (String) hourSelection.getValue();
+        String minute = (String) minuteSelection.getValue();
+
+        String time = hour + ":" + minute +":00";
 
         mapView.removeLayer(cL);
         mapView.removeLayer(cLB);
@@ -242,7 +278,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         Task task = new Task<CustomMapLayerBus>() {
             @Override
             protected CustomMapLayerBus call() throws Exception {
-                return new CustomMapLayerBus(start, end, ui);
+                return new CustomMapLayerBus(start, end, ui, time);
             }
         };
         new Thread(task).start();
@@ -301,7 +337,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     }
 
     @FXML
-    private void activateButtons(){
+    public void activateButtons(){
         walkButton.setDisable(false);
         bikeButton.setDisable(false);
         transportButton.setDisable(false);
@@ -310,26 +346,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         heatmapButton.setDisable(false);
     }
 
-    private void heatmapUI(){
-        startScoreLabel.setVisible(false);
-        endScoreLabel.setVisible(false);
-        timeLabel.setVisible(false);
-        distance.setVisible(false);
-        checkZip.setVisible(true);
-        scoreLabel.setVisible(true);
-        calculateScoreButton.setVisible(true);
-
-    }
-
-    private void routingUI(){
-        startScoreLabel.setVisible(true);
-        endScoreLabel.setVisible(true);
-        timeLabel.setVisible(true);
-        distance.setVisible(true);
-        checkZip.setVisible(false);
-        scoreLabel.setVisible(false);
-        calculateScoreButton.setVisible(false);
-    }
 private boolean isFail = false;
 
     private void startPath(Path strategy) {
@@ -347,12 +363,8 @@ private boolean isFail = false;
                     calculateDistance(startText, endText);
                 }
                 strategy.calculateTime(startText, endText, timeLabel);
-                startScore = (int)accesibilityFormula.accessibility(startText);
-                endScore = (int)accesibilityFormula.accessibility(endText);
-                startScoreLabel.setText("Score: " + String.valueOf(startScore));
-                endScoreLabel.setText("Score: " + String.valueOf(endScore));
-                System.out.println("Start score: " + startScore);
-                System.out.println("End score: " + endScore);
+                startScoreLabel.setText("Score: " + String.valueOf(accessibility(startText)));
+                endScoreLabel.setText("Score: " + String.valueOf(accessibility(endText)));
             } catch (Exception e) {
                 // Show error popup on the JavaFX Application Thread
                 Platform.runLater(() -> {
@@ -387,6 +399,7 @@ private List<String> result;
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        setUpTimeSelection();
         hashTheData();
         graphTheData();
         graphTheDatabase();
@@ -401,5 +414,65 @@ private List<String> result;
         newMapView.flyTo(0,point,0.1);
         newMapView.setZoom(12);
         return newMapView;
+    }
+    final double centerLatitude = 50.851368;
+    final double centerLongitude = 5.690973;
+
+    private int accessibility(String postalCode) throws Exception {
+        int score = 0;
+       score += (calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), centerLatitude, centerLongitude));
+
+        InputStream inputStream = new FileInputStream("src/main/java/com/example/Frontend/tourism.geojson");
+        InputStream inputStream2 = new FileInputStream("src/main/java/com/example/Frontend/amenity.geojson");
+        InputStream inputStream3 = new FileInputStream("src/main/java/com/example/Frontend/shop.geojson");
+
+        FeatureCollection featureCollectionAll = new ObjectMapper().readValue(inputStream, FeatureCollection.class);
+        FeatureCollection featureCollection2 = new ObjectMapper().readValue(inputStream2, FeatureCollection.class);
+        FeatureCollection featureCollection3 = new ObjectMapper().readValue(inputStream3, FeatureCollection.class);
+
+        featureCollectionAll.addAll(featureCollection2.getFeatures());
+        featureCollectionAll.addAll(featureCollection3.getFeatures());
+
+        String regex = "longitude=([\\d.]+), latitude=([\\d.]+)";
+        Pattern p = Pattern.compile(regex);
+
+
+        for (int i = 0; i < featureCollectionAll.getFeatures().size()-1; i++){
+            String a = featureCollectionAll.getFeatures().get(i).toString();
+
+            if (a.contains("museum")){
+                String geoCord = featureCollectionAll.getFeatures().get(i).getGeometry().toString();
+                Matcher m = p.matcher(geoCord);
+                m.find();
+
+                double longitudeLoop = Double.parseDouble(m.group(1));
+                double latitudeLoop = Double.parseDouble(m.group(2));
+
+                if(calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop) < 0.5){
+                    System.out.println(calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop));
+                    System.out.println(a);
+                    score++;
+                }
+            }
+
+        }
+
+        return score;
+    }
+
+    public Circle createHeatmapPoint(String postalCode) throws Exception {
+        int score = accessibility(postalCode);
+        Circle icon;
+
+        if (score > 5) {
+            icon = new Circle(5, Color.GREEN);
+        } else if (score > 3) {
+            icon = new Circle(5, Color.YELLOW);
+        } else if (score > 1) {
+            icon = new Circle(5, Color.ORANGE);
+        } else {
+            icon = new Circle(5, Color.RED);
+        }
+        return icon;
     }
 }

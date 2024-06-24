@@ -44,10 +44,10 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
     public UIController uic;
 
 
-    public CustomMapLayerBus(String startCord, String endCord, UIController ui ) throws Exception {
+    public CustomMapLayerBus(String startCord, String endCord, UIController ui, String time ) throws Exception {
         uic = ui;
         RequestDatabase requestDatabase = new RequestDatabase();
-        trip = requestDatabase.findBusRoute(startCord, endCord);
+        trip = requestDatabase.findBusRoute(startCord, endCord, time);
 
         tripSegmentList = trip.tripStructure;
 
