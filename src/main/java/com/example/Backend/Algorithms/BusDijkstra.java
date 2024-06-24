@@ -1,7 +1,5 @@
 package com.example.Backend.Algorithms;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,7 +22,7 @@ public class BusDijkstra<T> {
         this.graph = graph1;
     }
 
-    public List<String> dijkstra(T start, T target) {
+    public List<String> dijkstra(T start, T target, String time) {
         Map<T, Integer> distance = new HashMap<>();
         Map<T, String> previousTrips = new HashMap<>();
         Map<T, T> previousStops = new HashMap<>();
@@ -38,9 +36,6 @@ public class BusDijkstra<T> {
             previousTrips.put(vertex, null);
             previousStops.put(vertex, null);
         }
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        time = LocalTime.now().format(formatter);
         resultTimes.put(start, (long)0);
         distance.put(start, 0);
         priorityQueue.add(start);
