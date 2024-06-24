@@ -52,6 +52,8 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private int startScore = 0;
     private int endScore = 0;
 
+    private int score = 0;
+
     @FXML
     public ImageView one;
 
@@ -119,6 +121,9 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private Label distance;
 
     @FXML
+    private Label scoreLabel;
+
+    @FXML
     private Button walkButton;
 
     @FXML
@@ -131,10 +136,16 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private Button heatmapButton;
 
     @FXML
+    private Button calculateScoreButton;
+
+    @FXML
     private TextField startZip;
 
     @FXML
     private TextField endZip;
+
+    @FXML
+    private TextField checkZip;
 
     @FXML
     public Pane mapPane;
@@ -170,21 +181,21 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     @FXML
     private void setupWalkButton() {
-            showLabels();
+            routingUI();
             startPath(new WalkingPath());
             deactivateButtons();
     }
 
     @FXML
     private void setupBikeButton() {
-        showLabels();
+        routingUI();
         startPath(new BikingPath());
         deactivateButtons();
     }
 
     @FXML
     private void setupBusButton() {
-            showLabels();
+            routingUI();
             startPath(new TransportPath(this));
             deactivateButtons();
     }
@@ -194,7 +205,15 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
             drawHeatmap(getAllZipCodes());
             deactivateButtons();
             hideAllBusSigns();
-            clearLabels();
+            heatmapUI();
+    }
+
+    @FXML
+    private void setupCalculateButton() throws Exception {
+        String text = checkZip.getText();
+        score = (int)accesibilityFormula.accessibility(text);
+        scoreLabel.setText("Score: " + String.valueOf(score));
+        System.out.println("Score for: " + text + ": " + score);
     }
 
     public static double ax;
@@ -291,18 +310,25 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         heatmapButton.setDisable(false);
     }
 
-    private void clearLabels(){
+    private void heatmapUI(){
         startScoreLabel.setVisible(false);
         endScoreLabel.setVisible(false);
         timeLabel.setVisible(false);
         distance.setVisible(false);
+        checkZip.setVisible(true);
+        scoreLabel.setVisible(true);
+        calculateScoreButton.setVisible(true);
+
     }
 
-    private void showLabels(){
+    private void routingUI(){
         startScoreLabel.setVisible(true);
         endScoreLabel.setVisible(true);
         timeLabel.setVisible(true);
         distance.setVisible(true);
+        checkZip.setVisible(false);
+        scoreLabel.setVisible(false);
+        calculateScoreButton.setVisible(false);
     }
 private boolean isFail = false;
 
@@ -376,5 +402,4 @@ private List<String> result;
         newMapView.setZoom(12);
         return newMapView;
     }
-    
 }

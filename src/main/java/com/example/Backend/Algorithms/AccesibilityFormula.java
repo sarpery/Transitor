@@ -60,6 +60,7 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
             double havDistance = calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop);
             double havDistanceMeters = havDistance * 1000;
             double benefit = fallofFunction(havDistanceMeters);
+            System.out.println(havDistanceMeters);
 
             if(benefit > 0.0){
                 score += benefit * amenityBenefit(type);
