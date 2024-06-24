@@ -166,6 +166,24 @@
                   <Image url="@Untitled%20(11).png" />
                </image>
             </ImageView>
+            <TextField id="checkTextArea" fx:id="checkZip" alignment="CENTER" layoutX="57.0" layoutY="413.0" pickOnBounds="false" promptText="Enter Zip Code" visible="false">
+               <font>
+                  <Font name="Arial" size="12.0" />
+               </font>
+            </TextField>
+            <Label id="scoreMeasure" fx:id="scoreLabel" focusTraversable="false" layoutX="86.0" layoutY="490.0" text="Score: " textFill="#ffffff" visible="false">
+               <font>
+                  <Font name="Arial Bold" size="16.0" />
+               </font>
+            </Label>
+            <Button id="calculateScoreButton" fx:id="calculateScoreButton" layoutX="95.0" layoutY="452.0" mnemonicParsing="false" onAction="#setupCalculateButton" prefHeight="20.0" prefWidth="74.0" style="-fx-background-color: #E84E10#E84E10;" text="Calculate" textFill="#FFFFFF" visible="false" wrapText="true">
+               <font>
+                  <Font name="Arial Bold" size="11.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
             </children>
         </Pane>
     </children>
