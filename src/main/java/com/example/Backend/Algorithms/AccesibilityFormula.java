@@ -105,10 +105,53 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
 
     private double amenityBenefit(String name) {
         switch (name) {
-            case "parking":
-                return 0; // Fill this with value.
+            // Restaurants and bars
+            case "bar":
+            case "restaurant":
+            case "pub":
+                return 6;
+
+            // Takeout
+            case "fast_food":
+                return 4;
+
+            // Shops
+            case "clothes":
+            case "shoes":
+            case "accessories":
+            case "books":
+            case "mall":
+            case "alcohol":
+            case "electronics":
+            case "gift":
+            case "bicycle":
+                return 2;
+
+            // Place of worship
+            case "place_of_worship":
+                return 3;
+
+            // Grocery shopping
+            case "supermarket":
+            case "market":
+                return 5;
+
+            // Medical
+            case "hospital":
+            case "clinic":
+            case "drugs_paraphernalia":
+            case "soft_drugs":
+            case "pharmacy":
+            case "nutrition_supplements":
+                return 2;
+
+            // Gym
+            case "sports":
+                return 2;
+
+            // Default
             default:
-                return 0;
+                return 1;
         }
     }
 }
