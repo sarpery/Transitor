@@ -16,19 +16,13 @@ import com.example.Controller.HashController;
 import com.example.Controller.SearchConnector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javafx.animation.KeyValue;
-import javafx.fxml.Initializable;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class AccesibilityFormula implements AlgoConnecter, HashController, GraphController, SearchConnector {
-    final double centerLatitude = 50.851368;
-    final double centerLongitude = 5.690973;
 
     public double accessibility(String postalCode) throws Exception {
         double score = 0;
-        score += (calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), centerLatitude, centerLongitude));
-        //System.out.println(score);
         InputStream inputStream = new FileInputStream("src/main/java/com/example/Frontend/tourism.geojson");
         InputStream inputStream2 = new FileInputStream("src/main/java/com/example/Frontend/amenity.geojson");
         InputStream inputStream3 = new FileInputStream("src/main/java/com/example/Frontend/shop.geojson");
@@ -66,12 +60,10 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
             double latitudeLoop = Double.parseDouble(m.group(2));
 
             double havDistance = calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop);
-            System.out.println("In km: " + havDistance + " In m: " + havDistance *1000);
             double havDistanceMeters = havDistance * 1000;
             double benefit = fallofFunction(havDistanceMeters);
 
             if(benefit > 0.0){
-                System.out.println(calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop));
                 score += benefit * amenityBenefit(type);
             }
         }
@@ -150,7 +142,7 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
 
             // Default
             default:
-                return 1;
+                return 0;
         }
     }
 }
