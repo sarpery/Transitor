@@ -162,65 +162,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     public MapPoint pointStart;
     public MapPoint pointEnd;
 
-    @FXML
-    public void addBusInfo(String info) {
-        busInfo.setText(info);
-        busInfo.setVisible(false);
-
-        String busNos = info;
-        String[] arrString = busNos.split("-");
-        for (String a: arrString){
-            switch (a){
-                case "1":
-                    one.setVisible(true);
-                    break;
-                case "2":
-                    two.setVisible(true);
-                    break;
-                case "3":
-                    three.setVisible(true);
-                case "4":
-                    four.setVisible(true);
-                    break;
-                case "5":
-                    five.setVisible(true);
-                    break;
-                case "6":
-                    six.setVisible(true);
-                    break;
-                case "7":
-                    seven.setVisible(true);
-                    break;
-                case "8":
-                    eight.setVisible(true);
-                    break;
-                case "9":
-                    nine.setVisible(true);
-                    break;
-                case "10":
-                    ten.setVisible(true);
-                    break;
-                case "11":
-                    eleven.setVisible(true);
-                    break;
-                case "12":
-                    twelve.setVisible(true);
-                    break;
-                case "15":
-                    fifteen.setVisible(true);
-                    break;
-                case "57":
-                    fiftySeven.setVisible(true);
-                    break;
-                default:
-                    System.out.println("NO MATCH");
-                    System.out.println(a);
-
-
-            }
-        }
-    }
-
 
     public void calculateDistance(String startText, String endText) throws Exception {
         System.out.println(startText);
@@ -272,6 +213,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     }
 
     public void pathDrawBus(String start, String end) throws Exception {
+        UIController ui = this;
         hideAllBusSigns();
 
         mapView.removeLayer(cL);
@@ -281,7 +223,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         Task task = new Task<CustomMapLayerBus>() {
             @Override
             protected CustomMapLayerBus call() throws Exception {
-                return new CustomMapLayerBus(start, end);
+                return new CustomMapLayerBus(start, end, ui);
             }
         };
         new Thread(task).start();
@@ -297,7 +239,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
                 timeLabel.setText("Transport time: " + cLB.trip.travelTime + " min");
                 System.out.println("Transport time: " + cLB.trip.travelTime);
 
-                addBusInfo(cLB.trip.tripNumber);
                 activateButtons();
             }
         });

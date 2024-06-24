@@ -11,6 +11,7 @@ import com.example.Controller.HashController;
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 
+import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -40,9 +41,11 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
 
 
     public Trip trip;
+    public UIController uic;
 
 
-    public CustomMapLayerBus(String startCord, String endCord ) throws Exception {
+    public CustomMapLayerBus(String startCord, String endCord, UIController ui ) throws Exception {
+        uic = ui;
         RequestDatabase requestDatabase = new RequestDatabase();
         trip = requestDatabase.findBusRoute(startCord, endCord);
 
@@ -116,44 +119,72 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
                         switch (busNumList.get(i+1)){
                             case "1":
                                 currentLine.setStroke(Color.DEEPPINK);
+                                uic.one.setVisible(true);
+
                                 break;
                             case "2":
                                 currentLine.setStroke(Color.PURPLE);
+                                uic.two.setVisible(true);
+
                                 break;
                             case "3":
                                 currentLine.setStroke(Color.DARKGREEN);
+                                uic.three.setVisible(true);
+
                             case "4":
                                 currentLine.setStroke(Color.ORANGE);
+                                uic.four.setVisible(true);
+
                                 break;
                             case "5":
                                 currentLine.setStroke(Color.DARKBLUE);
+                                uic.five.setVisible(true);
+
                                 break;
                             case "6":
-                                currentLine.setStroke(Color.BLUEVIOLET);
+                                currentLine.setStroke(Color.CYAN);
+                                uic.six.setVisible(true);
+
                                 break;
                             case "7":
                                 currentLine.setStroke(Color.YELLOW);
+                                uic.seven.setVisible(true);
+
                                 break;
                             case "8":
                                 currentLine.setStroke(Color.MEDIUMPURPLE);
+                                uic.eight.setVisible(true);
+
                                 break;
                             case "9":
                                 currentLine.setStroke(Color.LIGHTGREEN);
+                                uic.nine.setVisible(true);
+
                                 break;
                             case "10":
                                 currentLine.setStroke(Color.RED);
+                                uic.ten.setVisible(true);
+
                                 break;
                             case "11":
                                 currentLine.setStroke(Color.SADDLEBROWN);
+                                uic.eleven.setVisible(true);
+
                                 break;
                             case "12":
                                 currentLine.setStroke(Color.DARKOLIVEGREEN);
+                                uic.twelve.setVisible(true);
+
                                 break;
                             case "15":
                                 currentLine.setStroke(Color.TURQUOISE);
+                                uic.fifteen.setVisible(true);
+
                                 break;
                             case "57":
                                 currentLine.setStroke(Color.BROWN);
+                                uic.fiftySeven.setVisible(true);
+
                                 break;
                             default:
                                 System.out.println("NO MATCH");
