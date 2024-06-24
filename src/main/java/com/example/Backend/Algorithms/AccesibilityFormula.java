@@ -28,7 +28,7 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
     public double accessibility(String postalCode) throws Exception {
         double score = 0;
         score += (calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), centerLatitude, centerLongitude));
-
+        //System.out.println(score);
         InputStream inputStream = new FileInputStream("src/main/java/com/example/Frontend/tourism.geojson");
         InputStream inputStream2 = new FileInputStream("src/main/java/com/example/Frontend/amenity.geojson");
         InputStream inputStream3 = new FileInputStream("src/main/java/com/example/Frontend/shop.geojson");
@@ -66,11 +66,12 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
             double latitudeLoop = Double.parseDouble(m.group(2));
 
             double havDistance = calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop);
-            double benefit = fallofFunction(havDistance);
+            System.out.println("In km: " + havDistance + " In m: " + havDistance *1000);
+            double havDistanceMeters = havDistance * 1000;
+            double benefit = fallofFunction(havDistanceMeters);
 
             if(benefit > 0.0){
-                //System.out.println(calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop));
-                //System.out.println(a);
+                System.out.println(calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop));
                 score += benefit * amenityBenefit(type);
             }
         }
@@ -78,15 +79,16 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
         return score;
     }
 
+    // we can adjust it however we want
     public Circle createHeatmapPoint(String postalCode) throws Exception {
         double score = accessibility(postalCode);
         Circle icon;
 
-        if (score > 5) {
+        if (score > 1200) {
             icon = new Circle(5, Color.GREEN);
-        } else if (score > 3) {
+        } else if (score > 700) {
             icon = new Circle(5, Color.YELLOW);
-        } else if (score > 1) {
+        } else if (score > 250) {
             icon = new Circle(5, Color.ORANGE);
         } else {
             icon = new Circle(5, Color.RED);
@@ -94,13 +96,10 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
         return icon;
     }
 
-    private double fallofFunction(double distance) {
-        //1 distance is 1 km
-        if (distance <= 0.5) {
-            return 1.0;
-        }
+    private static final double K = -Math.log(0.05) / 2000;
 
-        return 0.0;
+    public static double fallofFunction(double distance) {
+        return Math.exp(-K * distance);
     }
 
     private double amenityBenefit(String name) {

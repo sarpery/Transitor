@@ -76,12 +76,12 @@
                   <Font name="Arial Bold" size="16.0" />
                </font>
             </Label>
-            <Label id="distanceMeasure" fx:id="startScoreLabel" focusTraversable="false" layoutX="83.0" layoutY="160.0" prefHeight="20.0" prefWidth="85.0" text="Score: " textFill="#ffffff">
+            <Label id="distanceMeasure" fx:id="startScoreLabel" focusTraversable="false" layoutX="65.0" layoutY="160.0" prefHeight="20.0" prefWidth="118.0" text="Score: " textFill="#ffffff">
                <font>
                   <Font name="Arial Bold" size="16.0" />
                </font>
             </Label>
-            <Label id="distanceMeasure" fx:id="endScoreLabel" focusTraversable="false" layoutX="83.0" layoutY="237.0" prefHeight="20.0" prefWidth="85.0" text="Score: " textFill="#ffffff">
+            <Label id="distanceMeasure" fx:id="endScoreLabel" focusTraversable="false" layoutX="65.0" layoutY="236.0" prefHeight="20.0" prefWidth="118.0" text="Score: " textFill="#ffffff">
                <font>
                   <Font name="Arial Bold" size="16.0" />
                </font>

@@ -36,7 +36,7 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
     public CustomMapLayerBus(String startCord, String endCord ) throws Exception {
         RequestDatabase requestDatabase = new RequestDatabase();
         trip = requestDatabase.findBusRoute(startCord, endCord);
-        coordinatesList = trip.tripStructure;
+        //coordinatesList = trip.tripStructure;
         for (int i = 0; i < coordinatesList.size(); i++){
             Node icon;
             Line line;

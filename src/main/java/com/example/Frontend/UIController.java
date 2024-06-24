@@ -57,6 +57,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private MapView mapView;
 
     private int startScore = 0;
+    private int endScore = 0;
 
     @FXML
     private Label startScoreLabel;
@@ -258,8 +259,12 @@ private boolean isFail = false;
                     calculateDistance(startText, endText);
                 }
                 strategy.calculateTime(startText, endText, timeLabel);
-                startScoreLabel.setText("Score: " + String.valueOf(accesibilityFormula.accessibility(startText)));
-                endScoreLabel.setText("Score: " + String.valueOf(accesibilityFormula.accessibility(endText)));
+                startScore = (int)accesibilityFormula.accessibility(startText);
+                endScore = (int)accesibilityFormula.accessibility(endText);
+                startScoreLabel.setText("Score: " + String.valueOf(startScore));
+                endScoreLabel.setText("Score: " + String.valueOf(endScore));
+                System.out.println(startScore);
+                System.out.println(endScore);
             } catch (Exception e) {
                 // Show error popup on the JavaFX Application Thread
                 Platform.runLater(() -> {
