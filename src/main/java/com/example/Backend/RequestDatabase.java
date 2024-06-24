@@ -53,11 +53,11 @@ public class RequestDatabase<T> {
 
     DatabaseToGraph dbg = new DatabaseToGraph();
     BusDijkstra<String> bs = new BusDijkstra<String>(dbg.getGraph());
-    private Trip computeBusRoute(String startPoint, String endPoint){
+    private Trip computeBusRoute(String startPoint, String endPoint, String time){
         Trip trip;
         
         
-        List<String> tripList = bs.dijkstra(startPoint, endPoint);
+        List<String> tripList = bs.dijkstra(startPoint, endPoint, time);
         long tripTime = bs.getTime();
         System.out.println("dijkstra done");
         trip = new Trip(tripList, tripTime);
@@ -102,7 +102,7 @@ public class RequestDatabase<T> {
         } catch(Exception e){e.printStackTrace(); return null;}
     }
 
-    public Trip findBusRoute(String startPostalCode, String endPostalCode){
-        return computeBusRoute(startPostalCode, endPostalCode);
+    public Trip findBusRoute(String startPostalCode, String endPostalCode, String time){
+        return computeBusRoute(startPostalCode, endPostalCode, time);
     }
 }
