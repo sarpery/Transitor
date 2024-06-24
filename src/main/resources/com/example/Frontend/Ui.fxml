@@ -25,17 +25,17 @@
         </Pane>
         <Pane id="menuPane" prefHeight="538.0" prefWidth="264.0" style="-fx-background-color: #001C3D;">
             <children>
-                <Label id="titleLabel" layoutX="45.0" layoutY="14.0" prefHeight="37.0" prefWidth="150.0" text="Transitor" textAlignment="CENTER" textFill="WHITE">
+                <Label id="titleLabel" layoutX="57.0" layoutY="13.0" prefHeight="37.0" prefWidth="150.0" text="Transitor" textAlignment="CENTER" textFill="WHITE">
                     <font>
                         <Font name="Arial" size="36.0" />
                     </font>
                 </Label>
-                <TextField id="targetTextArea" fx:id="endZip" alignment="CENTER" layoutX="44.0" layoutY="128.0" pickOnBounds="false" promptText="Target Zip Code" text="6228GR">
+                <TextField id="targetTextArea" fx:id="endZip" alignment="CENTER" layoutX="50.0" layoutY="128.0" pickOnBounds="false" promptText="Target Zip Code" text="6228GR">
                     <font>
                         <Font name="Arial" size="12.0" />
                     </font>
                 </TextField>
-                <TextField id="startingTextArea" fx:id="startZip" alignment="CENTER" layoutX="44.0" layoutY="64.0" pickOnBounds="false" promptText="Starting Zip Code" text="6211CL">
+                <TextField id="startingTextArea" fx:id="startZip" alignment="CENTER" layoutX="50.0" layoutY="64.0" pickOnBounds="false" promptText="Starting Zip Code" text="6211CL">
                     <font>
                         <Font name="Arial" size="12.0" />
                     </font>
@@ -182,6 +182,16 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
+            <ImageView fitHeight="46.0" fitWidth="34.0" layoutX="210.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@800px-Wapen_van_Maastricht.svg.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="46.0" fitWidth="34.0" layoutX="12.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@800px-Wapen_van_Maastricht.svg.png" />
+               </image>
+            </ImageView>
             </children>
         </Pane>
     </children>
