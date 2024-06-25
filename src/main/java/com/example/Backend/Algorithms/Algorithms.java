@@ -6,7 +6,7 @@ import com.example.Backend.DataToHashMap;
 
 public class Algorithms<T> {
     private final double WALKING_SPEED = 0.055; //kpm
-    private final double CYCLING_SPEED = 0.4; //kpm
+    public static final double CYCLING_SPEED = 0.4; //kpm
     private final int EARTH_RADIUS = 6371;
 
     DataToHashMap<T> dataReader;

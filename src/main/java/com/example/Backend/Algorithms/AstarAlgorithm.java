@@ -16,11 +16,16 @@ import com.example.Backend.Graph.EdgeNode;
 public class AstarAlgorithm<T> {
 
 private AdjacencyListGraph<String> graph;
-Algorithms<String> alg = new Algorithms<String>();
+Algorithms<String> alg;
 
 public AstarAlgorithm(AdjacencyListGraph<String> graph){
-
     this.graph = graph;
+    alg = new Algorithms<>();
+}
+
+public AstarAlgorithm(AdjacencyListGraph<String> graph, DataToHashMap<String> dataReader) {
+    this.graph = graph;
+    alg = new Algorithms<String>(dataReader);
 }
 
 

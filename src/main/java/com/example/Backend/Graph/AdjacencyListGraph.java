@@ -128,7 +128,7 @@ public class AdjacencyListGraph<T> implements Graph<T> {
     private void removeIngoingEdges(T vertex) {
         for (Map.Entry<T, List<EdgeNode<T>>> entry : verteces.entrySet()) {
             List<EdgeNode<T>> adj = entry.getValue();
-            adj.remove(new EdgeNode<T>(vertex, null));
+            adj.remove(new EdgeNode<T>(vertex.toString(), null));
         }
     }
 }
