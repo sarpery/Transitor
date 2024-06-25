@@ -30,12 +30,12 @@
                         <Font name="Arial" size="36.0" />
                     </font>
                 </Label>
-                <TextField id="targetTextArea" fx:id="endZip" alignment="CENTER" layoutX="50.0" layoutY="128.0" pickOnBounds="false" promptText="Target Zip Code" text="6228GR">
+                <TextField id="targetTextArea" fx:id="endZip" alignment="CENTER" layoutX="50.0" layoutY="128.0" pickOnBounds="false" promptText="Target Zip Code">
                     <font>
                         <Font name="Arial" size="12.0" />
                     </font>
                 </TextField>
-                <TextField id="startingTextArea" fx:id="startZip" alignment="CENTER" layoutX="50.0" layoutY="64.0" pickOnBounds="false" promptText="Starting Zip Code" text="6211CL">
+                <TextField id="startingTextArea" fx:id="startZip" alignment="CENTER" layoutX="50.0" layoutY="64.0" pickOnBounds="false" promptText="Starting Zip Code">
                     <font>
                         <Font name="Arial" size="12.0" />
                     </font>
