@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
+import java.time.Duration;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
@@ -59,6 +60,76 @@ public class AlgorithmsTests {
         double time = algorithms.getCyclingTime("ALPHA", "BETA");
         double expectedTime = 6448 / Algorithms.CYCLING_SPEED;
         assertTrue(time == expectedTime);
+    }
+
+    @Test
+    void test5() {
+        assertTrue(algorithms.getCost() == 0);
+    }
+
+    @Test
+    void test6() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            algorithms.parseDuration("HAHAHAH");
+        });
+    }
+
+    @Test
+    void test7() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            algorithms.parseDuration("");
+        });
+    }
+
+    @Test
+    void test8() {
+        assertThrows(NullPointerException.class, () -> {
+            algorithms.parseDuration(null);
+        });
+    }
+
+    @Test
+    void test9() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            algorithms.parseDuration("11:1D:02");
+        });
+    }
+
+    @Test
+    void test10() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            algorithms.parseDuration("1:2:3:4");
+        });
+    }
+
+    @Test
+    void test11() {
+        Duration duration = algorithms.parseDuration("29:0:0");
+        assertTrue(duration.getSeconds() == 29 * 3600);
+    }
+
+    @Test
+    void test12() {
+        Duration duration = algorithms.parseDuration("29:3:09");
+        assertTrue(duration.getSeconds() == 29 * 3600 + 3 * 60 + 9);
+    }
+
+    @Test
+    void test13() {
+        Duration duration = algorithms.parseDuration("301:05:0");
+        assertTrue(duration.getSeconds() == 301 * 3600 + 5 * 60);
+    }
+
+    @Test
+    void test14() {
+        Duration duration = algorithms.parseDuration("0:0:03");
+        assertTrue(duration.getSeconds() == 3);
+    }
+
+    @Test
+    void test15() {
+        Duration duration = algorithms.parseDuration("1:0:1");
+        assertTrue(duration.getSeconds() == 1 * 3600 + 1);
     }
 
 }
