@@ -77,7 +77,7 @@ public class DijkstraTests {
         DataToGraph<String> dataToGraph = new DataToGraph<>();
         dataToGraph.graphTheData(tempDistancesFile.toString());
 
-        dijkstra = new Dijkstra(dataToGraph.getGraph());
+        dijkstra = new Dijkstra<String>(dataToGraph.getGraph());
     } 
 
     @Test

@@ -9,17 +9,23 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import com.example.Backend.DataToHashMap;
 import com.example.Backend.Graph.AdjacencyListGraph;
 import com.example.Backend.Graph.EdgeNode;
 public class BusDijkstra<T> {
     private AdjacencyListGraph<T> graph;
     private Map<T, Long> resultTimes = new HashMap<>();
-    private Algorithms<String> alg = new Algorithms<>();
+    private Algorithms<String> alg;
     private String time;
     private Long timeCost;
     public BusDijkstra(AdjacencyListGraph<T> graph1){
-
         this.graph = graph1;
+        alg = new Algorithms<>();
+    }
+
+    public BusDijkstra(AdjacencyListGraph<T> graph1, DataToHashMap<String> dataReader) {
+        this.graph = graph1;
+        alg = new Algorithms<String>(dataReader);
     }
 
     public List<String> dijkstra(T start, T target, String time) {
