@@ -2,6 +2,9 @@ package com.example.Backend.Algorithms;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,10 +25,13 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
     private double minScore = Integer.MAX_VALUE;
     private double maxScore = Integer.MIN_VALUE;
 
+    private double score = 0;
+
     private int totalScore = 0;
     private int averageScore = 0;
     private String minZip = "";
     private String maxZip = "";
+    List<String> connectorZips = Arrays.asList("9999TT", "9999ZZ", "9999AA", "9999GG","6200AA");
 
     public double accessibility(String postalCode) throws Exception {
         double score = 0;
@@ -77,19 +83,23 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
     }
 
     public Circle createHeatmapPoint(String postalCode) throws Exception {
-        double score = accessibility(postalCode);
-        // calculations(score, postalCode); //method used for finding the highest, lowest and average score
         Circle icon;
-
-        if (score > 1000) {
-            icon = new Circle(5, Color.GREEN);
-        } else if (score > 500) {
-            icon = new Circle(5, Color.YELLOW);
-        } else if (score > 150) {
-            icon = new Circle(5, Color.ORANGE);
-        } else {
-            icon = new Circle(5, Color.RED);
+        score = accessibility(postalCode);
+        if(!connectorZips.contains(postalCode)) {
+            if (score > 1000) {
+                icon = new Circle(5, Color.GREEN);
+            } else if (score > 500) {
+                icon = new Circle(5, Color.YELLOW);
+            } else if (score > 150) {
+                icon = new Circle(5, Color.ORANGE);
+            } else {
+                icon = new Circle(5, Color.RED);
+            }
+        }else {
+            icon = new Circle(0, Color.TRANSPARENT);
         }
+        // calculations(score, postalCode); //method used for finding the highest, lowest and average score
+
         return icon;
     }
 
