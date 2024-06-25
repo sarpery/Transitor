@@ -1,17 +1,16 @@
-package com.example.Frontend;
+package com.example.Frontend.CustomMapLayers;
 
 import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.example.Backend.RequestDatabase;
 import com.example.Backend.Graph.Trip;
 import com.example.Controller.HashController;
+import com.example.Frontend.UIController;
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 
-import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
