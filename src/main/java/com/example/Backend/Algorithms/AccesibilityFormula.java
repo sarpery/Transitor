@@ -127,7 +127,7 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
         return Math.exp(-K * distance);
     }
 
-    private double amenityBenefit(String name) {
+    public double amenityBenefit(String name) {
         switch (name) {
             // Restaurants and bars
             case "bar":

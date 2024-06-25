@@ -78,11 +78,11 @@ public class Algorithms<T> {
         return calculateTime(startCords, endCords, CYCLING_SPEED);
     }
 
-    public double getCost(){
+    public double getCost() {
         return 0;
     }
 
-        public Duration parseDuration(String durationStr) {
+    public Duration parseDuration(String durationStr) {
         // Split the input string by ":"
         String[] parts = durationStr.split(":");
         
@@ -105,7 +105,8 @@ public class Algorithms<T> {
 
             // Create the Duration object
             return Duration.ofHours(hours).plusMinutes(minutes).plusSeconds(seconds);
-        } catch (NumberFormatException e) {
+        } 
+        catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid number format in duration string", e);
         }
     }

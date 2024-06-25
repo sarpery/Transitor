@@ -2,18 +2,8 @@ package com.example;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
-import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.io.TempDir;
 
-import com.example.Backend.DataToGraph;
-import com.example.Backend.DataToHashMap;
-import com.example.Backend.Algorithms.Algorithms;
-import com.example.Backend.Algorithms.Dijkstra;
 import com.example.Backend.Graph.AdjacencyListGraph;
 
 public class AdjacencyListGraphTests {
