@@ -1,4 +1,4 @@
-package com.example.Frontend;
+package com.example.Frontend.CustomMapLayers;
 
 import com.example.Controller.HashController;
 import com.gluonhq.maps.MapLayer;
@@ -10,12 +10,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.Node;
 
 import javafx.scene.shape.Line;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.Frontend.UIController.*;
 
 public class CustomMapLayer extends MapLayer implements HashController{
 

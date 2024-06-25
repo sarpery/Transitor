@@ -12,7 +12,7 @@ public class PathSearch<T> {
     
 
     public List<String> searchAStar(AdjacencyListGraph<String> graph, String start, String target){
-         as = new AstarAlgorithm<>(graph);
+         as = new AstarAlgorithm<T>(graph);
 
         return as.aStarSearch(start, target);
 

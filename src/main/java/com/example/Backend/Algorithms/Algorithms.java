@@ -6,10 +6,17 @@ import com.example.Backend.DataToHashMap;
 
 public class Algorithms<T> {
     private final double WALKING_SPEED = 0.055; //kpm
-    private final double CYCLING_SPEED = 0.4; //kpm
+    public static final double CYCLING_SPEED = 0.4; //kpm
     private final int EARTH_RADIUS = 6371;
 
-    DataToHashMap<T> dataReader = new DataToHashMap<T>();
+    DataToHashMap<T> dataReader;
+    public Algorithms(DataToHashMap<T> dataReader) {
+        this.dataReader = dataReader;
+    }
+
+    public Algorithms() {
+        dataReader = new DataToHashMap<T>("src/main/java/com/example/Data/MassZipLatLon.txt");
+    }
 
     //in km 
     public double calculateDistanceHaversine(double[] startCords, double[] endCords){
@@ -102,5 +109,4 @@ public class Algorithms<T> {
             throw new IllegalArgumentException("Invalid number format in duration string", e);
         }
     }
-
 }

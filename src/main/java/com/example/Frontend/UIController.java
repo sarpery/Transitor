@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.example.Backend.Algorithms.AccesibilityFormula;
+import com.example.Frontend.CustomMapLayers.CustomHeatmapLayer;
+import com.example.Frontend.CustomMapLayers.CustomMapLayer;
+import com.example.Frontend.CustomMapLayers.CustomMapLayerBus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceBox;
@@ -51,7 +54,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     private int startScore = 0;
     private int endScore = 0;
 
-
     private int score = 0;
 
     @FXML
@@ -91,34 +93,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     @FXML
     public Button currentTime;
-
-    public void hideAllBusSigns(){
-        one.setVisible(false);
-        two.setVisible(false);
-        three.setVisible(false);
-        four.setVisible(false);
-        five.setVisible(false);
-        six.setVisible(false);
-        seven.setVisible(false);
-        eight.setVisible(false);
-        nine.setVisible(false);
-        ten.setVisible(false);
-        eleven.setVisible(false);
-        twelve.setVisible(false);
-        fifteen.setVisible(false);
-        fiftySeven.setVisible(false);
-    }
-    @FXML
-    public void onCurrentTimePressed(){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        String time = LocalTime.now().format(formatter);
-        String hour = time.substring(0,2);
-        String minute = time.substring(3,5);
-        hourSelection.setValue(hour);
-        minuteSelection.setValue(minute);
-    }
-
-
 
     @FXML
     private Label startScoreLabel;
@@ -165,7 +139,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     @FXML
     MapPoint point = new MapPoint(50.849365,5.694548);
 
-
     @FXML
     public Label busInfo;
 
@@ -175,6 +148,33 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
 
     public UIController uiController = this;
     public CustomMapLayerBus cLB;
+
+    public void hideAllBusSigns(){
+        one.setVisible(false);
+        two.setVisible(false);
+        three.setVisible(false);
+        four.setVisible(false);
+        five.setVisible(false);
+        six.setVisible(false);
+        seven.setVisible(false);
+        eight.setVisible(false);
+        nine.setVisible(false);
+        ten.setVisible(false);
+        eleven.setVisible(false);
+        twelve.setVisible(false);
+        fifteen.setVisible(false);
+        fiftySeven.setVisible(false);
+    }
+    @FXML
+    public void onCurrentTimePressed(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String time = LocalTime.now().format(formatter);
+        String hour = time.substring(0,2);
+        String minute = time.substring(3,5);
+        hourSelection.setValue(hour);
+        minuteSelection.setValue(minute);
+    }
+
 
     public void setUpTimeSelection(){
         ObservableList<String> obListHour = FXCollections.observableArrayList();
@@ -245,16 +245,17 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     @FXML
     private void setupCalculateButton() throws Exception {
         String text = checkZip.getText();
-        score = (int)accesibilityFormula.accessibility(text);
-        scoreLabel.setText("Score: " + String.valueOf(score));
-        System.out.println("Score for: " + text + ": " + score);
+        if (!mapContains(text)) {
+            ErrorPopup popup = new ErrorPopup("invalid postal code");
+            popup.display();
+            System.out.println("Postal code not found");
+            isFail = true;
+        } else {
+            score = (int)accesibilityFormula.accessibility(text);
+            scoreLabel.setText("Score: " + String.valueOf(score));
+            System.out.println("Score for: " + text + ": " + score);
+        }
     }
-
-
-    public static double ax;
-    public static double ay;
-    public static double bx;
-    public static double by;
 
     @FXML
     private void pathDrawBut(List<String> ls)  {
@@ -374,8 +375,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         scoreLabel.setVisible(false);
         calculateScoreButton.setVisible(false);
     }
-
-
     private boolean isFail = false;
 
     private void startPath(Path strategy) {
@@ -409,9 +408,6 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
             }
         }
     }
-
-
-private List<String> result;
 
     public void getAlgorithm(String startText, String endText){
      //   busInfo.setVisible(false);
@@ -450,7 +446,5 @@ private List<String> result;
         newMapView.setZoom(12);
         return newMapView;
     }
-    final double centerLatitude = 50.851368;
-    final double centerLongitude = 5.690973;
 
 }

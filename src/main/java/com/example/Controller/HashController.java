@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface HashController {
 
-    DataToHashMap<String> map = new DataToHashMap<String>();
+    DataToHashMap<String> map = new DataToHashMap<String>("src/main/java/com/example/Data/MassZipLatLon.txt");
     
 
     default void hashTheData(){

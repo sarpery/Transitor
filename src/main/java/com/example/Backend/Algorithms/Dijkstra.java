@@ -37,9 +37,11 @@ public class Dijkstra<T> {
         distance.put(start, 0);
         priorityQueue.add(start);
 
+        boolean reachedGoal = false;
         while (!priorityQueue.isEmpty()) {
             String current = priorityQueue.poll();
             if (current.equals(target)) {
+                reachedGoal = true;
                 break; // Reached the target
             }
             if (visited.contains(current)) {
@@ -56,6 +58,10 @@ public class Dijkstra<T> {
                     priorityQueue.add(next);
                 }
             }
+        }
+
+        if (!reachedGoal) {
+            return null;
         }
 
         // Reconstruct the path from start to target

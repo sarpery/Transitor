@@ -29,9 +29,9 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
 
     public double accessibility(String postalCode) throws Exception {
         double score = 0;
-        InputStream inputStream = new FileInputStream("src/main/java/com/example/Frontend/tourism.geojson");
-        InputStream inputStream2 = new FileInputStream("src/main/java/com/example/Frontend/amenity.geojson");
-        InputStream inputStream3 = new FileInputStream("src/main/java/com/example/Frontend/shop.geojson");
+        InputStream inputStream = new FileInputStream("src/main/java/com/example/Data/GeoJSON/tourism.geojson");
+        InputStream inputStream2 = new FileInputStream("src/main/java/com/example/Data/GeoJSON/amenity.geojson");
+        InputStream inputStream3 = new FileInputStream("src/main/java/com/example/Data/GeoJSON/shop.geojson");
 
         FeatureCollection featureCollectionAll = new ObjectMapper().readValue(inputStream, FeatureCollection.class);
         FeatureCollection featureCollection2 = new ObjectMapper().readValue(inputStream2, FeatureCollection.class);
@@ -78,7 +78,7 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
 
     public Circle createHeatmapPoint(String postalCode) throws Exception {
         double score = accessibility(postalCode);
-        calculations(score, postalCode);
+        // calculations(score, postalCode); //method used for finding the highest, lowest and average score
         Circle icon;
 
         if (score > 1000) {
@@ -104,12 +104,12 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
             maxScore = (int)score;
             maxZip = postalCode;
         }
-        //System.out.println("Min score: " + minZip + ": " + minScore);
-        //System.out.println("Max score: " + maxZip + ": " + maxScore);
+        System.out.println("Min score: " + minZip + ": " + minScore);
+        System.out.println("Max score: " + maxZip + ": " + maxScore);
 
         totalScore+= (int)score;
         averageScore = totalScore/3051;
-        //System.out.println(averageScore);
+        System.out.println(averageScore);
     }
     private static final double K = -Math.log(0.05) / 2000;
 

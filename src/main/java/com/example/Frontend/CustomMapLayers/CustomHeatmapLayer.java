@@ -1,14 +1,13 @@
-package com.example.Frontend;
+package com.example.Frontend.CustomMapLayers;
 
 import com.example.Backend.Algorithms.AccesibilityFormula;
 import com.example.Controller.HashController;
+import com.example.Frontend.UIController;
 import com.gluonhq.maps.MapLayer;
 import com.gluonhq.maps.MapPoint;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
 import java.util.List;

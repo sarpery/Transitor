@@ -11,6 +11,7 @@ import com.example.Backend.Algorithms.Algorithms;
 public class Trip{
     private Algorithms<double[]> alg = new Algorithms<double[]>();
     private RequestDatabase<String> rDB = new RequestDatabase<String>();
+    public ArrayList<double[]> travelPoints;
     public long travelTime;
     public double traveledDistance;
     public String tripNumber;

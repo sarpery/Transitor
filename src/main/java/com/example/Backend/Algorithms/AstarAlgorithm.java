@@ -9,17 +9,23 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import com.example.Backend.DataToHashMap;
 import com.example.Backend.Graph.AdjacencyListGraph;
 import com.example.Backend.Graph.EdgeNode;
 
 public class AstarAlgorithm<T> {
 
 private AdjacencyListGraph<String> graph;
-Algorithms<String> alg = new Algorithms<String>();
+Algorithms<String> alg;
 
 public AstarAlgorithm(AdjacencyListGraph<String> graph){
-
     this.graph = graph;
+    alg = new Algorithms<>();
+}
+
+public AstarAlgorithm(AdjacencyListGraph<String> graph, DataToHashMap<String> dataReader) {
+    this.graph = graph;
+    alg = new Algorithms<String>(dataReader);
 }
 
 
