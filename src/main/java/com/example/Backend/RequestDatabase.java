@@ -12,7 +12,10 @@ import com.example.Backend.Graph.Trip;;
 public class RequestDatabase<T> {
     private static final double CORD_DISTANCE_STAP = 0.001;
     private static Connection myCon;
-    DataToHashMap<String> dataReader = new DataToHashMap<String>("src/main/java/com/example/Data/MassZipLatLon.txt");
+    private static DataToHashMap<String> dataReader = new DataToHashMap<String>("src/main/java/com/example/Data/MassZipLatLon.txt");
+    private static DatabaseToGraph dbg = new DatabaseToGraph();
+    private static BusDijkstra<String> bs = new BusDijkstra<String>(dbg.getGraph());
+    private static RequestDatabase<String> rDB = new RequestDatabase<>();
 
     public RequestDatabase(){
         try{
@@ -36,7 +39,7 @@ public class RequestDatabase<T> {
                 stops.next();
 
                 searchRadius += CORD_DISTANCE_STAP;
-            } while(stops.getInt(1) < 10);
+            } while(stops.getInt(1) < 1);
 
 
             return nearestStopsRequest.executeQuery("SELECT stop_id " +
@@ -51,18 +54,68 @@ public class RequestDatabase<T> {
         }
     }
 
-    DatabaseToGraph dbg = new DatabaseToGraph();
-    BusDijkstra<String> bs = new BusDijkstra<String>(dbg.getGraph());
+
     private Trip computeBusRoute(String startPoint, String endPoint, String time){
         Trip trip;
-        
-        
-        List<String> tripList = bs.dijkstra(startPoint, endPoint, time);
+
+        List<String> tripList = null;
+
+        try{
+            tripList = findTrip(startPoint, endPoint, time, "0");
+        }catch(Exception e1)
+        {
+            try {
+                tripList = findTrip(startPoint, endPoint, time, "start");
+            } catch (Exception e2) {
+                try {
+                    tripList = findTrip(startPoint, endPoint, time, "end");
+                } catch (Exception e3) {
+                    tripList  = findTrip(startPoint, endPoint, time, "start-end");
+                }
+            }
+        }
+
         long tripTime = bs.getTime();
         System.out.println("dijkstra done");
         trip = new Trip(tripList, tripTime);
         System.out.println("trip construct done");
         return trip;
+    }
+
+    private List<String> findTrip(String startPoint, String endPoint, String time, String approximation){
+        List<String> tripList = null;
+        double[] startCords = rDB.getPointCords(startPoint);
+        double[] endCords = rDB.getPointCords(endPoint);
+        ResultSet nearestStopsToEnd = findNearestStopsDinamic(endCords[0], endCords[1]);
+        ResultSet nearestStopsToStart = findNearestStopsDinamic(startCords[0], startCords[1]);
+
+        try{
+            nearestStopsToStart.next();
+            nearestStopsToEnd.next();
+        } catch (Exception ex) { ex.printStackTrace(); }
+
+        switch (approximation) {
+            case "0":
+                tripList = bs.dijkstra(startPoint, endPoint, time);
+                break;
+            case "start": 
+                try {
+                    tripList = bs.dijkstra(nearestStopsToStart.getString("stop_id"), endPoint, time);
+                    tripList.add(0, startPoint + "-null");
+                } catch (Exception e) { e.printStackTrace(); }
+            case "end":
+                try {
+                    tripList = bs.dijkstra(startPoint, nearestStopsToEnd.getString("stop_id"), time);
+                    tripList.add(endPoint + "-null");
+                } catch (Exception ex) { ex.printStackTrace(); }
+            case "start-end":
+                try {
+                    tripList = bs.dijkstra(nearestStopsToStart.getString("stop_id"), nearestStopsToEnd.getString("stop_id"), time);
+                    tripList.add(0, startPoint + "-null");
+                    tripList.add(endPoint + "-null");
+                } catch (Exception ex) { ex.printStackTrace(); }
+        }
+        return tripList;
     }
 
     public ResultSet getShape(String tripID){

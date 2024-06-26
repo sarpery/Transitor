@@ -9,7 +9,7 @@ Maastricht’s public transport. Also, this tool aims to analyze the socio-econo
 
 INITIAL SETUP: 
 
-You need to use the data dump provided at "src/main/java/com/example/Data" to create the database. Then, you need to change the url and credentials for the database connection in the requestDataBase.java file at "src/main/java/com/example/Backend". 
+You need to use the data dump provided at "src/main/java/com/example/Data" to create the database. Then, you need to change the url and credentials for the database connection in the requestDataBase.java file at "src/main/java/com/example/Backend" and DatabaseToGraph.java. 
 
 HOW TO START THE PROJECT:
 
