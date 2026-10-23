@@ -1,0 +1,75 @@
+/* Shared visual language for the desktop planner. */
+.root {
+    -fx-font-family: "DejaVu Sans", "Segoe UI", sans-serif;
+    -fx-font-size: 12px;
+    -fx-text-fill: #203443;
+    -fx-accent: #147d78;
+    -fx-focus-color: #147d78;
+    -fx-faint-focus-color: rgba(20, 125, 120, 0.12);
+}
+.app-shell { -fx-background-color: #e8edef; }
+.sidebar-scroll, .sidebar-scroll > .viewport { -fx-background-color: #f7f9fa; }
+.sidebar-scroll { -fx-padding: 0; -fx-border-width: 0 1 0 0; -fx-border-color: #dce4e8; }
+.sidebar { -fx-background-color: #f7f9fa; }
+.brand-mark { -fx-background-color: #147d78; -fx-background-radius: 12; }
+.brand-letter { -fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: white; }
+.brand-title { -fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #172e3b; }
+.brand-subtitle { -fx-font-size: 8px; -fx-font-weight: bold; -fx-text-fill: #657c88; }
+.section-title { -fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #617884; }
+.field-label { -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #304b59; }
+.muted-label { -fx-font-size: 10px; -fx-text-fill: #667c87; -fx-line-spacing: 2; }
+.body-label { -fx-text-fill: #526b78; -fx-font-size: 11px; -fx-line-spacing: 3; }
+.fine-print { -fx-text-fill: #748792; -fx-font-size: 9px; -fx-line-spacing: 2; }
+.text-field {
+    -fx-background-color: white;
+    -fx-background-radius: 7;
+    -fx-border-color: #d2dee3;
+    -fx-border-radius: 7;
+    -fx-padding: 10 11;
+    -fx-prompt-text-fill: #81949d;
+    -fx-text-fill: #203443;
+}
+.text-field:focused { -fx-border-color: #147d78; -fx-effect: dropshadow(gaussian, rgba(20, 125, 120, 0.12), 6, 0, 0, 0); }
+.button { -fx-cursor: hand; -fx-padding: 10 12; -fx-font-weight: bold; -fx-background-radius: 7; -fx-border-radius: 7; }
+.button:focused { -fx-border-color: #147d78; }
+.button:disabled { -fx-opacity: 0.45; -fx-cursor: default; }
+.primary-button { -fx-background-color: #147d78; -fx-text-fill: white; -fx-border-color: #147d78; }
+.primary-button:hover { -fx-background-color: #106c68; }
+.primary-button:pressed { -fx-background-color: #0b5a56; }
+.secondary-button { -fx-background-color: white; -fx-border-color: #d2dee3; -fx-text-fill: #304f5d; }
+.secondary-button:hover { -fx-background-color: #edf5f4; -fx-border-color: #aac8c6; }
+.text-button { -fx-background-color: transparent; -fx-text-fill: #147d78; -fx-padding: 5 6; -fx-font-size: 10px; }
+.text-button:hover { -fx-background-color: #e6f1ef; }
+.example-button { -fx-background-color: #e6f1ef; -fx-text-fill: #147d78; -fx-font-size: 10px; -fx-padding: 9; }
+.example-button:hover { -fx-background-color: #d4e9e5; }
+.choice-box { -fx-background-color: white; -fx-border-color: #d2dee3; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 3; }
+.choice-box .label { -fx-text-fill: #304b59; }
+.time-separator { -fx-font-weight: bold; -fx-text-fill: #81949d; }
+.info-note { -fx-font-size: 10px; -fx-line-spacing: 2; -fx-text-fill: #657c88; }
+.summary-card { -fx-background-color: #eaf1f3; -fx-background-radius: 9; -fx-padding: 15; }
+.card-title { -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #203b49; }
+.summary-value { -fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1d4952; }
+.separator .line { -fx-border-color: #dfe7eb; -fx-border-width: 1 0 0 0; }
+.map-column { -fx-background-color: white; }
+.map-header { -fx-padding: 24 26 16 26; -fx-background-color: white; }
+.page-title { -fx-font-size: 27px; -fx-font-weight: bold; -fx-text-fill: #172e3b; }
+.page-subtitle { -fx-text-fill: #667c87; -fx-font-size: 12px; }
+.status-bar { -fx-background-color: #f1f6f6; -fx-padding: 10 12; -fx-background-radius: 7; -fx-min-height: 38; }
+.status-label { -fx-text-fill: #47716f; -fx-font-size: 11px; }
+.status-label:error { -fx-text-fill: #a54332; }
+.progress-indicator { -fx-progress-color: #147d78; }
+.zoom-controls { -fx-background-color: #e0e8eb; -fx-background-radius: 7; -fx-padding: 1; }
+.zoom-button { -fx-background-color: white; -fx-text-fill: #304f5d; -fx-font-size: 17px; -fx-padding: 4 12; }
+.zoom-button:hover { -fx-background-color: #edf5f4; }
+.map-canvas { -fx-background-color: #e8eeeb; }
+.map-empty-state { -fx-background-color: rgba(255, 255, 255, 0.96); -fx-background-radius: 9; -fx-padding: 15 17; -fx-effect: dropshadow(gaussian, rgba(20, 49, 59, 0.15), 18, 0, 0, 4); }
+.map-footer { -fx-padding: 14 26 16 26; -fx-background-color: white; }
+.map-caption { -fx-font-size: 9px; -fx-text-fill: #6a808c; }
+.bus-badge { -fx-background-color: #edf2f5; -fx-background-radius: 5; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 5 9; }
+.score-low, .score-medium, .score-high, .score-highest { -fx-padding: 4 7; -fx-background-radius: 4; -fx-text-fill: #203443; -fx-font-size: 10px; }
+.score-low { -fx-background-color: #edb3a6; }
+.score-medium { -fx-background-color: #f4d894; }
+.score-high { -fx-background-color: #c8dba1; }
+.score-highest { -fx-background-color: #93cbbb; }
+.scroll-bar:vertical { -fx-background-color: transparent; -fx-pref-width: 9; }
+.scroll-bar:vertical .thumb { -fx-background-color: #c8d5db; -fx-background-radius: 5; }

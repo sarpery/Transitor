@@ -6,7 +6,7 @@ import com.example.Backend.Algorithms.Algorithms;
 public interface AlgoConnecter {
     
     
-    Algorithms<String> algo = new Algorithms<String>(new DataToHashMap<String>("src/main/java/com/example/Data/MassZipLatLon.txt"));
+    Algorithms<String> algo = new Algorithms<String>(new DataToHashMap<String>("classpath:data/MassZipLatLon.txt"));
 
     default double getDistance(String startCords, String endCords) throws Exception{
         return algo.getDistance(startCords, endCords);

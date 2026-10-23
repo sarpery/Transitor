@@ -8,7 +8,6 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
-import com.example.Frontend.ErrorPopup;
 
 public class RequestAPI {
 

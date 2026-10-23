@@ -10,7 +10,7 @@ public interface GraphController {
 
 
     default void graphTheData(){
-        dg.graphTheData("src/main/java/com/example/Data/FilteredDistances.txt");
+        dg.graphTheData("classpath:data/FilteredDistances.txt");
     }
 
      default void graphTheDatabase(){

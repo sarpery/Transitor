@@ -1,7 +1,8 @@
 package com.example.Backend.Algorithms;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.IOException;
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.geojson.FeatureCollection;
 
+import com.example.Backend.DataResources;
 import com.example.Controller.AlgoConnecter;
 import com.example.Controller.GraphController;
 import com.example.Controller.HashController;
@@ -33,52 +35,74 @@ public class AccesibilityFormula implements AlgoConnecter, HashController, Graph
     private String maxZip = "";
     List<String> connectorZips = Arrays.asList("9999TT", "9999ZZ", "9999AA", "9999GG","6200AA");
 
+    private static volatile List<Amenity> cachedAmenities;
+
+    private static final class Amenity {
+        private final String type;
+        private final double latitude;
+        private final double longitude;
+
+        private Amenity(String type, double latitude, double longitude) {
+            this.type = type;
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+    }
+
+    /** Parse the bundled feature data once; every score reuses immutable coordinates. */
+    private static List<Amenity> amenities() throws IOException {
+        List<Amenity> result = cachedAmenities;
+        if (result != null) {
+            return result;
+        }
+        synchronized (AccesibilityFormula.class) {
+            if (cachedAmenities != null) {
+                return cachedAmenities;
+            }
+            FeatureCollection features;
+            try (InputStream tourism = DataResources.open("classpath:data/geojson/tourism.geojson");
+                 InputStream amenities = DataResources.open("classpath:data/geojson/amenity.geojson");
+                 InputStream shops = DataResources.open("classpath:data/geojson/shop.geojson")) {
+                ObjectMapper mapper = new ObjectMapper();
+                features = mapper.readValue(tourism, FeatureCollection.class);
+                features.addAll(mapper.readValue(amenities, FeatureCollection.class).getFeatures());
+                features.addAll(mapper.readValue(shops, FeatureCollection.class).getFeatures());
+            }
+            Pattern coordinates = Pattern.compile("longitude=([\\d.]+), latitude=([\\d.]+)");
+            List<Amenity> parsed = new ArrayList<>();
+            // Preserve the original coursework scoring range and category precedence.
+            for (int i = 0; i < features.getFeatures().size() - 1; i++) {
+                Map<String, Object> properties = features.getFeatures().get(i).getProperties();
+                String type = null;
+                for (String category : List.of("tourism", "amenity", "shop")) {
+                    if (properties.containsKey(category)) {
+                        type = properties.get(category).toString();
+                    }
+                }
+                Matcher matcher = coordinates.matcher(features.getFeatures().get(i).getGeometry().toString());
+                if (!matcher.find()) {
+                    throw new IOException("An accessibility feature has no point coordinates.");
+                }
+                parsed.add(new Amenity(type, Double.parseDouble(matcher.group(2)),
+                        Double.parseDouble(matcher.group(1))));
+            }
+            cachedAmenities = Collections.unmodifiableList(parsed);
+            return cachedAmenities;
+        }
+    }
+
     public double accessibility(String postalCode) throws Exception {
         double score = 0;
-        InputStream inputStream = new FileInputStream("src/main/java/com/example/Data/GeoJSON/tourism.geojson");
-        InputStream inputStream2 = new FileInputStream("src/main/java/com/example/Data/GeoJSON/amenity.geojson");
-        InputStream inputStream3 = new FileInputStream("src/main/java/com/example/Data/GeoJSON/shop.geojson");
-
-        FeatureCollection featureCollectionAll = new ObjectMapper().readValue(inputStream, FeatureCollection.class);
-        FeatureCollection featureCollection2 = new ObjectMapper().readValue(inputStream2, FeatureCollection.class);
-        FeatureCollection featureCollection3 = new ObjectMapper().readValue(inputStream3, FeatureCollection.class);
-
-        featureCollectionAll.addAll(featureCollection2.getFeatures());
-        featureCollectionAll.addAll(featureCollection3.getFeatures());
-
-        String regex = "longitude=([\\d.]+), latitude=([\\d.]+)";
-        Pattern p = Pattern.compile(regex);
-
-        for (int i = 0; i < featureCollectionAll.getFeatures().size()-1; i++){
-            Map<String, Object> as = featureCollectionAll.getFeatures().get(i).getProperties();
-
-            String type = null;
-            if (as.containsKey("tourism")) {
-                type = as.get("tourism").toString();
-            }
-            if (as.containsKey("amenity")) {
-                type = as.get("amenity").toString();
-            }
-            if (as.containsKey("shop")) {
-                type = as.get("shop").toString();
-            }
-
-            String geoCord = featureCollectionAll.getFeatures().get(i).getGeometry().toString();
-            Matcher m = p.matcher(geoCord);
-            m.find();
-
-            double longitudeLoop = Double.parseDouble(m.group(1));
-            double latitudeLoop = Double.parseDouble(m.group(2));
-
-            double havDistance = calculateDistanceHaversine2(getLat(postalCode), getLon(postalCode), latitudeLoop, longitudeLoop);
-            double havDistanceMeters = havDistance * 1000;
-            double benefit = fallofFunction(havDistanceMeters);
-
-            if(benefit > 0.0){
-                score += benefit * amenityBenefit(type);
+        double latitude = getLat(postalCode);
+        double longitude = getLon(postalCode);
+        for (Amenity amenity : amenities()) {
+            double distance = calculateDistanceHaversine2(latitude, longitude,
+                    amenity.latitude, amenity.longitude) * 1000;
+            double benefit = fallofFunction(distance);
+            if (benefit > 0.0) {
+                score += benefit * amenityBenefit(amenity.type);
             }
         }
-
         return score;
     }
 

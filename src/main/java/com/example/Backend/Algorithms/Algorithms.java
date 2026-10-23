@@ -15,7 +15,7 @@ public class Algorithms<T> {
     }
 
     public Algorithms() {
-        dataReader = new DataToHashMap<T>("src/main/java/com/example/Data/MassZipLatLon.txt");
+        dataReader = new DataToHashMap<T>("classpath:data/MassZipLatLon.txt");
     }
 
     //in km 

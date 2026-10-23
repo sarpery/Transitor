@@ -1,7 +1,6 @@
 package com.example.Backend;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 
 import com.example.Backend.Graph.AdjacencyListGraph;
@@ -14,7 +13,7 @@ public class DataToGraph<T> {
 
         
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+        try (BufferedReader reader = DataResources.reader(fileName)) {
             String line;
             while ((line = reader.readLine()) != null) {
                  // Split the data string into main postal code and pairs of other postal codes with distances
@@ -36,7 +35,7 @@ public class DataToGraph<T> {
     
             }
         } catch(IOException e) {
-            e.printStackTrace();
+            throw new java.io.UncheckedIOException("Could not load application data: " + fileName, e);
         }
        
     }

@@ -1,62 +1,44 @@
 package com.example.Frontend.CustomMapLayers;
 
-import com.example.Backend.Algorithms.AccesibilityFormula;
 import com.example.Controller.HashController;
-import com.example.Frontend.UIController;
 import com.gluonhq.maps.MapLayer;
-import com.gluonhq.maps.MapPoint;
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
-import javafx.scene.shape.Circle;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
-public class CustomHeatmapLayer extends MapLayer implements HashController{
+/** Displays already computed accessibility scores without doing work in layout. */
+public final class CustomHeatmapLayer extends MapLayer implements HashController {
+    private final List<double[]> coordinates = new ArrayList<>();
+    private final List<Circle> markers = new ArrayList<>();
 
-    private List<String> postalCodesList;
-    private List<Node> nodesOnMap = new ArrayList<Node>();
-    private UIController uiController;
-    private AccesibilityFormula accesibilityFormula = new AccesibilityFormula();
-
-
-    public CustomHeatmapLayer(List<String> ls, UIController uiController) throws Exception {
-        this.postalCodesList = ls;
-        this.uiController = uiController;
-
-        for (String postalCode : ls) {
-            drawHeatmapPoints(postalCode);
+    public CustomHeatmapLayer(Map<String, Double> scores) throws Exception {
+        for (Map.Entry<String, Double> entry : scores.entrySet()) {
+            coordinates.add(new double[]{getLat(entry.getKey()), getLon(entry.getKey())});
+            Circle marker = new Circle(5, colorForScore(entry.getValue()));
+            marker.setOpacity(0.78);
+            markers.add(marker);
         }
-        uiController.deactivateButtons();
+        getChildren().addAll(markers);
+        setMouseTransparent(true);
     }
 
-    public CustomHeatmapLayer(UIController uiController) {
-        this.uiController = uiController;
-    }
-
-    public void drawHeatmapPoints(String postalCode) throws Exception {
-        Circle icon = accesibilityFormula.createHeatmapPoint(postalCode);
-        getChildren().add(icon);
-        nodesOnMap.add(icon);
+    private Color colorForScore(double score) {
+        if (score > 1000) return Color.web("#1b917b");
+        if (score > 500) return Color.web("#95b950");
+        if (score > 150) return Color.web("#e9b64d");
+        return Color.web("#d86d56");
     }
 
     @Override
     protected void layoutLayer() {
-        for (int i = 0; i < postalCodesList.size(); i++) {
-            try {
-                String postalCode = postalCodesList.get(i);
-                Node currentNode = nodesOnMap.get(i);
-                double lat = uiController.getLat(postalCode);
-                double lon = uiController.getLon(postalCode);
-
-                MapPoint mapPoint = new MapPoint(lat, lon);
-                Point2D pointOnMap = getMapPoint(mapPoint.getLatitude(), mapPoint.getLongitude());
-
-                currentNode.setTranslateX(pointOnMap.getX());
-                currentNode.setTranslateY(pointOnMap.getY());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        for (int index = 0; index < coordinates.size(); index++) {
+            double[] coordinate = coordinates.get(index);
+            Point2D point = getMapPoint(coordinate[0], coordinate[1]);
+            markers.get(index).setCenterX(point.getX());
+            markers.get(index).setCenterY(point.getY());
         }
     }
 }

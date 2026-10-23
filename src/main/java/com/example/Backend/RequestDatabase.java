@@ -1,27 +1,33 @@
 package com.example.Backend;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 
 import com.example.Backend.Algorithms.BusDijkstra;
-import com.example.Backend.Graph.Trip;;
+import com.example.Backend.Graph.Trip;
 
 public class RequestDatabase<T> {
     private static final double CORD_DISTANCE_STAP = 0.001;
     private static Connection myCon;
-    private static DataToHashMap<String> dataReader = new DataToHashMap<String>("src/main/java/com/example/Data/MassZipLatLon.txt");
-    private static DatabaseToGraph dbg = new DatabaseToGraph();
-    private static BusDijkstra<String> bs = new BusDijkstra<String>(dbg.getGraph());
-    private static RequestDatabase<String> rDB = new RequestDatabase<>();
+    private final BusDijkstra<String> bs;
 
-    public RequestDatabase(){
-        try{
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/gtfs", "project1-2", "BCS1510_BCS1510");
-        }catch(Exception e){ System.out.println(e); }
+    public RequestDatabase() {
+        DatabaseToGraph database = new DatabaseToGraph();
+        if (!database.isAvailable() && !database.graphTheDatabase()) {
+            throw new IllegalStateException(database.getUnavailableReason());
+        }
+        bs = new BusDijkstra<>(database.getGraph());
+        synchronized (RequestDatabase.class) {
+            try {
+                if (myCon == null || myCon.isClosed()) {
+                    myCon = DatabaseConfig.openConnection();
+                }
+            } catch (java.sql.SQLException exception) {
+                throw new IllegalStateException("The transit database connection is unavailable.");
+            }
+        }
     }
 
     private static ResultSet findNearestStopsDinamic(double x_cord, double y_cord){
@@ -84,8 +90,8 @@ public class RequestDatabase<T> {
 
     private List<String> findTrip(String startPoint, String endPoint, String time, String approximation){
         List<String> tripList = null;
-        double[] startCords = rDB.getPointCords(startPoint);
-        double[] endCords = rDB.getPointCords(endPoint);
+        double[] startCords = getPointCords(startPoint);
+        double[] endCords = getPointCords(endPoint);
         ResultSet nearestStopsToEnd = findNearestStopsDinamic(endCords[0], endCords[1]);
         ResultSet nearestStopsToStart = findNearestStopsDinamic(startCords[0], startCords[1]);
 

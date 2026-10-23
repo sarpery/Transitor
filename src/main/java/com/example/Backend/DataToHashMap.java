@@ -1,7 +1,6 @@
 package com.example.Backend;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +18,7 @@ public class DataToHashMap<T> {
     public void hashMapConverter(){
 
         
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+        try (BufferedReader reader = DataResources.reader(fileName)) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -35,7 +34,7 @@ public class DataToHashMap<T> {
             
         
         }catch(IOException e){
-            e.printStackTrace();
+            throw new java.io.UncheckedIOException("Could not load application data: " + fileName, e);
            
         }
 

@@ -1,216 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.Line?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="528.0" prefWidth="901.0" style="-fx-background-color: #00A2DB;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Frontend.UIController">
-    <children>
-        <Pane id="visualizerPane" fx:id="mapPane" layoutX="254.0" prefHeight="538.0" prefWidth="649.0">
-            <children>
-                <Circle fx:id="circle1" fill="#22b738" layoutX="541.0" layoutY="220.0" opacity="0.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                <Circle fx:id="circle2" fill="RED" layoutX="397.0" layoutY="366.0" opacity="0.0" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                <Line fx:id="distanceLine" endX="138.0" endY="-211.99998474121094" layoutX="42.0" layoutY="241.0" opacity="0.0" startX="-9.199951171875" startY="-64.20001220703125" stroke="#d44bb9" strokeWidth="2.0" />
-                <Label layoutX="532.0" layoutY="447.0" />
-            </children>
-        </Pane>
-        <Pane id="menuPane" prefHeight="538.0" prefWidth="264.0" style="-fx-background-color: #001C3D;">
-            <children>
-                <Label id="titleLabel" layoutX="57.0" layoutY="13.0" prefHeight="37.0" prefWidth="150.0" text="Transitor" textAlignment="CENTER" textFill="WHITE">
-                    <font>
-                        <Font name="Arial" size="36.0" />
-                    </font>
-                </Label>
-                <TextField id="targetTextArea" fx:id="endZip" alignment="CENTER" layoutX="50.0" layoutY="128.0" pickOnBounds="false" promptText="Target Zip Code">
-                    <font>
-                        <Font name="Arial" size="12.0" />
-                    </font>
-                </TextField>
-                <TextField id="startingTextArea" fx:id="startZip" alignment="CENTER" layoutX="50.0" layoutY="64.0" pickOnBounds="false" promptText="Starting Zip Code">
-                    <font>
-                        <Font name="Arial" size="12.0" />
-                    </font>
-                </TextField>
-                <Label id="distanceMeasure" fx:id="distance" focusTraversable="false" layoutX="15.0" layoutY="367.0" text="Distance: 0" textFill="#ffffff">
-                    <font>
-                        <Font name="Arial Bold" size="16.0" />
-                    </font>
-                </Label>
-                <Label id="timeMeasure" fx:id="timeLabel" focusTraversable="false" layoutX="15.0" layoutY="391.0" text="Travel Time: 0" textFill="#ffffff">
-                    <font>
-                        <Font name="Arial Bold" size="16.0" />
-                    </font>
-                </Label>
-                <Button id="transportButton" fx:id="transportButton" layoutX="14.0" layoutY="310.0" mnemonicParsing="false" onAction="#setupBusButton" prefHeight="36.0" prefWidth="128.0" style="-fx-background-color: #E84E10#E84E10;" text="Transport" textFill="#FFFFFF" wrapText="true">
-                    <font>
-                        <Font name="Arial Bold" size="20.0" />
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="HAND" />
-                    </cursor>
-                </Button>
-                <Button id="bikeButton" fx:id="bikeButton" layoutX="152.0" layoutY="266.0" mnemonicParsing="false" onAction="#setupBikeButton" prefHeight="37.0" prefWidth="100.0" style="-fx-background-color: #E84E10#E84E10;" text="Bike" textFill="#FFFFFF" wrapText="true">
-                    <font>
-                        <Font name="Arial Bold" size="20.0" />
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="HAND" />
-                    </cursor>
-                </Button>
-                <Button id="walkButton" fx:id="walkButton" layoutX="13.0" layoutY="266.0" mnemonicParsing="false" onAction="#setupWalkButton" prefHeight="36.0" prefWidth="128.0" style="-fx-background-color: #E84E10#E84E10;" text="Walk" textFill="#FFFFFF" wrapText="true">
-                    <font>
-                        <Font name="Arial Bold" size="20.0" />
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="HAND" />
-                    </cursor>
-                </Button>
-            <Label id="timeMeasure" fx:id="busInfo" layoutX="24.0" layoutY="424.0" prefHeight="104.0" prefWidth="204.0" text="Road number: 9" textAlignment="CENTER" textFill="WHITE" visible="false">
-               <font>
-                  <Font name="Arial Bold" size="16.0" />
-               </font>
-            </Label>
-            <Label id="distanceMeasure" fx:id="startScoreLabel" focusTraversable="false" layoutX="49.0" layoutY="98.0" prefHeight="20.0" prefWidth="128.0" text="Score: " textFill="#ffffff">
-               <font>
-                  <Font name="Arial Bold" size="16.0" />
-               </font>
-            </Label>
-            <Label id="distanceMeasure" fx:id="endScoreLabel" focusTraversable="false" layoutX="49.0" layoutY="157.0" prefHeight="20.0" prefWidth="128.0" text="Score: " textFill="#ffffff">
-               <font>
-                  <Font name="Arial Bold" size="16.0" />
-               </font>
-            </Label>
-            <Button id="heatmapButton" fx:id="heatmapButton" layoutX="152.0" layoutY="310.0" mnemonicParsing="false" onAction="#setupHeatmapButton" prefHeight="37.0" prefWidth="100.0" style="-fx-background-color: #AE0B12#AE0B12;" text="Heatmap" textFill="#FFFFFF" wrapText="true">
-               <font>
-                  <Font name="Arial Bold" size="17.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <ImageView fx:id="one" fitHeight="40.0" fitWidth="44.0" layoutX="9.0" layoutY="432.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Untitled.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="two" fitHeight="95.0" fitWidth="99.0" layoutX="15.0" layoutY="405.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Untitled%20(1).png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="three" fitHeight="36.0" fitWidth="47.0" layoutX="77.0" layoutY="433.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Untitled%20(2).png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="four" fitHeight="36.0" fitWidth="40.0" layoutX="111.0" layoutY="435.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Untitled%20(4).png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="five" fitHeight="46.0" fitWidth="46.0" layoutX="144.0" layoutY="428.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Screenshot%202024-06-23%20174439.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="six" fitHeight="36.0" fitWidth="36.0" layoutX="186.0" layoutY="434.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Untitled%20(5).png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="seven" fitHeight="34.0" fitWidth="35.0" layoutX="223.0" layoutY="435.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Untitled%20(7).png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="eight" fitHeight="34.0" fitWidth="30.0" layoutX="14.0" layoutY="486.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Untitled%20(8).png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="nine" fitHeight="34.0" fitWidth="45.0" layoutX="43.0" layoutY="485.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Untitled%20(10).png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="ten" fitHeight="40.0" fitWidth="36.0" layoutX="80.0" layoutY="484.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Untitled%20(3).png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="eleven" fitHeight="46.0" fitWidth="40.0" layoutX="115.0" layoutY="477.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Untitled%20(12).png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="twelve" fitHeight="34.0" fitWidth="38.0" layoutX="149.0" layoutY="484.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Untitled%20(9).png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="fifteen" fitHeight="40.0" fitWidth="33.0" layoutX="184.0" layoutY="484.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Untitled%20(6).png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="fiftySeven" fitHeight="54.0" fitWidth="32.0" layoutX="218.0" layoutY="481.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@Untitled%20(11).png" />
-               </image>
-            </ImageView>
-            <ChoiceBox fx:id="hourSelection" layoutX="11.0" layoutY="205.0" prefHeight="26.0" prefWidth="65.0" />
-            <ChoiceBox fx:id="minuteSelection" layoutX="96.0" layoutY="205.0" prefHeight="26.0" prefWidth="65.0" />
-            <Label layoutX="83.0" layoutY="191.0" text=":" textFill="WHITE">
-               <font>
-                  <Font size="32.0" />
-               </font>
-            </Label>
-            <Button id="bikeButton" fx:id="currentTime" layoutX="174.0" layoutY="205.0" mnemonicParsing="false" onAction="#onCurrentTimePressed" prefHeight="26.0" prefWidth="79.0" style="-fx-background-color: #20b2aa;" text="Current Time" textFill="#FFFFFF" wrapText="true">
-               <font>
-                  <Font name="Arial Bold" size="10.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <ImageView fitHeight="46.0" fitWidth="34.0" layoutX="210.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@800px-Wapen_van_Maastricht.svg.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="46.0" fitWidth="34.0" layoutX="12.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@800px-Wapen_van_Maastricht.svg.png" />
-               </image>
-            </ImageView>
-                <TextField id="checkTextArea" fx:id="checkZip" alignment="CENTER" layoutX="57.0" layoutY="413.0" pickOnBounds="false" promptText="Enter Zip Code" visible="false">
-                    <font>
-                        <Font name="Arial" size="12.0" />
-                    </font>
-                </TextField>
-                <Label id="scoreMeasure" fx:id="scoreLabel" focusTraversable="false" layoutX="86.0" layoutY="490.0" text="Score: " textFill="#ffffff" visible="false">
-                    <font>
-                        <Font name="Arial Bold" size="16.0" />
-                    </font>
-                </Label>
-                <Button id="calculateScoreButton" fx:id="calculateScoreButton" layoutX="95.0" layoutY="452.0" mnemonicParsing="false" onAction="#setupCalculateButton" prefHeight="20.0" prefWidth="74.0" style="-fx-background-color: #E84E10#E84E10;" text="Calculate" textFill="#FFFFFF" visible="false" wrapText="true">
-                    <font>
-                        <Font name="Arial Bold" size="11.0" />
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="HAND" />
-                    </cursor>
-                </Button>
-            </children>
-        </Pane>
-    </children>
-</AnchorPane>
+<BorderPane prefHeight="800" prefWidth="1180" styleClass="app-shell"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.Frontend.UIController">
+    <left>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefWidth="350" minWidth="350" maxWidth="350" styleClass="sidebar-scroll">
+            <content>
+                <VBox spacing="20" styleClass="sidebar">
+                    <padding><Insets top="26" right="24" bottom="24" left="24"/></padding>
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <StackPane minHeight="42" minWidth="42" prefHeight="42" prefWidth="42" styleClass="brand-mark">
+                            <Label text="T" styleClass="brand-letter"/>
+                        </StackPane>
+                        <VBox spacing="3">
+                            <Label text="Transitor" styleClass="brand-title"/>
+                            <Label text="MAASTRICHT MOBILITY EXPLORER" styleClass="brand-subtitle"/>
+                        </VBox>
+                    </HBox>
+
+                    <VBox spacing="10">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="PLAN A JOURNEY" styleClass="section-title"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="swapButton" id="swapButton" text="Swap" onAction="#swapPostcodes" styleClass="text-button" accessibleText="Swap departure and destination postcodes"/>
+                        </HBox>
+                        <VBox spacing="6">
+                            <Label text="From" labelFor="$startZip" styleClass="field-label"/>
+                            <TextField id="startingTextArea" fx:id="startZip" promptText="Departure postcode · e.g. 6211 AB" accessibleText="Departure postcode"/>
+                            <Label fx:id="startScoreLabel" text="Score: —" styleClass="muted-label"/>
+                        </VBox>
+                        <VBox spacing="6">
+                            <Label text="To" labelFor="$endZip" styleClass="field-label"/>
+                            <TextField id="targetTextArea" fx:id="endZip" promptText="Destination postcode · e.g. 6211 AS" accessibleText="Destination postcode"/>
+                            <Label fx:id="endScoreLabel" text="Score: —" styleClass="muted-label"/>
+                        </VBox>
+                        <Button fx:id="exampleButton" id="exampleButton" text="Try an example walking route →" onAction="#useExample" styleClass="example-button" maxWidth="Infinity"/>
+                    </VBox>
+
+                    <VBox spacing="10">
+                        <Label text="TRAVEL MODE" styleClass="section-title"/>
+                        <HBox spacing="8">
+                            <Button fx:id="walkButton" id="walkButton" text="Walk" onAction="#setupWalkButton" styleClass="primary-button" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="bikeButton" id="bikeButton" text="Bike" onAction="#setupBikeButton" styleClass="secondary-button" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="transportButton" id="transportButton" text="Transit" onAction="#setupBusButton" styleClass="secondary-button" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                        </HBox>
+                        <Label text="Transit departure" styleClass="field-label"/>
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <ChoiceBox fx:id="hourSelection" id="hourSelection" prefWidth="65" accessibleText="Departure hour"/>
+                            <Label text=":" styleClass="time-separator"/>
+                            <ChoiceBox fx:id="minuteSelection" id="minuteSelection" prefWidth="65" accessibleText="Departure minute"/>
+                            <Button fx:id="currentTime" id="currentTime" text="Current Time" onAction="#onCurrentTimePressed" styleClass="text-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                        </HBox>
+                        <Label fx:id="transitNote" wrapText="true" styleClass="info-note"/>
+                    </VBox>
+
+                    <VBox spacing="8" styleClass="summary-card">
+                        <Label fx:id="summaryTitle" text="Your route" styleClass="card-title"/>
+                        <Label fx:id="distance" id="distanceMeasure" text="Distance: —" styleClass="summary-value"/>
+                        <Label fx:id="timeLabel" id="timeMeasure" text="Travel time: —" styleClass="summary-value"/>
+                        <Label fx:id="estimateNote" wrapText="true" text="Plan a journey to compare travel estimates and nearby amenities." styleClass="muted-label"/>
+                    </VBox>
+
+                    <VBox spacing="10">
+                        <Label text="EXPLORE ACCESSIBILITY" styleClass="section-title"/>
+                        <Label text="See how nearby shops, services and places of interest vary across the city." wrapText="true" styleClass="body-label"/>
+                        <Button fx:id="heatmapButton" id="heatmapButton" text="Show accessibility map" onAction="#setupHeatmapButton" styleClass="secondary-button" maxWidth="Infinity"/>
+                        <VBox fx:id="accessibilityPane" spacing="8" visible="false">
+                            <Label text="Inspect a postcode" labelFor="$checkZip" styleClass="field-label"/>
+                            <TextField fx:id="checkZip" id="checkTextArea" promptText="e.g. 6211 AB" accessibleText="Accessibility postcode"/>
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Button fx:id="calculateScoreButton" id="calculateScoreButton" text="Calculate score" onAction="#setupCalculateButton" styleClass="secondary-button"/>
+                                <Label fx:id="scoreLabel" id="scoreMeasure" text="Score: —" styleClass="field-label"/>
+                            </HBox>
+                        </VBox>
+                        <Label text="Scores are a student-built amenity heuristic, not an official accessibility rating." wrapText="true" styleClass="fine-print"/>
+                    </VBox>
+                    <Separator/>
+                    <Label text="University group project · 2024 transit dataset" wrapText="true" styleClass="fine-print"/>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </left>
+    <center>
+        <BorderPane styleClass="map-column">
+            <top>
+                <VBox spacing="14" styleClass="map-header">
+                    <HBox alignment="CENTER_LEFT" spacing="16">
+                        <VBox spacing="6">
+                            <Label text="Maastricht" styleClass="page-title"/>
+                            <Label fx:id="routeDescription" text="Find your way through the city" styleClass="page-subtitle"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Reset view" onAction="#resetMap" styleClass="secondary-button"/>
+                        <HBox spacing="1" maxHeight="38" alignment="CENTER" styleClass="zoom-controls">
+                            <Button text="−" onAction="#zoomOut" styleClass="zoom-button" accessibleText="Zoom out"/>
+                            <Button text="+" onAction="#zoomIn" styleClass="zoom-button" accessibleText="Zoom in"/>
+                        </HBox>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-bar">
+                        <ProgressIndicator fx:id="progressIndicator" prefHeight="20" prefWidth="20" maxHeight="20" maxWidth="20" visible="false"/>
+                        <Label fx:id="statusLabel" id="statusLabel" wrapText="true" styleClass="status-label" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                        <Button fx:id="cancelButton" text="Cancel" onAction="#cancelCalculation" styleClass="text-button" visible="false"/>
+                    </HBox>
+                </VBox>
+            </top>
+            <center>
+                <StackPane fx:id="mapPane" id="visualizerPane" styleClass="map-canvas">
+                    <VBox fx:id="emptyState" spacing="5" maxWidth="320" maxHeight="105" mouseTransparent="true" styleClass="map-empty-state" StackPane.alignment="BOTTOM_LEFT">
+                        <StackPane.margin><Insets top="20" right="20" bottom="20" left="20"/></StackPane.margin>
+                        <Label text="Your next journey starts here" styleClass="card-title"/>
+                        <Label text="Enter two postcodes or try the example. Drag the map to explore Maastricht." wrapText="true" styleClass="body-label"/>
+                    </VBox>
+                </StackPane>
+            </center>
+            <bottom>
+                <VBox spacing="10" styleClass="map-footer">
+                    <FlowPane fx:id="routeLegend" hgap="14" vgap="6"/>
+                    <HBox fx:id="heatmapLegend" spacing="12" visible="false" alignment="CENTER_LEFT">
+                        <Label text="Amenity score" styleClass="field-label"/>
+                        <Label text="≤150" styleClass="score-low"/>
+                        <Label text="151–500" styleClass="score-medium"/>
+                        <Label text="501–1000" styleClass="score-high"/>
+                        <Label text="&gt;1000" styleClass="score-highest"/>
+                    </HBox>
+                    <Label text="Map tiles © OpenStreetMap contributors · Internet required for the background map" wrapText="true" styleClass="map-caption"/>
+                </VBox>
+            </bottom>
+        </BorderPane>
+    </center>
+</BorderPane>
