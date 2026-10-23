@@ -17,7 +17,7 @@ You need **JDK 17 or newer**. The included Maven wrapper downloads the pinned bu
 
 On Windows, use `mvnw.cmd` instead. A graphical desktop is required to display the application.
 
-Walking, cycling, and accessibility exploration use the bundled datasets and **do not require a database**. Try **6211AB → 6211AS**, or use the example action in the interface. Map tiles need an internet connection.
+Walking, cycling, and accessibility exploration use the bundled datasets and **do not require a database**. Enter **6211AB** as the starting postcode and **6211AS** as the target, then click **Walk**. Map tiles need an internet connection.
 
 Public-transport routing is optional. It uses a local MySQL-compatible database populated with the included historical GTFS dump. See [development and database setup](docs/development.md).
 
@@ -25,11 +25,11 @@ Public-transport routing is optional. It uses a local MySQL-compatible database 
 
 - Plan walking and cycling routes between Maastricht postcodes.
 - Explore scheduled bus journeys, including walking connections and route identifiers.
-- Compare estimated travel distance and duration in a readable journey summary.
+- Display estimated travel distance and duration for a selected route.
 - Visualize amenity-accessibility scores and a city-wide heatmap.
-- Pan, zoom, and reset the map; switch travel modes without restarting the application.
+- Choose a departure time for public-transport journeys.
 
-The JavaFX interface separates its FXML layout from its CSS styling. Route and accessibility calculations run in background tasks, with progress feedback and recoverable validation errors.
+The original JavaFX interface uses an FXML layout with walking, cycling, transit, and heatmap controls. Separate map layers draw routes and accessibility results.
 
 ## Project layout
 
@@ -39,7 +39,7 @@ src/main/java/com/example/
   Controller/                Connections between the interface and routing logic
   Backend/                   Algorithms, graph models, resource and database access
 src/main/resources/
-  com/example/Frontend/      FXML and stylesheet
+  com/example/Frontend/      FXML and interface image assets
   data/                      Bundled postcode, graph, and amenity datasets
 src/test/java/               Automated tests
 data/gtfs/                  Optional database dump, stored with Git LFS
@@ -54,7 +54,7 @@ See [architecture notes](docs/architecture.md) for how the interface, routing, a
 
 This is an educational project, not a live travel service. The transit dump dates from **June 2024**; schedules may be out of date. Walking and cycling summary distances and times are estimates based on the original model, not turn-by-turn navigation or live traffic.
 
-Accessibility scores summarize the project's weighted amenity model. They are useful for exploring that model, and are not a validated measure of a neighbourhood's social or economic conditions. OpenStreetMap provides the map background; its attribution is shown in the interface.
+Accessibility scores summarize the project's weighted amenity model. They are useful for exploring that model, and are not a validated measure of a neighbourhood's social or economic conditions. Map backgrounds come from OpenStreetMap.
 
 ## Team
 
@@ -68,4 +68,4 @@ Originally developed by university project group 10:
 - Sarper Yüksel
 - Ty Barański
 
-This repository retains the group's original routing and accessibility work, with subsequent improvements to presentation, portability, project organization, and developer setup.
+This repository retains the group's original routing and accessibility work, with subsequent improvements to portability, project organization, and developer setup.

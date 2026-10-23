@@ -1,110 +1,255 @@
 package com.example.Frontend.CustomMapLayers;
 
-import com.example.Backend.Graph.Trip;
-import com.gluonhq.maps.MapLayer;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+
+import com.example.Backend.RequestDatabase;
+import com.example.Backend.Graph.Trip;
+import com.example.Controller.HashController;
+import com.example.Frontend.UIController;
+import com.gluonhq.maps.MapLayer;
+import com.gluonhq.maps.MapPoint;
+
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.StrokeLineCap;
 
-/** Renders a computed trip; querying the database belongs to the controller task. */
-public final class CustomMapLayerBus extends MapLayer {
-    private final List<Segment> segments = new ArrayList<>();
-    private final List<Marker> markers = new ArrayList<>();
-    private final Set<String> busRoutes = new LinkedHashSet<>();
+public class CustomMapLayerBus extends MapLayer implements HashController {
 
-    public CustomMapLayerBus(Trip trip) {
+    private List<double[]> coordinatesList = new ArrayList<>();
+
+
+    private LinkedList<Trip.TripSegment> tripSegmentList;
+    private List<Circle> nodesOnMap = new ArrayList<Circle>();
+    private List<Line> linesOnMap = new ArrayList<Line>();
+
+   // private List<Node> startEndNodes = new ArrayList();
+    private List <double[]> startEndCoordinatesList = new ArrayList();
+
+    private List<Boolean> busOrNotList = new ArrayList<>();
+    private List<String> busNumList = new ArrayList<>();
+
+    private List<Circle> walkCircles = new ArrayList<>();
+
+//    Node startNode;
+//    Line startLine;
+//    Node endNode;
+//    Line endLine;
+
+
+    public Trip trip;
+    public UIController uic;
+
+
+    public CustomMapLayerBus(String startCord, String endCord, UIController ui, String time ) throws Exception {
+        this(new RequestDatabase<String>().findBusRoute(startCord, endCord, time), ui);
+    }
+
+    public CustomMapLayerBus(Trip trip, UIController ui) {
+        uic = ui;
+        this.trip = trip;
         if (trip == null || trip.tripStructure == null || trip.tripStructure.isEmpty()) {
-            throw new IllegalArgumentException("No transit connection was found for that departure time.");
+            throw new IllegalArgumentException("No transit route was found.");
         }
-        double[] first = null;
-        double[] last = null;
-        for (Trip.TripSegment part : trip.tripStructure) {
-            List<double[]> points = part.getPoints();
-            if (points == null || points.isEmpty()) continue;
-            if (first == null) first = points.get(0);
-            last = points.get(points.size() - 1);
-            String busNumber = part.getBusNumber();
-            boolean isBus = part.isBus();
-            if (isBus && busNumber != null && !"null".equals(busNumber)) busRoutes.add(busNumber);
-            Color color = isBus ? routeColor(busNumber) : Color.web("#65798a");
-            for (int index = 1; index < points.size(); index++) {
-                Line line = new Line();
-                line.setStroke(color);
-                line.setStrokeWidth(isBus ? 4.5 : 2.5);
-                line.setStrokeLineCap(StrokeLineCap.ROUND);
-                if (!isBus) line.getStrokeDashArray().addAll(5.0, 5.0);
-                segments.add(new Segment(points.get(index - 1), points.get(index), line));
-                getChildren().add(line);
-            }
-            if (isBus) addMarker(points.get(0), 5, Color.web("#e9b64d"));
+        tripSegmentList = trip.tripStructure;
+
+        for (int ac = 0; ac < tripSegmentList.size(); ac++){
+            List<double[]> currentPartofList = tripSegmentList.get(ac).getPoints();
+            boolean isBus = tripSegmentList.get(ac).isBus();
+            String busNum = tripSegmentList.get(ac).getBusNumber();
+
+           for (int i = 0; i < currentPartofList.size(); i++) {
+               busOrNotList.add(isBus);
+               busNumList.add(busNum);
+               Circle icon;
+               Line line;
+               if (isBus){
+                   icon = new Circle(4, Color.RED);
+                   line = new Line();
+                   icon.setVisible(false);
+
+
+               } else {
+                   icon = new Circle(4, Color.BLUE);
+                   line = new Line();
+                   line.setStrokeWidth(1.6);
+
+               }
+               coordinatesList.add(currentPartofList.get(i));
+               getChildren().add(icon);
+               nodesOnMap.add(icon);
+               getChildren().add(line);
+               linesOnMap.add(line);
+
+           }
         }
-        if (first == null || last == null) {
-            throw new IllegalArgumentException("This transit connection has no drawable route data.");
-        }
-        addMarker(first, 7, Color.web("#147d78"));
-        addMarker(last, 7, Color.web("#e3794a"));
-        for (Marker marker : markers) getChildren().add(marker.circle);
-        setMouseTransparent(true);
     }
-
-    public Set<String> getBusRoutes() {
-        return Collections.unmodifiableSet(busRoutes);
-    }
-
-    public static Color routeColor(String route) {
-        Color[] palette = {Color.web("#385ba0"), Color.web("#9a4b89"), Color.web("#21856f"),
-                Color.web("#b56c29"), Color.web("#7959a2"), Color.web("#147f9b")};
-        return palette[Math.floorMod(route == null ? 0 : route.hashCode(), palette.length)];
-    }
-
-    private void addMarker(double[] point, double radius, Color color) {
-        Circle circle = new Circle(radius, color);
-        circle.setStroke(Color.WHITE);
-        circle.setStrokeWidth(2);
-        markers.add(new Marker(point, circle));
-    }
-
+        int counter = 0;
     @Override
     protected void layoutLayer() {
-        for (Segment segment : segments) {
-            Point2D from = getMapPoint(segment.from[0], segment.from[1]);
-            Point2D to = getMapPoint(segment.to[0], segment.to[1]);
-            segment.line.setStartX(from.getX());
-            segment.line.setStartY(from.getY());
-            segment.line.setEndX(to.getX());
-            segment.line.setEndY(to.getY());
-        }
-        for (Marker marker : markers) {
-            Point2D point = getMapPoint(marker.point[0], marker.point[1]);
-            marker.circle.setCenterX(point.getX());
-            marker.circle.setCenterY(point.getY());
-        }
-    }
+            for (int i = 0; i < coordinatesList.size(); i++) {
+                Circle currentNode = nodesOnMap.get(i);
+                Line currentLine = linesOnMap.get(i);
 
-    private static final class Segment {
-        private final double[] from;
-        private final double[] to;
-        private final Line line;
-        private Segment(double[] from, double[] to, Line line) {
-            this.from = from;
-            this.to = to;
-            this.line = line;
-        }
-    }
+                double lon = coordinatesList.get(i)[1];
+                double lat = coordinatesList.get(i)[0];
 
-    private static final class Marker {
-        private final double[] point;
-        private final Circle circle;
-        private Marker(double[] point, Circle circle) {
-            this.point = point;
-            this.circle = circle;
-        }
+
+                MapPoint mapPointCur = new MapPoint(lat, lon);
+                Point2D pointCur = getMapPoint(mapPointCur.getLatitude(), mapPointCur.getLongitude());
+
+                currentNode.setTranslateX(pointCur.getX());
+                currentNode.setTranslateY(pointCur.getY());
+
+                if (!(coordinatesList.size() == i+1)){
+                    double nextLon = coordinatesList.get(i+1)[1];
+                    double nextLat = coordinatesList.get(i+1)[0];
+
+                    MapPoint mapPointNext = new MapPoint(nextLat, nextLon);
+                    Point2D pointNext = getMapPoint(mapPointNext.getLatitude(), mapPointNext.getLongitude());
+
+
+                    currentLine.setStartX(pointCur.getX());
+                    currentLine.setStartY(pointCur.getY());
+                    currentLine.setEndX(pointNext.getX());
+                    currentLine.setEndY(pointNext.getY());
+
+
+                    if (busOrNotList.get(i+1)){
+                        currentLine.setStrokeWidth(4.5+0.5);
+
+                        switch (busNumList.get(i+1)){
+                            case "1":
+                                currentLine.setStroke(Color.DEEPPINK);
+                                uic.one.setVisible(true);
+
+                                break;
+                            case "2":
+                                currentLine.setStroke(Color.PURPLE);
+                                uic.two.setVisible(true);
+
+                                break;
+                            case "3":
+                                currentLine.setStroke(Color.DARKGREEN);
+                                uic.three.setVisible(true);
+
+                            case "4":
+                                currentLine.setStroke(Color.ORANGE);
+                                uic.four.setVisible(true);
+
+                                break;
+                            case "5":
+                                currentLine.setStroke(Color.DARKBLUE);
+                                uic.five.setVisible(true);
+
+                                break;
+                            case "6":
+                                currentLine.setStroke(Color.CYAN);
+                                uic.six.setVisible(true);
+
+                                break;
+                            case "7":
+                                currentLine.setStroke(Color.YELLOW);
+                                uic.seven.setVisible(true);
+
+                                break;
+                            case "8":
+                                currentLine.setStroke(Color.MEDIUMPURPLE);
+                                uic.eight.setVisible(true);
+
+                                break;
+                            case "9":
+                                currentLine.setStroke(Color.LIGHTGREEN);
+                                uic.nine.setVisible(true);
+
+                                break;
+                            case "10":
+                                currentLine.setStroke(Color.RED);
+                                uic.ten.setVisible(true);
+
+                                break;
+                            case "11":
+                                currentLine.setStroke(Color.SADDLEBROWN);
+                                uic.eleven.setVisible(true);
+
+                                break;
+                            case "12":
+                                currentLine.setStroke(Color.DARKOLIVEGREEN);
+                                uic.twelve.setVisible(true);
+
+                                break;
+                            case "15":
+                                currentLine.setStroke(Color.TURQUOISE);
+                                uic.fifteen.setVisible(true);
+
+                                break;
+                            case "57":
+                                currentLine.setStroke(Color.BROWN);
+                                uic.fiftySeven.setVisible(true);
+
+                                break;
+                            default:
+                                System.out.println("NO MATCH");
+                                System.out.println(busNumList.get(i+1));
+                                currentLine.setStroke(Color.BLUE);
+
+                        }
+                    }
+
+                    if (i > 0 && busOrNotList.get(i-1) && !(busOrNotList.get(i))){
+                        currentNode.setFill(Color.YELLOW);
+                        currentNode.setRadius(6.7);
+                        currentNode.setVisible(true);
+                        currentNode.setStrokeWidth(1);
+                        currentNode.setStroke(Color.BLACK);
+                        currentNode.setViewOrder(-1);
+                    }
+
+                    if (i < busOrNotList.size() && busOrNotList.get(i+1) && !(busOrNotList.get(i))){
+                        currentNode.setFill(Color.YELLOW);
+                        currentNode.setRadius(6.7);
+                        currentNode.setVisible(true);
+                        currentNode.setStrokeWidth(1);
+                        currentNode.setStroke(Color.BLACK);
+                        currentNode.setViewOrder(-1);
+
+                    }
+
+                    if (i < busNumList.size() && busNumList.get(i) != busNumList.get(i+1) && busNumList.get(i) != "null" && busNumList.get(i+1) != "null"){
+                        currentNode.setFill(Color.ORANGE);
+                        currentNode.setRadius(6.7);
+                        currentNode.setVisible(true);
+                        currentNode.setStrokeWidth(1);
+                        currentNode.setStroke(Color.BLACK);
+                        currentNode.setViewOrder(-1);
+
+                    }
+                    if (i == 0){
+                        currentNode.setFill(Color.GREEN);
+                        currentNode.setStrokeWidth(1);
+                        currentNode.setStroke(Color.BLACK);
+                        currentNode.setRadius(9);
+                        currentNode.setVisible(true);
+                        currentNode.setViewOrder(-1);
+
+                    }
+
+                }
+                if(coordinatesList.size() == i+1){
+                    currentNode.setFill(Color.RED);
+                    currentNode.setStrokeWidth(1);
+                    currentNode.setStroke(Color.BLACK);
+                    currentNode.setRadius(9);
+                    currentNode.setVisible(true);
+                    currentNode.setViewOrder(-1);
+                }
+
+
+
+
+            }
+
     }
-}
+    }

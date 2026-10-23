@@ -15,6 +15,12 @@ The Maven wrapper pins Maven 3.9.11 and verifies the downloaded distribution's c
 
 Bundled datasets load from the classpath, including when the application is launched outside the repository directory. Generated output, local environment files, and personal IDE settings are ignored by Git.
 
+## Using the interface
+
+Enter a starting postcode and a target postcode, then choose **Walk** or **Bike**. For example, use `6211AB` and `6211AS`. Distance and estimated travel time appear below the routing controls. **Heatmap** opens the accessibility view.
+
+For a configured transit database, select an hour and minute (or click **Current Time**) and choose **Transport**. The interface retains the original university project's layout and route-number images.
+
 ## Optional transit database
 
 The interface supports walking, cycling, and accessibility exploration without a database. To enable public-transport journeys:
@@ -68,6 +74,6 @@ To clone only the lightweight application initially, use `GIT_LFS_SKIP_SMUDGE=1 
 - `src/main/resources/data/geojson/`: tourism, shop, and other amenity features.
 - `data/gtfs/`: the original SQL dump tracked through Git LFS.
 
-Map backgrounds are fetched from `tile.openstreetmap.org`. The original coordinate-lookup helper uses `computerscience.dacs.unimaas.nl`; the bundled-postcode demo does not depend on that endpoint. Corporate or restricted networks may need to allow these hosts. Never disable TLS verification to resolve a connection problem.
+Map backgrounds are fetched from `tile.openstreetmap.org`. The original coordinate-lookup helper uses `computerscience.dacs.unimaas.nl`; routes between bundled postcodes do not depend on that endpoint. Corporate or restricted networks may need to allow these hosts. Never disable TLS verification to resolve a connection problem.
 
 For a cloud machine without a desktop, run a virtual display such as Xvfb and set `DISPLAY` before launching JavaFX. This repository's CI runs the non-graphical test suite. GUI smoke checks require a display and are separate from those unit tests.
