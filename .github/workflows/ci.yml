@@ -23,3 +23,14 @@ jobs:
           cache: maven
       - name: Compile, test, and package
         run: ./mvnw --batch-mode --no-transfer-progress verify
+
+  database-guards:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          persist-credentials: false
+      - name: Check import failures and preservation of existing data
+        run: bash docker/test-import-guards.sh

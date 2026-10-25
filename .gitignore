@@ -10,6 +10,7 @@
 .env.*
 !.env.example
 *.log
+/.transitor/
 
 # Operating-system files
 .DS_Store

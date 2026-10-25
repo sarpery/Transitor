@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 import com.example.Backend.Graph.Trip;
 import com.example.Backend.RequestDatabase;
+import com.example.Backend.DatabaseStartup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 
 import com.example.Backend.Algorithms.AccesibilityFormula;
 import com.example.Frontend.CustomMapLayers.CustomHeatmapLayer;
@@ -152,6 +154,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     public CustomMapLayerBus cLB;
     private Task<?> activeTask;
     private Task<Boolean> databaseTask;
+    private Tooltip databaseStatus;
     private boolean closed;
 
 
@@ -486,26 +489,75 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         mapPane.getChildren().add(mapView);
         VBox.setVgrow(mapView, Priority.ALWAYS);
         transportButton.setDisable(true);
+        databaseStatus = new Tooltip("Preparing transit data…");
+        installDatabaseStatusTooltip();
         databaseTask = new Task<>() {
             @Override protected Boolean call() {
-                return dbg.graphTheDatabase();
+                DatabaseStartup.Result result = DatabaseStartup.ensureReady(this::reportProgress);
+                if (isCancelled()) return false;
+                if (!result.ready()) {
+                    reportProgress(result.reason());
+                    return false;
+                }
+                reportProgress("Loading the transit route network…");
+                boolean available = dbg.graphTheDatabase();
+                if (isCancelled()) return false;
+                reportProgress(available ? "Transit routes are ready." : dbg.getUnavailableReason());
+                return available;
+            }
+
+            private void reportProgress(String message) {
+                if (isCancelled()) return;
+                updateMessage(message);
+                System.out.println("[Transitor] " + message);
             }
         };
+        databaseTask.messageProperty().addListener((observable, previous, message) -> {
+            if (!closed) databaseStatus.setText(message);
+        });
         databaseTask.setOnSucceeded(event -> {
             if (closed) return;
+            databaseStatus.hide();
             transportButton.setDisable(activeTask != null || !databaseTask.getValue());
-            if (!databaseTask.getValue()) transportButton.setTooltip(new Tooltip(dbg.getUnavailableReason()));
+            databaseStatus.setText(databaseTask.getMessage());
         });
         databaseTask.setOnFailed(event -> {
-            if (!closed) transportButton.setTooltip(new Tooltip("Transit database is unavailable."));
+            if (closed) return;
+            databaseStatus.hide();
+            String reason = "Transit setup could not be completed. Walking, cycling and accessibility are still available.";
+            databaseStatus.setText(reason);
+            System.out.println("[Transitor] " + reason);
         });
         Thread databaseLoader = new Thread(databaseTask, "transitor-database");
         databaseLoader.setDaemon(true);
         databaseLoader.start();
     }
 
+    private void installDatabaseStatusTooltip() {
+        transportButton.setTooltip(databaseStatus);
+        // Disabled controls do not receive mouse events. Their parent can still
+        // show the existing tooltip over the same button, without changing layout.
+        transportButton.getParent().addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
+            if (closed || !transportButton.isDisabled()) return;
+            boolean overTransport = transportButton.contains(
+                    transportButton.sceneToLocal(event.getSceneX(), event.getSceneY()));
+            if (overTransport && transportButton.getScene().getWindow().isShowing()) {
+                if (!databaseStatus.isShowing()) {
+                    databaseStatus.show(transportButton, event.getScreenX() + 12, event.getScreenY() + 16);
+                }
+            } else {
+                databaseStatus.hide();
+            }
+        });
+        transportButton.getParent().addEventHandler(MouseEvent.MOUSE_EXITED, event -> databaseStatus.hide());
+        transportButton.disabledProperty().addListener((observable, previous, disabled) -> {
+            if (!disabled) databaseStatus.hide();
+        });
+    }
+
     public void close() {
         closed = true;
+        if (databaseStatus != null) databaseStatus.hide();
         if (activeTask != null) activeTask.cancel(true);
         if (databaseTask != null) databaseTask.cancel(true);
     }

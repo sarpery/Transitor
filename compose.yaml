@@ -1,0 +1,45 @@
+services:
+  db:
+    image: mariadb:11.8.6@sha256:78a5047d3ba33975f183f183c2464cc7f1eab13ec8667e57cc9a5821d6da7577
+    entrypoint: ["bash", "/opt/transitor/entrypoint.sh"]
+    command:
+      - mariadbd
+      - --socket=/run/mysqld/mysqld.sock
+      - --skip-name-resolve
+      - --max-allowed-packet=128M
+      - --innodb-buffer-pool-size=512M
+    environment:
+      MARIADB_ROOT_PASSWORD: ${TRANSITOR_DOCKER_ROOT_PASSWORD:?Start Transitor to generate local database settings}
+      MARIADB_ROOT_HOST: localhost
+      MARIADB_DATABASE: gtfs
+      MARIADB_USER: transitor
+      MARIADB_PASSWORD: ${TRANSITOR_DOCKER_PASSWORD:?Start Transitor to generate local database settings}
+    ports:
+      - target: 3306
+        host_ip: 127.0.0.1
+        protocol: tcp
+    volumes:
+      - db-data:/var/lib/mysql
+      - type: bind
+        source: ./docker
+        target: /opt/transitor
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./data/gtfs
+        target: /opt/transitor-data
+        read_only: true
+        bind:
+          create_host_path: false
+    healthcheck:
+      test: ["CMD", "bash", "/opt/transitor/healthcheck.sh"]
+      interval: 5s
+      timeout: 10s
+      start_period: 15m
+      retries: 3
+    stop_grace_period: 1m
+    restart: "no"
+
+volumes:
+  db-data:

@@ -1,6 +1,6 @@
 # Architecture
 
-Transitor retains the original group's Java packages and routing model. The maintenance work focuses on portable resources, explicit database configuration, and a reproducible build while keeping the original JavaFX interface.
+Transitor retains the original group's Java packages and routing model. The maintenance work focuses on portable resources, automatic local database setup with explicit connection overrides, and a reproducible build while keeping the original JavaFX interface.
 
 ```mermaid
 flowchart LR
@@ -8,7 +8,11 @@ flowchart LR
     UI --> Tasks[Background calculations]
     Tasks --> Routes[Graph and routing algorithms]
     Tasks --> Scores[Amenity accessibility model]
-    Tasks --> Transit[Optional transit database]
+    Tasks --> Setup[Database setup]
+    Setup --> Docker[Local MariaDB through Docker Compose]
+    Setup --> Manual[Explicit database connection]
+    Docker --> Transit[Transit graph]
+    Manual --> Transit
     Routes --> Data[Bundled classpath datasets]
     Scores --> Data
     Tasks --> Results[Journey and score results]
@@ -33,7 +37,11 @@ The accessibility model combines distance decay with weights for amenity categor
 
 Small, required datasets live in `src/main/resources/data` and load from the classpath. Resource loading also supports filesystem paths for existing tests and development inputs. Application startup therefore does not depend on the shell's working directory.
 
-The optional GTFS database is configured at runtime. Connection settings are centralized, rather than repeated as credentials in source files. Transit requires a configured database; the Transport button is disabled when it is unavailable. Walking, cycling, and accessibility calculations use the bundled datasets.
+`DatabaseConfig` centralizes database settings. Explicit connection settings take precedence; partial manual settings report an error. With no manual settings, the application prepares the local MariaDB service through Docker Compose unless automatic startup is disabled.
+
+Preparation runs as part of the background database task. It finds the project, fetches the Git LFS dump if needed, starts the service, imports the transit data, and loads the graph. The original Transport button remains disabled until this completes; its tooltip and the application console report status. Walking, cycling, and accessibility calculations continue to use bundled datasets.
+
+The Docker service uses a loopback port, generated credentials in ignored `.transitor/docker.env`, and a persistent volume. Its Compose project name is derived from the checkout path. Later launches reuse the database. `TRANSITOR_PROJECT_DIR` can identify the checkout for custom launch locations, and `TRANSITOR_DB_AUTO_START=false` disables automatic provisioning. An existing server can be selected through the manual connection settings instead.
 
 The large SQL dump lives separately under `data/gtfs` and is tracked using Git LFS. It is not packaged into the application JAR.
 
@@ -41,4 +49,4 @@ The large SQL dump lives separately under `data/gtfs` and is tracked using Git L
 
 `./mvnw verify` compiles the application and runs JUnit tests for the graph and algorithms, plus focused regressions for resource loading, database configuration, and postcode input validation. GitHub Actions runs the same command on Java 17.
 
-GUI verification is separate: launch the FXML, enter a known postcode pair such as 6211AB to 6211AS, click Walk or Bike, and check the distance/time labels and map overlay. Check the heatmap separately, and test Transport with the local database configured. Database-enabled and database-free launches exercise different startup paths.
+GUI verification is separate: launch the FXML, enter a known postcode pair such as 6211AB to 6211AS, click Walk or Bike, and check the distance/time labels and map overlay. Check the heatmap separately, and test Transport with the local database configured. Automatic Docker startup, explicit database settings, and an automatic-start opt-out exercise different startup paths. First-import and existing-volume runs should be checked separately when validating the Docker integration.
