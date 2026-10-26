@@ -134,7 +134,7 @@ public class CustomMapLayerBus extends MapLayer implements HashController {
                             case "3":
                                 currentLine.setStroke(Color.DARKGREEN);
                                 uic.three.setVisible(true);
-
+                                break;
                             case "4":
                                 currentLine.setStroke(Color.ORANGE);
                                 uic.four.setVisible(true);

@@ -141,7 +141,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
     public Pane mapPane;
 
     @FXML
-    MapPoint point = new MapPoint(50.849365,5.694548);
+    MapPoint point = new MapPoint(50.849365,5.694548); // Set the location to Maastricht
 
     @FXML
     public Label busInfo;
@@ -269,6 +269,7 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
         cL = new CustomMapLayer(postcodes);
         mapView.addLayer(cL);
         mapView.setZoom(mapView.getZoom() + 0.01);
+        mapView.setZoom(mapView.getZoom() - 0.01);  // This is a trick I used to update the map with new layer automatically.
     }
 
     public void pathDrawBus(String start, String end) {
@@ -294,10 +295,13 @@ public class UIController implements Initializable, AlgoConnecter, HashControlle
             clearMapLayers();
             cLB = layer;
             mapView.addLayer(cLB);
-            mapView.setZoom(mapView.getZoom() + 0.01);
+           mapView.setZoom(mapView.getZoom() + 0.01);
+            mapView.setZoom(mapView.getZoom() - 0.01);
+
             distance.setText("Distance: " + result.distance + " km");
             timeLabel.setText("Transport time: " + result.minutes + " min");
             showScores(result);
+
         });
     }
 
