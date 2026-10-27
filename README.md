@@ -19,7 +19,7 @@ On Windows, use `mvnw.cmd` instead. In IntelliJ IDEA, open `pom.xml` as a Maven 
 
 On launch, Transitor automatically starts its local MariaDB container and prepares the transit data. No database credentials or environment variables are needed for this default setup. The first launch downloads the historical GTFS dump through Git LFS if necessary (approximately **1.1 GB**) and imports it; allow several minutes and several gigabytes of disk space. Later launches reuse the database.
 
-Walking, cycling, and accessibility exploration use the bundled datasets and remain available while transit is preparing or if Docker is unavailable. **Transport** stays disabled until the database and transit graph are ready; its tooltip and the Run console show setup status. Enter **6211AB** as the starting postcode and **6211AS** as the target, then click **Walk**. Map tiles need an internet connection.
+Walking, cycling, and accessibility exploration use the bundled datasets and remain available while transit is preparing or if Docker is unavailable. **Transport** stays disabled until the database and transit graph are ready; its tooltip and the Run console show setup status. Map tiles need an internet connection.
 
 Set `TRANSITOR_DB_AUTO_START=false` to use only the bundled-data features without starting Docker. See [development and database setup](docs/development.md) for startup details, stopping the container, and using an existing database.
 
@@ -55,9 +55,9 @@ See [architecture notes](docs/architecture.md) for how the interface, routing, a
 
 ## Scope and limitations
 
-This is an educational project, not a live travel service. The transit dump dates from **June 2024**; schedules may be out of date. Walking and cycling summary distances and times are estimates based on the original model, not turn-by-turn navigation or live traffic.
+This is an educational project, not a live travel service. The transit dump dates from **June 2024**; schedules are likely outdated. Walking and cycling summary distances and times are estimates based on the original model, not turn-by-turn navigation or live traffic.
 
-Accessibility scores summarize the project's weighted amenity model. They are useful for exploring that model, and are not a validated measure of a neighbourhood's social or economic conditions. Map backgrounds come from OpenStreetMap.
+Map backgrounds come from OpenStreetMap.
 
 ## Team
 
@@ -71,4 +71,4 @@ Originally developed by university project group 10:
 - Sarper Yüksel
 - Ty Barański
 
-This repository retains the group's original routing and accessibility work, with subsequent improvements to portability, project organization, and developer setup.
+This repository retains the group's original work, with subsequent improvements to portability, project organization, and developer setup.
