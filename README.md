@@ -1,8 +1,18 @@
 # Transitor
 
+[![Build and test](https://github.com/sarpery/Transitor/actions/workflows/ci.yml/badge.svg?branch=vsCode_version)](https://github.com/sarpery/Transitor/actions/workflows/ci.yml?query=branch%3AvsCode_version)
+
 A JavaFX journey planner and amenity-accessibility explorer for Maastricht, built as a university group project. Compare walking, cycling, and scheduled public-transport journeys between postcodes, then explore the nearby amenities on an interactive map.
 
-**My contribution:** I worked primarily on the JavaFX interface. The routing algorithms, transit data, and accessibility model are part of the team's combined work. Full team credits are below.
+## My contribution
+
+I developed most of the JavaFX interface as part of the university project team. My responsibilities included:
+
+- Developing and refining the FXML layout and journey controls, including departure-time selection and the **Current Time** action.
+- Connecting route searches to the interface through background JavaFX tasks and managing control states during calculations and input validation.
+- Implementing transit-route visualization with bus-line colors, origin, destination and transfer markers, and a bus-number legend.
+
+The routing algorithms, transit data, and accessibility model are part of the team's combined work. Full team credits are below.
 
 ![Transitor's JavaFX interface showing a walking route in Maastricht](docs/images/transitor.png)
 
@@ -72,3 +82,9 @@ Originally developed by university project group 10:
 - Ty Barański
 
 This repository retains the group's original work, with subsequent improvements to portability, project organization, and developer setup.
+
+## License
+
+A license for the team's original source code is pending confirmation of contributor permission and any university ownership requirements. No project-wide open-source license has been applied yet.
+
+Dependencies and data have separate terms, including GPLv3 for Gluon Maps and ODbL for the OpenStreetMap GeoJSON data. See [licensing and third-party notices](THIRD_PARTY_NOTICES.md) for the verified terms and remaining provenance questions.
